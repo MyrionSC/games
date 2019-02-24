@@ -40,7 +40,6 @@
       "timeEnd",
       "trace"
     ],
-    "no-trailing-whitespace": false,
     "no-empty": false,
     "no-inferrable-types": [
       true,
@@ -71,7 +70,6 @@
     "use-life-cycle-interface": true,
     "use-pipe-transform-interface": true,
     "component-class-suffix": true,
-    "directive-class-suffix": true,
-    "prefer-const": false
+    "directive-class-suffix": true
   }
 }
