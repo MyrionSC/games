@@ -1,25 +1,23 @@
-define(["require", "exports"], function (require, exports) {
-    var Player = (function () {
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+define(["require", "exports", "./AnimatedObject"], function (require, exports, AnimatedObject_1) {
+    "use strict";
+    exports.__esModule = true;
+    var Player = /** @class */ (function (_super) {
+        __extends(Player, _super);
         function Player(Canvas, Ctx, Keys, G) {
-            this.posX = 250;
-            this.posY = 400;
-            this.width = 10;
-            this.moveSpeed = 6;
-            this.canvas = Canvas;
-            this.ctx = Ctx;
-            this.keys = Keys;
-            this.game = G;
+            var _this = _super.call(this, Canvas, Ctx, G, "rgb(0, 107, 17)", 250, 400, 10, 6) || this;
+            _this.keys = Keys;
+            return _this;
         }
-        Player.prototype.draw = function () {
-            this.ctx.beginPath();
-            // this.ctx.fillStyle = "(0, 107, 17)";
-            this.ctx.fillStyle = "rgb(0, 107, 17)";
-            this.ctx.arc(this.posX, this.posY, this.width, 0, 2 * Math.PI);
-            this.ctx.fill();
-        };
-        Player.prototype.clear = function () {
-            this.ctx.clearRect(this.posX - this.width - 2, this.posY - this.width - 2, this.width * 2 + 4, this.width * 2 + 4);
-        };
         Player.prototype.move = function () {
             if (this.keys[38] === true || this.keys[87] === true) {
                 if (this.posY > this.width) {
@@ -43,7 +41,7 @@ define(["require", "exports"], function (require, exports) {
             }
         };
         return Player;
-    })();
+    }(AnimatedObject_1.AnimatedObject));
     exports.Player = Player;
 });
 //# sourceMappingURL=player.js.map
