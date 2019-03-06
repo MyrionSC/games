@@ -9,8 +9,8 @@ import 'phaser';
 import {GameScene} from './scenes/gameScene';
 
 const config: GameConfig = {
-    title: 'Coin Runner',
-    url: 'https://github.com/digitsensitive/phaser3-typescript',
+    title: 'Typescript',
+    url: '',
     version: '1.1',
     width: 768 * 1.5,
     height: 576 * 1.5,
