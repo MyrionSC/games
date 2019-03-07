@@ -5,11 +5,11 @@ export class Enemy extends Phaser.GameObjects.Image {
     public nextLetter: string;
     public letterIndex: number;
 
-
-    constructor(params) {
+    constructor(word: string, params) {
         super(params.scene, params.x, params.y, params.key);
 
-        this.assignedWord = "batballs";
+        console.log(word);
+        this.assignedWord = word;
         this.nextLetter = this.assignedWord[0];
         this.letterIndex = 0;
 
@@ -35,8 +35,6 @@ export class Enemy extends Phaser.GameObjects.Image {
             strokeThickness: 1,
         });
         this.textObj.x = this.x - this.textObj.width / 2;
-
-        // [color=red]al[/color]
 
         // `123456[color=blue]AA[/color]
         // [i][color=red]B

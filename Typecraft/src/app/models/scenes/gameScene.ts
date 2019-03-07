@@ -1,13 +1,15 @@
 import {Player} from '../objects/player';
 import {Enemy} from '../objects/enemy';
+import {Words} from "../objects/words";
 
 export class GameScene extends Phaser.Scene {
     private background: Phaser.GameObjects.TileSprite;
     private player: Player;
     private enemies: Array<Enemy>;
-    private counter = 0;
+    private counter = 1;
     private debug = false;
     private target: Enemy;
+    private words: Words;
 
     constructor() {
         super({
@@ -33,7 +35,10 @@ export class GameScene extends Phaser.Scene {
         this.player = new Player({scene: this, x: Number(this.game.config.width) / 2,
             y: Number(this.game.config.height) - 120, key: 'player'});
 
-        this.enemies = [new Enemy({scene: this, x: Phaser.Math.Between(30, Number(this.game.config.width) - 30),
+        this.words = new Words();
+        let word = this.words.getWord();
+        console.log(word)
+        this.enemies = [new Enemy(word, {scene: this, x: Phaser.Math.Between(40, Number(this.game.config.width) - 40),
             y: -50, key: 'enemy'})];
 
         this.input.keyboard.on('keydown', (event) => {
@@ -65,8 +70,8 @@ export class GameScene extends Phaser.Scene {
             enemy.update();
         }
 
-        if (this.counter % 500 === 0) {
-            const enemy = new Enemy({scene: this, x: Phaser.Math.Between(30, Number(this.game.config.width) - 30),
+        if (this.counter % 100 === 0) {
+            const enemy = new Enemy(this.words.getWord(), {scene: this, x: Phaser.Math.Between(30, Number(this.game.config.width) - 30),
                 y: -50, key: 'enemy'});
             this.enemies.push(enemy);
         }

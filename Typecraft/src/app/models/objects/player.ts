@@ -1,10 +1,3 @@
-/**
- * @author       Digitsensitive <digit.sensitivee@gmail.com>
- * @copyright    2018 Digitsensitive
- * @description  Coin Runner: Player
- * @license      Digitsensitive
- */
-
 export class Player extends Phaser.GameObjects.Image {
   private cursors: Phaser.Input.Keyboard.CursorKeys;
 
