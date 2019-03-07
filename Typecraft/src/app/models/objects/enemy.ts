@@ -6,7 +6,7 @@
  */
 
 export class Enemy extends Phaser.GameObjects.Image {
-    private walkingSpeed = 5;
+    private walkingSpeed = 1;
 
     constructor(params) {
         super(params.scene, params.x, params.y, params.key);
@@ -28,6 +28,6 @@ export class Enemy extends Phaser.GameObjects.Image {
     }
 
     private move(): void {
-        this.y += 2;
+        this.y += this.walkingSpeed;
     }
 }
