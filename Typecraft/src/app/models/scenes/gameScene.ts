@@ -3,9 +3,11 @@ import {Enemy} from '../objects/enemy';
 
 export class GameScene extends Phaser.Scene {
     private background: Phaser.GameObjects.TileSprite;
-    // private cursors: Phaser.Input.Keyboard.CursorKeys;
     private player: Player;
     private enemies: Array<Enemy>;
+    private counter = 0;
+    private debug = false;
+    private target: Enemy;
 
     constructor() {
         super({
@@ -24,10 +26,6 @@ export class GameScene extends Phaser.Scene {
     }
 
     create(): void {
-        console.log(Number(this.game.config.height));
-        console.log(Number(this.game.config.width));
-        console.log("-");
-
         // create background
         this.background = this.add.tileSprite(Number(Number(this.game.config.width)) / 2, Number(this.game.config.height) / 2,
             Number(this.game.config.width), Number(this.game.config.height), 'background');
@@ -35,55 +33,51 @@ export class GameScene extends Phaser.Scene {
         this.player = new Player({scene: this, x: Number(this.game.config.width) / 2,
             y: Number(this.game.config.height) - 120, key: 'player'});
 
-
-        this.enemies = [];
-        const enemy = new Enemy(this, {scene: this, x: Phaser.Math.Between(30, Number(this.game.config.width) - 30),
-            y: -50, key: 'enemy'});
-        this.enemies.push(enemy);
-
-        // this.cursors = this.input.keyboard.createCursorKeys();
+        this.enemies = [new Enemy({scene: this, x: Phaser.Math.Between(30, Number(this.game.config.width) - 30),
+            y: -50, key: 'enemy'})];
 
         this.input.keyboard.on('keydown', (event) => {
-            console.log(event.key);
+            if (this.target) {
+                const isDead = this.target.tryDamage(event.key);
+                if (isDead) {
+                    this.target.death();
+                    this.enemies.splice(this.enemies.indexOf(this.target), 1);
+                    this.target = null;
+                }
+            } else {
+                for (const e of this.enemies) {
+                    if (e.nextLetter === event.key) {
+                        this.target = e;
+                        this.target.tryDamage(event.key);
+                        break;
+                    }
+                }
+            }
         });
     }
 
     update(): void {
         // scroll background
-        this.background.tilePositionY -= 0.8;
+        this.background.tilePositionY -= 0.6;
 
         // this.player.update();
         for (const enemy of this.enemies) {
             enemy.update();
         }
 
-
-
-        // for (const k of this.input.keyboard.keys) {
-        //     console.log(k);
-        // }
-
-        // private handleInput(): void {
-        //   if (this.cursors.right.isDown) {
-        //     this.x += this.walkingSpeed;
-        //     this.setFlipX(false);
-        //   }
-        //
-        //   if (this.cursors.left.isDown) {
-        //     this.x -= this.walkingSpeed;
-        //     this.setFlipX(true);
-        //   }
-        //   if (this.cursors.up.isDown) {
-        //     this.y -= this.walkingSpeed;
-        //   }
-        //   if (this.cursors.down.isDown) {
-        //     this.y += this.walkingSpeed;
-        //   }
-        // }
-
-        if (this.game.input.mousePointer.isDown) {
-            console.log("x: " + this.game.input.mousePointer.x);
-            console.log("y: " + this.game.input.mousePointer.y);
+        if (this.counter % 500 === 0) {
+            const enemy = new Enemy({scene: this, x: Phaser.Math.Between(30, Number(this.game.config.width) - 30),
+                y: -50, key: 'enemy'});
+            this.enemies.push(enemy);
         }
+
+        if (this.debug === true) {
+            if (this.game.input.mousePointer.isDown) {
+                console.log("x: " + this.game.input.mousePointer.x);
+                console.log("y: " + this.game.input.mousePointer.y);
+            }
+        }
+
+        this.counter++;
     }
 }

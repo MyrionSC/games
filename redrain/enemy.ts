@@ -18,4 +18,8 @@ export class Enemy extends AnimatedObject {
 		this.game.gameObjects.splice(this.game.gameObjects.indexOf(this), 1);
 		this.game.enemies.splice(this.game.enemies.indexOf(this), 1);
 	}
+
+    death() {
+        
+    }
 }
