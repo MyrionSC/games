@@ -16,23 +16,26 @@ export class GameScene extends Phaser.Scene {
     preload(): void {
         // this.load.image('background', 'assets/background.png');
         this.load.image('background', 'assets/Background/grasstile.png');
-        this.load.image('player', 'assets/player.png');
-        this.load.image('enemy', 'assets/ZergZerglingPurple.png');
+        this.load.image('player', 'assets/Units/Terran/TerranMarineBlue.png');
+        this.load.image('enemy', 'assets/Units/Zerg/ZergZerglingPurple.png');
 
-        this.gameConfig = {
-            gameWindowWidth: 480,
-            gameWindowHeight: 720
-        };
+        const url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/plugins/dist/rexbbcodetextplugin.min.js';
+        this.load.plugin('rexbbcodetextplugin', url, true);
     }
 
     create(): void {
-        // create background
-        this.background = this.add.tileSprite(this.gameConfig.gameWindowWidth / 2, this.gameConfig.gameWindowHeight / 2,
-            this.gameConfig.gameWindowWidth, this.gameConfig.gameWindowHeight, 'background');
+        console.log(Number(this.game.config.height));
+        console.log(Number(this.game.config.width));
+        console.log("-");
 
-        this.player = new Player({scene: this, x: this.gameConfig.gameWindowWidth / 2,
-            y: this.gameConfig.gameWindowHeight - 200, key: 'player'});
-        // this.enemy = new Enemy({scene: this, x: 150, y: 30, key: 'enemy'});
+        // create background
+        this.background = this.add.tileSprite(Number(Number(this.game.config.width)) / 2, Number(this.game.config.height) / 2,
+            Number(this.game.config.width), Number(this.game.config.height), 'background');
+
+        this.player = new Player({scene: this, x: Number(this.game.config.width) / 2,
+            y: Number(this.game.config.height) - 120, key: 'player'});
+
+        this.enemy = new Enemy(this, {scene: this, x: 150, y: 30, key: 'enemy'});
     }
 
     update(): void {
@@ -40,7 +43,7 @@ export class GameScene extends Phaser.Scene {
         this.background.tilePositionY -= 0.8;
 
         // this.player.update();
-        // this.enemy.update();
+        this.enemy.update();
 
         if (this.game.input.mousePointer.isDown) {
             console.log("x: " + this.game.input.mousePointer.x);

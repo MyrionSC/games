@@ -19,7 +19,7 @@ export class Player extends Phaser.GameObjects.Image {
   }
 
   private initImage(): void {
-    this.setScale(0.1);
+    this.setScale(0.25);
     this.setSize(20, 20);
     this.setAlpha(1);
     this.setFlip(false, false);
