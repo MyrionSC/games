@@ -3,9 +3,9 @@ import {Enemy} from '../objects/enemy';
 
 export class GameScene extends Phaser.Scene {
     private background: Phaser.GameObjects.TileSprite;
+    // private cursors: Phaser.Input.Keyboard.CursorKeys;
     private player: Player;
-    private enemy: Enemy;
-    private gameConfig: any;
+    private enemies: Array<Enemy>;
 
     constructor() {
         super({
@@ -16,7 +16,7 @@ export class GameScene extends Phaser.Scene {
     preload(): void {
         // this.load.image('background', 'assets/background.png');
         this.load.image('background', 'assets/Background/grasstile.png');
-        this.load.image('player', 'assets/Units/Terran/TerranMarineBlue.png');
+        this.load.image('player', 'assets/Units/Terran/TerranMarineBlue2.png');
         this.load.image('enemy', 'assets/Units/Zerg/ZergZerglingPurple.png');
 
         const url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/plugins/dist/rexbbcodetextplugin.min.js';
@@ -35,7 +35,17 @@ export class GameScene extends Phaser.Scene {
         this.player = new Player({scene: this, x: Number(this.game.config.width) / 2,
             y: Number(this.game.config.height) - 120, key: 'player'});
 
-        this.enemy = new Enemy(this, {scene: this, x: 150, y: 30, key: 'enemy'});
+
+        this.enemies = [];
+        const enemy = new Enemy(this, {scene: this, x: Phaser.Math.Between(30, Number(this.game.config.width) - 30),
+            y: -50, key: 'enemy'});
+        this.enemies.push(enemy);
+
+        // this.cursors = this.input.keyboard.createCursorKeys();
+
+        this.input.keyboard.on('keydown', (event) => {
+            console.log(event.key);
+        });
     }
 
     update(): void {
@@ -43,7 +53,33 @@ export class GameScene extends Phaser.Scene {
         this.background.tilePositionY -= 0.8;
 
         // this.player.update();
-        this.enemy.update();
+        for (const enemy of this.enemies) {
+            enemy.update();
+        }
+
+
+
+        // for (const k of this.input.keyboard.keys) {
+        //     console.log(k);
+        // }
+
+        // private handleInput(): void {
+        //   if (this.cursors.right.isDown) {
+        //     this.x += this.walkingSpeed;
+        //     this.setFlipX(false);
+        //   }
+        //
+        //   if (this.cursors.left.isDown) {
+        //     this.x -= this.walkingSpeed;
+        //     this.setFlipX(true);
+        //   }
+        //   if (this.cursors.up.isDown) {
+        //     this.y -= this.walkingSpeed;
+        //   }
+        //   if (this.cursors.down.isDown) {
+        //     this.y += this.walkingSpeed;
+        //   }
+        // }
 
         if (this.game.input.mousePointer.isDown) {
             console.log("x: " + this.game.input.mousePointer.x);
