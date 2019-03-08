@@ -6,7 +6,7 @@ const config: GameConfig = {
     url: '',
     version: '0.1',
     width: 480,
-    height: 720,
+    height: 840,
     type: Phaser.AUTO,
     parent: 'game',
     scene: [GameScene],

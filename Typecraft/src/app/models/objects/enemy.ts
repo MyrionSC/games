@@ -1,5 +1,6 @@
 export class Enemy extends Phaser.GameObjects.Image {
     private walkingSpeed = 1;
+    private scale = 0.20
     private textObj: Phaser.GameObjects.Text;
     public assignedWord: string;
     public nextLetter: string;
@@ -19,8 +20,8 @@ export class Enemy extends Phaser.GameObjects.Image {
     }
 
     private initImage(): void {
-        this.setScale(0.25);
-        this.setSize(100, 100);
+        this.setScale(0.20);
+        this.setSize(20, 20);
         this.setAlpha(1);
         this.setFlip(true, true);
         this.setOrigin(0.4, 0.4);
@@ -28,8 +29,8 @@ export class Enemy extends Phaser.GameObjects.Image {
 
     private initText() {
         // @ts-ignore
-        this.textObj = this.scene.add.rexBBCodeText(-100, this.y - 35, this.assignedWord, {
-            fontSize: '22px',
+        this.textObj = this.scene.add.rexBBCodeText(-100, this.y - 25, this.assignedWord, {
+            fontSize: '18px',
             align: 'center',
             stroke: 'red',
             strokeThickness: 1,
