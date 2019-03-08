@@ -7,9 +7,14 @@ export class GameScene extends Phaser.Scene {
     private player: Player;
     private enemies: Array<Enemy>;
     private counter = 1;
-    private debug = false;
     private target: Enemy;
     private words: Words;
+
+    private enemyClusterSize = 2;
+
+    private debug = true;
+    private debugText: Phaser.GameObjects.BitmapText;
+
 
     constructor() {
         super({
@@ -36,10 +41,7 @@ export class GameScene extends Phaser.Scene {
             y: Number(this.game.config.height) - 120, key: 'player'});
 
         this.words = new Words();
-        let word = this.words.getWord();
-        console.log(word)
-        this.enemies = [new Enemy(word, {scene: this, x: Phaser.Math.Between(40, Number(this.game.config.width) - 40),
-            y: -50, key: 'enemy'})];
+        this.enemies = [];
 
         this.input.keyboard.on('keydown', (event) => {
             if (this.target) {
@@ -59,6 +61,11 @@ export class GameScene extends Phaser.Scene {
                 }
             }
         });
+
+        if (this.debug) {
+            this.add.text(5, 5, this.getDebugText(),
+                {fontSize: '12px', color: '#000000'});
+        }
     }
 
     update(): void {
@@ -70,13 +77,14 @@ export class GameScene extends Phaser.Scene {
             enemy.update();
         }
 
-        if (this.counter % 100 === 0) {
-            const enemy = new Enemy(this.words.getWord(), {scene: this, x: Phaser.Math.Between(30, Number(this.game.config.width) - 30),
-                y: -50, key: 'enemy'});
-            this.enemies.push(enemy);
+        if (this.counter % 300 === 0) {
+            for (let i = 0; i < this.enemyClusterSize; i++) {
+                this.enemies.push(new Enemy(this.words.getWord(), {scene: this, x: Phaser.Math.Between(30,
+                        Number(this.game.config.width) - 30), y: -50 - 30 * i, key: 'enemy'}));
+            }
         }
 
-        if (this.debug === true) {
+        if (this.debug) {
             if (this.game.input.mousePointer.isDown) {
                 console.log("x: " + this.game.input.mousePointer.x);
                 console.log("y: " + this.game.input.mousePointer.y);
@@ -84,5 +92,9 @@ export class GameScene extends Phaser.Scene {
         }
 
         this.counter++;
+    }
+
+    private getDebugText(): string {
+        return "clustersize: " + String(this.enemyClusterSize) + "\nsomething";
     }
 }
