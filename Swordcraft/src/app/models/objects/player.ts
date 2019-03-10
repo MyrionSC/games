@@ -17,7 +17,7 @@ export class Player extends Phaser.GameObjects.Image {
     this.setSize(118 * scale, 95 * scale);
     this.setAlpha(1);
     this.setFlip(false, false);
-    this.setOrigin(0.4, 0.4);
+    this.setOrigin(0.5, 0.5);
     this.setAngle(0);
   }
   private initInput(params): void {
@@ -29,14 +29,35 @@ export class Player extends Phaser.GameObjects.Image {
   }
 
   private handleInput(): void {
+    console.log(this.angle);
+
     if (this.cursors.right.isDown) {
-      this.x += this.walkingSpeed;
-      this.setFlipX(false);
+      if (this.cursors.up.isDown) {
+        this.setAngle(45);
+      } else if (this.cursors.down.isDown) {
+        this.setAngle(135);
+      } else {
+        this.setAngle(90);
+      }
+    } else if (this.cursors.left.isDown) {
+      if (this.cursors.up.isDown) {
+        this.setAngle(315);
+      } else if (this.cursors.down.isDown) {
+        this.setAngle(225);
+      } else {
+        this.setAngle(270);
+      }
+    } else if (this.cursors.up.isDown) {
+      this.setAngle(0);
+    } else if (this.cursors.down.isDown) {
+      this.setAngle(180);
     }
 
+    if (this.cursors.right.isDown) {
+      this.x += this.walkingSpeed;
+    }
     if (this.cursors.left.isDown) {
       this.x -= this.walkingSpeed;
-      this.setFlipX(true);
     }
     if (this.cursors.up.isDown) {
       this.y -= this.walkingSpeed;

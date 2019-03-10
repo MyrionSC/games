@@ -5,10 +5,7 @@ export class GameScene extends Phaser.Scene {
     private player: Player;
     private counter = 1;
 
-    private globals = {
-        enemyClusterSize: 3,
-        backgroundScroll: 0.6
-    };
+    private globals = {};
 
     private debug = true;
     private debugText: Phaser.GameObjects.Text;
@@ -33,7 +30,7 @@ export class GameScene extends Phaser.Scene {
             Number(this.game.config.width), Number(this.game.config.height), 'background');
 
         this.player = new Player({scene: this, x: Number(this.game.config.width) / 2,
-            y: Number(this.game.config.height) - 120, key: 'player'});
+            y: Number(this.game.config.height) / 2, key: 'player'});
 
         // if (this.debug) {
         //     this.debugText = this.add.text(5, 5, this.getDebugText(),
@@ -43,7 +40,7 @@ export class GameScene extends Phaser.Scene {
 
     update(): void {
         // scroll background
-        this.background.tilePositionY -= this.globals.backgroundScroll;
+        // this.background.tilePositionY -= this.globals.backgroundScroll;
 
         this.player.update();
 
@@ -57,7 +54,7 @@ export class GameScene extends Phaser.Scene {
         this.counter++;
     }
 
-    private getDebugText(): string {
-        return "clustersize: " + String(this.globals.enemyClusterSize) + "\nsomething";
-    }
+    // private getDebugText(): string {
+        // return "clustersize: " + String(this.globals.enemyClusterSize) + "\nsomething";
+    // }
 }
