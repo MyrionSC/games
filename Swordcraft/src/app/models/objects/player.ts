@@ -1,5 +1,6 @@
 export class Player extends Phaser.GameObjects.Image {
   private cursors: Phaser.Input.Keyboard.CursorKeys;
+  private walkingSpeed = 2;
 
   constructor(params) {
     super(params.scene, params.x, params.y, params.key);
@@ -24,5 +25,25 @@ export class Player extends Phaser.GameObjects.Image {
   }
 
   update(): void {
+    this.handleInput();
   }
+
+  private handleInput(): void {
+    if (this.cursors.right.isDown) {
+      this.x += this.walkingSpeed;
+      this.setFlipX(false);
+    }
+
+    if (this.cursors.left.isDown) {
+      this.x -= this.walkingSpeed;
+      this.setFlipX(true);
+    }
+    if (this.cursors.up.isDown) {
+      this.y -= this.walkingSpeed;
+    }
+    if (this.cursors.down.isDown) {
+      this.y += this.walkingSpeed;
+    }
+  }
+
 }
