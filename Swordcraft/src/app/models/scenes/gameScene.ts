@@ -18,10 +18,9 @@ export class GameScene extends Phaser.Scene {
     }
 
     preload(): void {
-        // this.load.image('background', 'assets/background.png');
         this.load.image('background', 'assets/Background/grasstile.png');
-        this.load.image('player', 'assets/Units/Terran/TerranMarineBlue2.png');
-        this.load.image('enemy', 'assets/Units/Zerg/ZergZerglingPurple.png');
+        this.load.image('player', 'assets/Swordcraft/swordguy.png');
+        this.load.image('enemy', 'assets/Starcraft/Units/Zerg/ZergZerglingPurple.png');
     }
 
     create(): void {
@@ -39,6 +38,9 @@ export class GameScene extends Phaser.Scene {
     }
 
     update(): void {
+        console.log(this.player.originX);
+        console.log(this.player.originY);
+
         // scroll background
         // this.background.tilePositionY -= this.globals.backgroundScroll;
 

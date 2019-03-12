@@ -12,13 +12,13 @@ export class Player extends Phaser.GameObjects.Image {
   }
 
   private initImage(): void {
-    const scale = 0.4;
+    const scale = 0.15;
     this.setScale(scale);
-    this.setSize(118 * scale, 95 * scale);
-    this.setAlpha(1);
-    this.setFlip(false, false);
+    // this.setSize(580 * scale, 207 * scale);
+    // this.setAlpha(1);
+    // this.setFlip(false, false);
+    // this.setAngle(0);
     this.setOrigin(0.5, 0.5);
-    this.setAngle(0);
   }
   private initInput(params): void {
     this.cursors = params.scene.input.keyboard.createCursorKeys();
@@ -29,8 +29,6 @@ export class Player extends Phaser.GameObjects.Image {
   }
 
   private handleInput(): void {
-    console.log(this.angle);
-
     if (this.cursors.right.isDown) {
       if (this.cursors.up.isDown) {
         this.setAngle(45);
