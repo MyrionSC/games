@@ -1,8 +1,10 @@
 import {Player} from '../objects/player';
+import {Sword} from "../objects/sword";
 
 export class GameScene extends Phaser.Scene {
     private background: Phaser.GameObjects.TileSprite;
     private player: Player;
+    private sword: Sword;
     private counter = 1;
 
     private globals = {};
@@ -20,6 +22,7 @@ export class GameScene extends Phaser.Scene {
     preload(): void {
         this.load.image('background', 'assets/Background/grasstile.png');
         this.load.image('player', 'assets/Swordcraft/swordguy.png');
+        this.load.image('sword', 'assets/Swordcraft/grandsword.png');
         this.load.image('enemy', 'assets/Starcraft/Units/Zerg/ZergZerglingPurple.png');
     }
 
@@ -28,8 +31,11 @@ export class GameScene extends Phaser.Scene {
         this.background = this.add.tileSprite(Number(Number(this.game.config.width)) / 2, Number(this.game.config.height) / 2,
             Number(this.game.config.width), Number(this.game.config.height), 'background');
 
+        const sword = new Sword({scene: this, x: Number(this.game.config.width) / 2,
+            y: Number(this.game.config.height) / 2, key: 'sword'});
         this.player = new Player({scene: this, x: Number(this.game.config.width) / 2,
-            y: Number(this.game.config.height) / 2, key: 'player'});
+            y: Number(this.game.config.height) / 2, key: 'player'}, sword);
+
 
         // if (this.debug) {
         //     this.debugText = this.add.text(5, 5, this.getDebugText(),
@@ -38,9 +44,6 @@ export class GameScene extends Phaser.Scene {
     }
 
     update(): void {
-        console.log(this.player.originX);
-        console.log(this.player.originY);
-
         // scroll background
         // this.background.tilePositionY -= this.globals.backgroundScroll;
 
