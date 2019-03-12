@@ -16,6 +16,7 @@ export class Sword extends Phaser.GameObjects.Image {
     this.setAngle(130);
   }
   update(): void {
+    // this.scene.add.circle(this.x, this.y, 5, 0xff0000, 1);
     // this.angle -= 0.5;
   }
 }

@@ -3,7 +3,12 @@ import {Sword} from "./sword";
 export class Player extends Phaser.GameObjects.Image {
   private cursors: Phaser.Input.Keyboard.CursorKeys;
   private sword: Sword;
-  private walkingSpeed = 2;
+  private walkingSpeed = 2.5;
+
+  private isAttacking = false;
+  private swingSpeed = 6;
+  private swingProgress = 0;
+  private endSwing = 210;
 
   constructor(params, sword: Sword) {
     super(params.scene, params.x, params.y, params.key);
@@ -26,7 +31,22 @@ export class Player extends Phaser.GameObjects.Image {
   }
 
   update(): void {
-    this.handleInput();
+    if (this.isAttacking) {
+      this.sword.angle -= this.swingSpeed;
+      this.swingProgress += this.swingSpeed;
+      if (this.swingProgress >= this.endSwing) {
+        this.sword.setAngle(this.angle + this.sword.originAngle);
+        this.swingProgress = 0;
+        this.isAttacking = false;
+      }
+    } else {
+      this.handleInput();
+    }
+    // this.sword.update();
+  }
+
+  startAttack(): void {
+    this.isAttacking = true;
   }
 
   private handleInput(): void {
