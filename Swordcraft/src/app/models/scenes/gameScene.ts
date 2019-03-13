@@ -4,6 +4,8 @@ import {Sword} from "../objects/sword";
 export class GameScene extends Phaser.Scene {
     private background: Phaser.GameObjects.TileSprite;
     private player: Player;
+    private rock: Phaser.GameObjects.Image;
+
     private counter = 1;
 
     private globals = {};
@@ -22,6 +24,7 @@ export class GameScene extends Phaser.Scene {
         this.load.image('background', 'assets/Background/grasstile.png');
         this.load.image('player', 'assets/Swordcraft/swordguy.png');
         this.load.image('sword', 'assets/Swordcraft/grandsword.png');
+        this.load.image('rock', 'assets/Placeholders/rock.png');
         // this.load.image('enemy', 'assets/Starcraft/Units/Zerg/ZergZerglingPurple.png');
     }
 
@@ -34,6 +37,11 @@ export class GameScene extends Phaser.Scene {
             y: Number(this.game.config.height) / 2, key: 'sword'});
         this.player = new Player({scene: this, x: Number(this.game.config.width) / 2,
             y: Number(this.game.config.height) / 2, key: 'player'}, sword);
+
+        this.rock = this.add.image(200, 200, 'rock');
+        this.rock.setScale(0.2);
+
+
 
         this.input.keyboard.on('keydown', (event) => {
             if (event.key === " ") {
