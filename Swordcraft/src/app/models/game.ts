@@ -8,6 +8,9 @@ const config: GameConfig = {
     width: 900,
     height: 900,
     type: Phaser.AUTO,
+    physics: {
+        default: 'impact'
+    },
     parent: 'game',
     scene: [GameScene],
     input: {

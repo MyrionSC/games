@@ -4,7 +4,7 @@ import {Sword} from "../objects/sword";
 export class GameScene extends Phaser.Scene {
     private background: Phaser.GameObjects.TileSprite;
     private player: Player;
-    private rock: Phaser.GameObjects.Image;
+    private rock: any;
 
     private counter = 1;
 
@@ -38,14 +38,15 @@ export class GameScene extends Phaser.Scene {
         this.player = new Player({scene: this, x: Number(this.game.config.width) / 2,
             y: Number(this.game.config.height) / 2, key: 'player'}, sword);
 
-        this.rock = this.add.image(200, 200, 'rock');
+
+
+        this.rock = this.impact.add.image(400, 400, 'rock');
         this.rock.setScale(0.2);
-
-
+        this.rock.setTypeA().setCheckAgainstB().setActiveCollision().setMaxVelocity(100);
 
         this.input.keyboard.on('keydown', (event) => {
-            if (event.key === " ") {
-                console.log("space");
+            // my keyboard ghosts combination: UpArrow + LeftArrow + Space, which makes space as attack annoying
+            if (event.key === "q") {
                 this.player.startAttack();
             }
         });
@@ -63,6 +64,11 @@ export class GameScene extends Phaser.Scene {
         // this.background.tilePositionY -= this.globals.backgroundScroll;
 
         this.player.update();
+
+
+
+
+
 
         if (this.debug) {
             if (this.game.input.mousePointer.isDown) {
