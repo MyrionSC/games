@@ -12,6 +12,7 @@ export class GameScene extends Phaser.Scene {
 
     private debug = true;
     private debugText: Phaser.GameObjects.Text;
+    private biter: Phaser.GameObjects.Image;
 
 
     constructor() {
@@ -25,6 +26,7 @@ export class GameScene extends Phaser.Scene {
         this.load.image('player', 'assets/Swordcraft/swordguy.png');
         this.load.image('sword', 'assets/Swordcraft/grandsword.png');
         this.load.image('rock', 'assets/Placeholders/rock.png');
+        this.load.image('biter', 'assets/Swordcraft/biter.png');
         // this.load.image('enemy', 'assets/Starcraft/Units/Zerg/ZergZerglingPurple.png');
     }
 
@@ -37,6 +39,18 @@ export class GameScene extends Phaser.Scene {
             y: Number(this.game.config.height) / 2, key: 'sword'});
         this.player = new Player({scene: this, x: Number(this.game.config.width) / 2,
             y: Number(this.game.config.height) / 2, key: 'player'}, sword);
+
+        this.biter = this.add.image(500, 200, 'biter');
+        this.biter.setScale(0.15);
+
+
+
+        // graphics.lineStyle(5, 0xFF00FF, 1.0);
+        // graphics.beginPath();
+        // graphics.moveTo(100, 100);
+        // graphics.lineTo(200, 200);
+        // graphics.closePath();
+        // graphics.strokePath();
 
 
 

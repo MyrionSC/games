@@ -8,6 +8,10 @@ const config: GameConfig = {
     width: 900,
     height: 900,
     type: Phaser.AUTO,
+    // render: {
+    //     pixelArt: false,
+    //     antialias: true
+    // },
     physics: {
         default: 'impact'
     },
