@@ -1,12 +1,13 @@
+// export class Sword extends Phaser.Physics.Impact.ImpactImage {
 export class Sword extends Phaser.GameObjects.Image {
   originAngle = 130;
 
-  constructor(params) {
-    super(params.scene, params.x, params.y, params.key);
+  constructor(scene, x, y) {
+    super(scene, x, y, 'sword');
 
     this.initImage();
 
-    params.scene.add.existing(this);
+    scene.add.existing(this);
   }
 
   private initImage(): void {

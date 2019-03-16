@@ -13,7 +13,10 @@ const config: GameConfig = {
     //     antialias: true
     // },
     physics: {
-        default: 'impact'
+        default: 'impact',
+        impact: {
+            debug: true
+        }
     },
     parent: 'game',
     scene: [GameScene],

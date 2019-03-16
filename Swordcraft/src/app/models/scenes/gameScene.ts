@@ -1,10 +1,11 @@
 import {Player} from '../objects/player';
 import {Sword} from "../objects/sword";
+import {Biter} from "../objects/biter";
 
 export class GameScene extends Phaser.Scene {
     private background: Phaser.GameObjects.TileSprite;
     private player: Player;
-    private rock: any;
+    private biter: Biter;
 
     private counter = 1;
 
@@ -12,7 +13,6 @@ export class GameScene extends Phaser.Scene {
 
     private debug = true;
     private debugText: Phaser.GameObjects.Text;
-    private biter: Phaser.GameObjects.Image;
 
 
     constructor() {
@@ -35,28 +35,8 @@ export class GameScene extends Phaser.Scene {
         this.background = this.add.tileSprite(Number(Number(this.game.config.width)) / 2, Number(this.game.config.height) / 2,
             Number(this.game.config.width), Number(this.game.config.height), 'background');
 
-        const sword = new Sword({scene: this, x: Number(this.game.config.width) / 2,
-            y: Number(this.game.config.height) / 2, key: 'sword'});
-        this.player = new Player({scene: this, x: Number(this.game.config.width) / 2,
-            y: Number(this.game.config.height) / 2, key: 'player'}, sword);
-
-        this.biter = this.add.image(500, 200, 'biter');
-        this.biter.setScale(0.15);
-
-
-
-        // graphics.lineStyle(5, 0xFF00FF, 1.0);
-        // graphics.beginPath();
-        // graphics.moveTo(100, 100);
-        // graphics.lineTo(200, 200);
-        // graphics.closePath();
-        // graphics.strokePath();
-
-
-
-        this.rock = this.impact.add.image(400, 400, 'rock');
-        this.rock.setScale(0.2);
-        this.rock.setTypeA().setCheckAgainstB().setActiveCollision().setMaxVelocity(100);
+        this.player = new Player(this, 500, 500);
+        this.biter = new Biter(this, 300, 300);
 
         this.input.keyboard.on('keydown', (event) => {
             // my keyboard ghosts combination: UpArrow + LeftArrow + Space, which makes space as attack annoying
@@ -65,13 +45,36 @@ export class GameScene extends Phaser.Scene {
             }
         });
 
+        const blockA: Phaser.Physics.Impact.ImpactImage = this.impact.add.image(300, 600, 'rock');
+        const blockB: Phaser.Physics.Impact.ImpactImage = this.impact.add.image(730, 400, 'rock');
+        blockA.setBodyScale(0.2);
+        blockB.setBodyScale(0.2);
 
+        blockA.setTypeA();
+        blockA.setCheckAgainstA();
+        blockA.setActiveCollision();
+        blockA.setMaxVelocity(300);
+        blockB.setTypeA();
+        blockB.setCheckAgainstA();
+        blockB.setActiveCollision();
+
+        // blockA.setVelocityX(100);
+        // blockA.setAccelerationX(10);
+        // blockA.setFriction(200, 200);
+
+        //  The callback will be sent the arguments: bodyA (which is the body of blockA in this case), the other body it hits and the axis
+        blockA.setCollideCallback(this.collide, this);
 
         // if (this.debug) {
         //     this.debugText = this.add.text(5, 5, this.getDebugText(),
         //         {fontSize: '12px', color: '#000000'});
         // }
     }
+
+    collide(bodyA, bodyB, axis) {
+        bodyB.gameObject.tint = 0xff0000;
+    }
+
 
     update(): void {
         // scroll background

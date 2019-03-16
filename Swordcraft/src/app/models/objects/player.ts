@@ -10,15 +10,15 @@ export class Player extends Phaser.GameObjects.Image {
   private swingProgress = 0;
   private endSwing = 210;
 
-  constructor(params, sword: Sword) {
-    super(params.scene, params.x, params.y, params.key);
+  constructor(scene, x, y) {
+    super(scene, x, y, 'player');
 
     this.initImage();
-    this.initInput(params);
+    this.initInput(scene);
 
-    this.sword = sword;
+    this.sword = new Sword(scene, x, y);
 
-    params.scene.add.existing(this);
+    scene.add.existing(this);
   }
 
   private initImage(): void {
@@ -26,8 +26,8 @@ export class Player extends Phaser.GameObjects.Image {
     this.setScale(scale);
     this.setOrigin(0.5, 0.5);
   }
-  private initInput(params): void {
-    this.cursors = params.scene.input.keyboard.createCursorKeys();
+  private initInput(scene): void {
+    this.cursors = scene.input.keyboard.createCursorKeys();
   }
 
   update(): void {
