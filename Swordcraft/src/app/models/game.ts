@@ -12,12 +12,6 @@ const config: GameConfig = {
     //     pixelArt: false,
     //     antialias: true
     // },
-    physics: {
-        default: 'impact',
-        impact: {
-            debug: true
-        }
-    },
     parent: 'game',
     scene: [GameScene],
     input: {

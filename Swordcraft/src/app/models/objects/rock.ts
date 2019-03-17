@@ -4,12 +4,6 @@ export class Rock extends Phaser.GameObjects.Image {
 
     this.initImage();
 
-
-    // this.rock = this.impact.add.image(400, 400, 'rock');
-    // this.rock.setScale(0.2);
-    // this.rock.setTypeA().setCheckAgainstB().setActiveCollision().setMaxVelocity(100);
-
-
     params.scene.add.existing(this);
   }
 

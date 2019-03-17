@@ -1,4 +1,3 @@
-// export class Sword extends Phaser.Physics.Impact.ImpactImage {
 export class Sword extends Phaser.GameObjects.Image {
   originAngle = 130;
 
@@ -16,8 +15,6 @@ export class Sword extends Phaser.GameObjects.Image {
     this.setOrigin(0.5, 1.15);
     this.setAngle(130);
   }
-  update(): void {
-    // this.scene.add.circle(this.x, this.y, 5, 0xff0000, 1);
-    // this.angle -= 0.5;
-  }
+
+  update(): void {}
 }

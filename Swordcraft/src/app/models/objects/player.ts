@@ -42,7 +42,6 @@ export class Player extends Phaser.GameObjects.Image {
     } else {
       this.handleInput();
     }
-    // this.sword.update();
   }
 
   startAttack(): void {
