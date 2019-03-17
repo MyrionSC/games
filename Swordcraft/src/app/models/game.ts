@@ -12,6 +12,16 @@ const config: GameConfig = {
     //     pixelArt: false,
     //     antialias: true
     // },
+    physics: {
+        default: 'matter',
+        matter: {
+            debug: true,
+            gravity: {
+                x: 0,
+                y: 0
+            }
+        }
+    },
     parent: 'game',
     scene: [GameScene],
     input: {
