@@ -4,7 +4,7 @@ export class Player {
   physics: Phaser.Physics.Matter.Image;
   private cursors: Phaser.Input.Keyboard.CursorKeys;
   private sword: Sword;
-  private walkingSpeed = 5;
+  private walkingSpeed = 2.5;
 
   private isAttacking = false;
   private swingSpeed = 6;
@@ -14,6 +14,10 @@ export class Player {
   constructor(scene: Phaser.Scene, x: number, y: number) {
     this.physics = scene.matter.add.image(x, y, 'player');
     this.physics.setScale(0.15);
+    this.physics.setBody({
+      type: 'circle',
+      radius: 24
+    }, {});
 
     this.cursors = scene.input.keyboard.createCursorKeys();
 
@@ -40,27 +44,27 @@ export class Player {
   }
 
   private handleInput(): void {
-    // if (this.cursors.right.isDown) {
-    //   if (this.cursors.up.isDown) {
-    //     this.updateAngle(45);
-    //   } else if (this.cursors.down.isDown) {
-    //     this.updateAngle(135);
-    //   } else {
-    //     this.updateAngle(90);
-    //   }
-    // } else if (this.cursors.left.isDown) {
-    //   if (this.cursors.up.isDown) {
-    //     this.updateAngle(315);
-    //   } else if (this.cursors.down.isDown) {
-    //     this.updateAngle(225);
-    //   } else {
-    //     this.updateAngle(270);
-    //   }
-    // } else if (this.cursors.up.isDown) {
-    //   this.updateAngle(0);
-    // } else if (this.cursors.down.isDown) {
-    //   this.updateAngle(180);
-    // }
+    if (this.cursors.right.isDown) {
+      if (this.cursors.up.isDown) {
+        this.physics.setAngle(45);
+      } else if (this.cursors.down.isDown) {
+        this.physics.setAngle(135);
+      } else {
+        this.physics.setAngle(90);
+      }
+    } else if (this.cursors.left.isDown) {
+      if (this.cursors.up.isDown) {
+        this.physics.setAngle(315);
+      } else if (this.cursors.down.isDown) {
+        this.physics.setAngle(225);
+      } else {
+        this.physics.setAngle(270);
+      }
+    } else if (this.cursors.up.isDown) {
+      this.physics.setAngle(0);
+    } else if (this.cursors.down.isDown) {
+      this.physics.setAngle(180);
+    }
 
     if (this.anyCursorsDown()) {
       if (this.cursors.right.isDown) {
