@@ -15864,7 +15864,7 @@ declare namespace Phaser {
             /**
              * If this Game Object is enabled for physics then this property will contain a reference to a Physics Body.
              */
-            body: object | Phaser.Physics.Arcade.Body | Phaser.Physics.Impact.Body;
+            body: object | Phaser.Physics.Arcade.Body | Phaser.Physics.Impact.Body | Phaser.Physics.Matter.Body;
 
             /**
              * This Game Object will ignore all calls made to its destroy method if this flag is set to `true`.
@@ -57406,6 +57406,737 @@ declare namespace Phaser {
         }
 
         namespace Matter {
+            /**
+             * A Dynamic Arcade Body.
+             *
+             * Its static counterpart is {@link Phaser.Physics.Arcade.StaticBody}.
+             */
+            class Body {
+                /**
+                 *
+                 * @param world The Arcade Physics simulation this Body belongs to.
+                 * @param gameObject The Game Object this Body belongs to.
+                 */
+                constructor(world: Phaser.Physics.Arcade.World, gameObject: Phaser.GameObjects.GameObject);
+
+                /**
+                 * The Arcade Physics simulation this Body belongs to.
+                 */
+                world: Phaser.Physics.Arcade.World;
+
+                /**
+                 * The Game Object this Body belongs to.
+                 */
+                gameObject: Phaser.GameObjects.GameObject;
+
+                /**
+                 * Transformations applied to this Body.
+                 */
+                transform: object;
+
+                /**
+                 * Whether the Body's boundary is drawn to the debug display.
+                 */
+                debugShowBody: boolean;
+
+                /**
+                 * Whether the Body's velocity is drawn to the debug display.
+                 */
+                debugShowVelocity: boolean;
+
+                /**
+                 * The color of this Body on the debug display.
+                 */
+                debugBodyColor: integer;
+
+                /**
+                 * Whether this Body is updated by the physics simulation.
+                 */
+                enable: boolean;
+
+                /**
+                 * Whether this Body's boundary is circular (true) or rectangular (false).
+                 */
+                isCircle: boolean;
+
+                /**
+                 * If this Body is circular, this is the unscaled radius of the Body's boundary, as set by setCircle(), in source pixels.
+                 * The true radius is equal to `halfWidth`.
+                 */
+                radius: number;
+
+                /**
+                 * The offset of this Body's position from its Game Object's position, in source pixels.
+                 */
+                offset: Phaser.Math.Vector2;
+
+                /**
+                 * The position of this Body within the simulation.
+                 */
+                position: Phaser.Math.Vector2;
+
+                /**
+                 * The position of this Body during the previous step.
+                 */
+                prev: Phaser.Math.Vector2;
+
+                /**
+                 * Whether this Body's `rotation` is affected by its angular acceleration and angular velocity.
+                 */
+                allowRotation: boolean;
+
+                /**
+                 * This body's rotation, in degrees, based on its angular acceleration and angular velocity.
+                 * The Body's rotation controls the `angle` of its Game Object.
+                 * It doesn't rotate the Body's boundary, which is always an axis-aligned rectangle or a circle.
+                 */
+                rotation: number;
+
+                /**
+                 * The Body's rotation, in degrees, during the previous step.
+                 */
+                preRotation: number;
+
+                /**
+                 * The width of the Body's boundary, in pixels.
+                 * If the Body is circular, this is also the Body's diameter.
+                 */
+                width: number;
+
+                /**
+                 * The height of the Body's boundary, in pixels.
+                 * If the Body is circular, this is also the Body's diameter.
+                 */
+                height: number;
+
+                /**
+                 * The unscaled width of the Body, in source pixels, as set by setSize().
+                 * The default is the width of the Body's Game Object's texture frame.
+                 */
+                sourceWidth: number;
+
+                /**
+                 * The unscaled height of the Body, in source pixels, as set by setSize().
+                 * The default is the height of the Body's Game Object's texture frame.
+                 */
+                sourceHeight: number;
+
+                /**
+                 * Half the Body's width, in pixels.
+                 */
+                halfWidth: number;
+
+                /**
+                 * Half the Body's height, in pixels.
+                 */
+                halfHeight: number;
+
+                /**
+                 * The center of the Body's boundary.
+                 * The midpoint of its `position` (top-left corner) and its bottom-right corner.
+                 */
+                center: Phaser.Math.Vector2;
+
+                /**
+                 * The Body's velocity, in pixels per second.
+                 */
+                velocity: Phaser.Math.Vector2;
+
+                /**
+                 * The Body's calculated velocity, in pixels per second, at the last step.
+                 */
+                readonly newVelocity: Phaser.Math.Vector2;
+
+                /**
+                 * The Body's absolute maximum change in position, in pixels per step.
+                 */
+                deltaMax: Phaser.Math.Vector2;
+
+                /**
+                 * The Body's change in velocity, in pixels per second squared.
+                 */
+                acceleration: Phaser.Math.Vector2;
+
+                /**
+                 * Whether this Body's velocity is affected by its `drag`.
+                 */
+                allowDrag: boolean;
+
+                /**
+                 * Absolute loss of velocity due to movement, in pixels per second squared.
+                 * The x and y components are applied separately.
+                 *
+                 * When `useDamping` is true, this is 1 minus the damping factor.
+                 * A value of 1 means the Body loses no velocity.
+                 * A value of 0.95 means the Body loses 5% of its velocity per step.
+                 * A value of 0.5 means the Body loses 50% of its velocity per step.
+                 *
+                 * Drag is applied only when `acceleration` is zero.
+                 */
+                drag: Phaser.Math.Vector2 | number;
+
+                /**
+                 * Whether this Body's position is affected by gravity (local or world).
+                 */
+                allowGravity: boolean;
+
+                /**
+                 * Acceleration due to gravity (specific to this Body), in pixels per second squared.
+                 * Total gravity is the sum of this vector and the simulation's `gravity`.
+                 */
+                gravity: Phaser.Math.Vector2;
+
+                /**
+                 * Rebound following a collision, relative to 1.
+                 */
+                bounce: Phaser.Math.Vector2;
+
+                /**
+                 * Rebound following a collision with the world boundary, relative to 1.
+                 * If null, `bounce` is used instead.
+                 */
+                worldBounce: Phaser.Math.Vector2;
+
+                /**
+                 * Whether the simulation emits a `worldbounds` event when this Body collides with the world boundary (and `collideWorldBounds` is also true).
+                 */
+                onWorldBounds: boolean;
+
+                /**
+                 * Whether the simulation emits a `collide` event when this Body collides with another.
+                 */
+                onCollide: boolean;
+
+                /**
+                 * Whether the simulation emits an `overlap` event when this Body overlaps with another.
+                 */
+                onOverlap: boolean;
+
+                /**
+                 * The Body's absolute maximum velocity, in pixels per second.
+                 * The horizontal and vertical components are applied separately.
+                 */
+                maxVelocity: Phaser.Math.Vector2;
+
+                /**
+                 * The maximum speed this Body is allowed to reach.
+                 *
+                 * If not negative it limits the scalar value of speed.
+                 *
+                 * Any negative value means no maximum is being applied.
+                 */
+                maxSpeed: number;
+
+                /**
+                 * If this Body is `immovable` and in motion, `friction` is the proportion of this Body's motion received by the riding Body on each axis, relative to 1.
+                 * The default value (1, 0) moves the riding Body horizontally in equal proportion to this Body and vertically not at all.
+                 * The horizontal component (x) is applied only when two colliding Bodies are separated vertically.
+                 * The vertical component (y) is applied only when two colliding Bodies are separated horizontally.
+                 */
+                friction: Phaser.Math.Vector2;
+
+                /**
+                 * If this Body is using `drag` for deceleration this property controls how the drag is applied.
+                 * If set to `true` drag will use a damping effect rather than a linear approach. If you are
+                 * creating a game where the Body moves freely at any angle (i.e. like the way the ship moves in
+                 * the game Asteroids) then you will get a far smoother and more visually correct deceleration
+                 * by using damping, avoiding the axis-drift that is prone with linear deceleration.
+                 *
+                 * If you enable this property then you should use far smaller `drag` values than with linear, as
+                 * they are used as a multiplier on the velocity. Values such as 0.95 will give a nice slow
+                 * deceleration, where-as smaller values, such as 0.5 will stop an object almost immediately.
+                 */
+                useDamping: boolean;
+
+                /**
+                 * The rate of change of this Body's `rotation`, in degrees per second.
+                 */
+                angularVelocity: number;
+
+                /**
+                 * The Body's angular acceleration (change in angular velocity), in degrees per second squared.
+                 */
+                angularAcceleration: number;
+
+                /**
+                 * Loss of angular velocity due to angular movement, in degrees per second.
+                 *
+                 * Angular drag is applied only when angular acceleration is zero.
+                 */
+                angularDrag: number;
+
+                /**
+                 * The Body's maximum angular velocity, in degrees per second.
+                 */
+                maxAngular: number;
+
+                /**
+                 * The Body's inertia, relative to a default unit (1).
+                 * With `bounce`, this affects the exchange of momentum (velocities) during collisions.
+                 */
+                mass: number;
+
+                /**
+                 * The calculated angle of this Body's velocity vector, in degrees, during the last step.
+                 */
+                angle: number;
+
+                /**
+                 * The calculated magnitude of the Body's velocity, in pixels per second, during the last step.
+                 */
+                speed: number;
+
+                /**
+                 * The direction of the Body's velocity, as calculated during the last step.
+                 * If the Body is moving on both axes (diagonally), this describes motion on the vertical axis only.
+                 */
+                facing: integer;
+
+                /**
+                 * Whether this Body can be moved by collisions with another Body.
+                 */
+                immovable: boolean;
+
+                /**
+                 * Whether the Body's position and rotation are affected by its velocity, acceleration, drag, and gravity.
+                 */
+                moves: boolean;
+
+                /**
+                 * A flag disabling the default horizontal separation of colliding bodies.
+                 * Pass your own `collideCallback` to the collider.
+                 */
+                customSeparateX: boolean;
+
+                /**
+                 * A flag disabling the default vertical separation of colliding bodies.
+                 * Pass your own `collideCallback` to the collider.
+                 */
+                customSeparateY: boolean;
+
+                /**
+                 * The amount of horizontal overlap (before separation), if this Body is colliding with another.
+                 */
+                overlapX: number;
+
+                /**
+                 * The amount of vertical overlap (before separation), if this Body is colliding with another.
+                 */
+                overlapY: number;
+
+                /**
+                 * The amount of overlap (before separation), if this Body is circular and colliding with another circular body.
+                 */
+                overlapR: number;
+
+                /**
+                 * Whether this Body is overlapped with another and both are not moving.
+                 */
+                embedded: boolean;
+
+                /**
+                 * Whether this Body interacts with the world boundary.
+                 */
+                collideWorldBounds: boolean;
+
+                /**
+                 * Whether this Body is checked for collisions and for which directions.
+                 * You can set `checkCollision.none = true` to disable collision checks.
+                 */
+                checkCollision: ArcadeBodyCollision;
+
+                /**
+                 * Whether this Body is colliding with another and in which direction.
+                 */
+                touching: ArcadeBodyCollision;
+
+                /**
+                 * Whether this Body was colliding with another during the last step, and in which direction.
+                 */
+                wasTouching: ArcadeBodyCollision;
+
+                /**
+                 * Whether this Body is colliding with a tile or the world boundary.
+                 */
+                blocked: ArcadeBodyCollision;
+
+                /**
+                 * Whether to automatically synchronize this Body's dimensions to the dimensions of its Game Object's visual bounds.
+                 */
+                syncBounds: boolean;
+
+                /**
+                 * Whether this Body is being moved by the `moveTo` or `moveFrom` methods.
+                 */
+                isMoving: boolean;
+
+                /**
+                 * Whether this Body's movement by `moveTo` or `moveFrom` will be stopped by collisions with other bodies.
+                 */
+                stopVelocityOnCollide: boolean;
+
+                /**
+                 * The Body's physics type (dynamic or static).
+                 */
+                readonly physicsType: integer;
+
+                /**
+                 * Updates the Body's `transform`, `width`, `height`, and `center` from its Game Object.
+                 * The Body's `position` isn't changed.
+                 */
+                updateBounds(): void;
+
+                /**
+                 * Updates the Body's `center` from its `position`, `width`, and `height`.
+                 */
+                updateCenter(): void;
+
+                /**
+                 * Updates the Body.
+                 * @param delta The delta time, in seconds, elapsed since the last frame.
+                 */
+                update(delta: number): void;
+
+                /**
+                 * Feeds the Body results back into the parent Game Object.
+                 * @param resetDelta Reset the delta properties?
+                 */
+                postUpdate(resetDelta: boolean): void;
+
+                /**
+                 * Checks for collisions between this Body and the world boundary and separates them.
+                 */
+                checkWorldBounds(): boolean;
+
+                /**
+                 * Sets the offset of the Body's position from its Game Object's position.
+                 * @param x The horizontal offset, in source pixels.
+                 * @param y The vertical offset, in source pixels. Default x.
+                 */
+                setOffset(x: number, y?: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sizes and positions this Body's boundary, as a rectangle.
+                 * Modifies the Body `offset` if `center` is true (the default).
+                 * Resets the width and height to match current frame, if no width and height provided and a frame is found.
+                 * @param width The width of the Body in pixels. Cannot be zero. If not given, and the parent Game Object has a frame, it will use the frame width.
+                 * @param height The height of the Body in pixels. Cannot be zero. If not given, and the parent Game Object has a frame, it will use the frame height.
+                 * @param center Modify the Body's `offset`, placing the Body's center on its Game Object's center. Only works if the Game Object has the `getCenter` method. Default true.
+                 */
+                setSize(width?: integer, height?: integer, center?: boolean): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sizes and positions this Body's boundary, as a circle.
+                 * @param radius The radius of the Body, in source pixels.
+                 * @param offsetX The horizontal offset of the Body from its Game Object, in source pixels.
+                 * @param offsetY The vertical offset of the Body from its Game Object, in source pixels.
+                 */
+                setCircle(radius: number, offsetX?: number, offsetY?: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Resets this Body to the given coordinates. Also positions its parent Game Object to the same coordinates.
+                 * If the Body had any velocity or acceleration it is lost as a result of calling this.
+                 * @param x The horizontal position to place the Game Object and Body.
+                 * @param y The vertical position to place the Game Object and Body.
+                 */
+                reset(x: number, y: number): void;
+
+                /**
+                 * Sets acceleration, velocity, and speed to zero.
+                 */
+                stop(): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Copies the coordinates of this Body's edges into an object.
+                 * @param obj An object to copy the values into.
+                 */
+                getBounds(obj: ArcadeBodyBounds): ArcadeBodyBounds;
+
+                /**
+                 * Tests if the coordinates are within this Body's boundary.
+                 * @param x The horizontal coordinate.
+                 * @param y The vertical coordinate.
+                 */
+                hitTest(x: number, y: number): boolean;
+
+                /**
+                 * Whether this Body is touching a tile or the world boundary while moving down.
+                 */
+                onFloor(): boolean;
+
+                /**
+                 * Whether this Body is touching a tile or the world boundary while moving up.
+                 */
+                onCeiling(): boolean;
+
+                /**
+                 * Whether this Body is touching a tile or the world boundary while moving left or right.
+                 */
+                onWall(): boolean;
+
+                /**
+                 * The absolute (non-negative) change in this Body's horizontal position from the previous step.
+                 */
+                deltaAbsX(): number;
+
+                /**
+                 * The absolute (non-negative) change in this Body's vertical position from the previous step.
+                 */
+                deltaAbsY(): number;
+
+                /**
+                 * The change in this Body's horizontal position from the previous step.
+                 * This value is set during the Body's update phase.
+                 */
+                deltaX(): number;
+
+                /**
+                 * The change in this Body's vertical position from the previous step.
+                 * This value is set during the Body's update phase.
+                 */
+                deltaY(): number;
+
+                /**
+                 * The change in this Body's rotation from the previous step, in degrees.
+                 */
+                deltaZ(): number;
+
+                /**
+                 * Disables this Body and marks it for deletion by the simulation.
+                 */
+                destroy(): void;
+
+                /**
+                 * Draws this Body's boundary and velocity, if enabled.
+                 * @param graphic The Graphics object to draw on.
+                 */
+                drawDebug(graphic: Phaser.GameObjects.Graphics): void;
+
+                /**
+                 * Whether this Body will be drawn to the debug display.
+                 */
+                willDrawDebug(): boolean;
+
+                /**
+                 * Sets whether this Body collides with the world boundary.
+                 * @param value True (collisions) or false (no collisions). Default true.
+                 */
+                setCollideWorldBounds(value?: boolean): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the Body's velocity.
+                 * @param x The horizontal velocity, in pixels per second.
+                 * @param y The vertical velocity, in pixels per second. Default x.
+                 */
+                setVelocity(x: number, y?: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the Body's horizontal velocity.
+                 * @param value The velocity, in pixels per second.
+                 */
+                setVelocityX(value: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the Body's vertical velocity.
+                 * @param value The velocity, in pixels per second.
+                 */
+                setVelocityY(value: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the Body's maximum velocity.
+                 * @param x The horizontal velocity, in pixels per second.
+                 * @param y The vertical velocity, in pixels per second. Default x.
+                 */
+                setMaxVelocity(x: number, y?: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the maximum speed the Body can move.
+                 * @param value The maximum speed value, in pixels per second. Set to a negative value to disable.
+                 */
+                setMaxSpeed(value: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the Body's bounce.
+                 * @param x The horizontal bounce, relative to 1.
+                 * @param y The vertical bounce, relative to 1.
+                 */
+                setBounce(x: number, y: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the Body's horizontal bounce.
+                 * @param value The bounce, relative to 1.
+                 */
+                setBounceX(value: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the Body's vertical bounce.
+                 * @param value The bounce, relative to 1.
+                 */
+                setBounceY(value: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the Body's acceleration.
+                 * @param x The horizontal component, in pixels per second squared.
+                 * @param y The vertical component, in pixels per second squared.
+                 */
+                setAcceleration(x: number, y: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the Body's horizontal acceleration.
+                 * @param value The acceleration, in pixels per second squared.
+                 */
+                setAccelerationX(value: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the Body's vertical acceleration.
+                 * @param value The acceleration, in pixels per second squared.
+                 */
+                setAccelerationY(value: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Enables or disables drag.
+                 * @param value `true` to allow drag on this body, or `false` to disable it. Default true.
+                 */
+                setAllowDrag(value?: boolean): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Enables or disables gravity's effect on this Body.
+                 * @param value `true` to allow gravity on this body, or `false` to disable it. Default true.
+                 */
+                setAllowGravity(value?: boolean): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Enables or disables rotation.
+                 * @param value `true` to allow rotation on this body, or `false` to disable it. Default true.
+                 */
+                setAllowRotation(value?: boolean): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the Body's drag.
+                 * @param x The horizontal component, in pixels per second squared.
+                 * @param y The vertical component, in pixels per second squared.
+                 */
+                setDrag(x: number, y: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the Body's horizontal drag.
+                 * @param value The drag, in pixels per second squared.
+                 */
+                setDragX(value: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the Body's vertical drag.
+                 * @param value The drag, in pixels per second squared.
+                 */
+                setDragY(value: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the Body's gravity.
+                 * @param x The horizontal component, in pixels per second squared.
+                 * @param y The vertical component, in pixels per second squared.
+                 */
+                setGravity(x: number, y: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the Body's horizontal gravity.
+                 * @param value The gravity, in pixels per second squared.
+                 */
+                setGravityX(value: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the Body's vertical gravity.
+                 * @param value The gravity, in pixels per second squared.
+                 */
+                setGravityY(value: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the Body's friction.
+                 * @param x The horizontal component, relative to 1.
+                 * @param y The vertical component, relative to 1.
+                 */
+                setFriction(x: number, y: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the Body's horizontal friction.
+                 * @param value The friction value, relative to 1.
+                 */
+                setFrictionX(value: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the Body's vertical friction.
+                 * @param value The friction value, relative to 1.
+                 */
+                setFrictionY(value: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the Body's angular velocity.
+                 * @param value The velocity, in degrees per second.
+                 */
+                setAngularVelocity(value: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the Body's angular acceleration.
+                 * @param value The acceleration, in degrees per second squared.
+                 */
+                setAngularAcceleration(value: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the Body's angular drag.
+                 * @param value The drag, in degrees per second squared.
+                 */
+                setAngularDrag(value: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the Body's mass.
+                 * @param value The mass value, relative to 1.
+                 */
+                setMass(value: number): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the Body's `immovable` property.
+                 * @param value The value to assign to `immovable`. Default true.
+                 */
+                setImmovable(value?: boolean): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * Sets the Body's `enable` property.
+                 * @param value The value to assign to `enable`. Default true.
+                 */
+                setEnable(value?: boolean): Phaser.Physics.Arcade.Body;
+
+                /**
+                 * The Body's horizontal position (left edge).
+                 */
+                x: number;
+
+                /**
+                 * The Body's vertical position (top edge).
+                 */
+                y: number;
+
+                /**
+                 * The left edge of the Body's boundary. Identical to x.
+                 */
+                readonly left: number;
+
+                /**
+                 * The right edge of the Body's boundary.
+                 */
+                readonly right: number;
+
+                /**
+                 * The top edge of the Body's boundary. Identical to y.
+                 */
+                readonly top: number;
+
+                /**
+                 * The bottom edge of this Body's boundary.
+                 */
+                readonly bottom: number;
+
+            }
+
+
             namespace Components {
                 /**
                  * A component to set restitution on objects.
@@ -58245,6 +58976,8 @@ declare namespace Phaser {
                  * [description]
                  */
                 world: Phaser.Physics.Matter.World;
+
+                body: Phaser.Physics.Matter.Body;
 
                 /**
                  * Clears all alpha values associated with this Game Object.
