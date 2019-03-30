@@ -3,7 +3,6 @@ import {Sword} from "./sword";
 export class Player {
   physics: Phaser.Physics.Matter.Image;
   private cursors: Phaser.Input.Keyboard.CursorKeys;
-  private sword: Sword;
   private walkingSpeed = 2.5;
 
   private isAttacking = false;
@@ -19,10 +18,11 @@ export class Player {
       radius: 24
     }, {});
 
+    // this.physics.centerOfMass
+
     this.cursors = scene.input.keyboard.createCursorKeys();
 
 
-    // this.sword = new Sword(scene, x, y);
   }
 
   update(): void {

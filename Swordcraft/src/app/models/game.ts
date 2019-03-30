@@ -15,11 +15,14 @@ const config: GameConfig = {
     physics: {
         default: 'matter',
         matter: {
-            debug: true,
             gravity: {
                 x: 0,
                 y: 0
-            }
+            },
+            debug: true,
+            showAngleIndicator: true,
+            showCollisions: true,
+            showVelocity: true
         }
     },
     parent: 'game',
