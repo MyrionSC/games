@@ -2,15 +2,17 @@ import {Sword} from "./sword";
 
 export class Player {
   physics: Phaser.Physics.Matter.Image;
+  sword: Sword;
+  private swordConstraint: any;
   private cursors: Phaser.Input.Keyboard.CursorKeys;
   private walkingSpeed = 2.5;
+  private scene: Phaser.Scene;
 
   private isAttacking = false;
-  private swingSpeed = 6;
-  private swingProgress = 0;
-  private endSwing = 210;
+  private attackCounter = 0;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
+    this.scene = scene;
     this.physics = scene.matter.add.image(x, y, 'player');
     this.physics.setScale(0.15);
     this.physics.setBody({
@@ -18,29 +20,73 @@ export class Player {
       radius: 24
     }, {});
 
-    // this.physics.centerOfMass
-
     this.cursors = scene.input.keyboard.createCursorKeys();
-
-
   }
 
   update(): void {
-    // if (this.isAttacking) {
-    //   this.sword.angle -= this.swingSpeed;
-    //   this.swingProgress += this.swingSpeed;
-    //   if (this.swingProgress >= this.endSwing) {
-    //     this.sword.setAngle(this.angle + this.sword.originAngle);
-    //     this.swingProgress = 0;
-    //     this.isAttacking = false;
-    //   }
-    // } else {
+    if (this.isAttacking) {
+      this.attackCounter++;
+      console.log(this.attackCounter);
+
+
+
+      if (this.attackCounter === 10) {
+        this.physics.setStatic(true);
+        this.sword.physics.setAngle(130);
+      } else if (this.attackCounter === 20) {
+        this.physics.setStatic(false);
+      }
+      //   // @ts-ignore
+      //   this.swordConstraint = new Phaser.Physics.Matter.Matter.Constraint.create({
+      //     bodyB: this.physics.body,
+      //     pointA: { x: 0, y: 90 },
+      //     bodyA: this.sword.physics.body,
+      //     stiffness: 0.5,
+      //     length: 0
+      //   });
+      //   this.scene.matter.world.add(this.swordConstraint);
+      //
+      // } else if (this.attackCounter === 10) {
+      //   // this.sword.physics.setAngularVelocity(-1);
+      // } else
+
+      if (this.attackCounter >= 90) {
+        console.log("comeon");
+        this.endAttack();
+      }
+
+    } else {
       this.handleInput();
-    // }
+    }
   }
 
   startAttack(): void {
     this.isAttacking = true;
+
+    this.sword = new Sword(this.scene, this.physics.x, this.physics.y, this);
+
+    const group = this.scene.matter.world.nextGroup(true);
+    this.physics.setCollisionGroup(group);
+    this.sword.physics.setCollisionGroup(group);
+
+    // @ts-ignore
+    this.swordConstraint = new Phaser.Physics.Matter.Matter.Constraint.create({
+      bodyB: this.physics.body,
+      pointA: { x: 0, y: 90 },
+      bodyA: this.sword.physics.body,
+      stiffness: 0.5,
+      length: 0
+    });
+    this.scene.matter.world.add(this.swordConstraint);
+  }
+
+  endAttack(): void {
+    this.isAttacking = false;
+    this.attackCounter = 0;
+
+    this.sword.physics.visible = false;
+    this.scene.matter.world.remove(this.sword.physics, true);
+    this.scene.matter.world.removeConstraint(this.swordConstraint, true);
   }
 
   private handleInput(): void {
@@ -69,20 +115,16 @@ export class Player {
     if (this.anyCursorsDown()) {
       if (this.cursors.right.isDown) {
         this.physics.setVelocityX(this.walkingSpeed);
-        // this.sword.x += this.walkingSpeed;
       } else if (this.cursors.left.isDown) {
         this.physics.setVelocityX(-this.walkingSpeed);
-        // this.sword.x -= this.walkingSpeed;
       } else {
         this.physics.setVelocityX(0);
       }
 
       if (this.cursors.up.isDown) {
         this.physics.setVelocityY(-this.walkingSpeed);
-        // this.sword.y -= this.walkingSpeed;
       } else if (this.cursors.down.isDown) {
         this.physics.setVelocityY(this.walkingSpeed);
-        // this.sword.y += this.walkingSpeed;
       } else {
         this.physics.setVelocityY(0);
       }
@@ -90,11 +132,6 @@ export class Player {
       this.physics.setVelocity(0);
     }
   }
-  //
-  // updateAngle(angle: number): void {
-  //   this.setAngle(angle);
-  //   this.sword.setAngle(this.sword.originAngle + angle);
-  // }
 
   private anyCursorsDown() {
     return this.cursors.right.isDown ||

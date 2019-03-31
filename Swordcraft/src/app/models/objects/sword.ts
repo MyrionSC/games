@@ -7,10 +7,10 @@ export class Sword {
   constructor(scene: Phaser.Scene, x: number, y: number, player: Player) {
     this.physics = scene.matter.add.image(x, y, 'sword');
     this.physics.setScale(0.30);
-    this.physics.setAngle(this.originAngle);
+    // this.physics.setAngle(this.originAngle);
 
     // this.physics.visible = false;
-    console.log(this.physics.centerOfMass);
+    // console.log(this.physics.centerOfMass);
     // this.physics.body.offset = new Phaser.Math.Vector2(200, 200);
 
     // this.physics.body.center = new Phaser.Math.Vector2(200, 200);

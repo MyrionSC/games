@@ -1,21 +1,15 @@
 import {Player} from '../objects/player';
 import {Biter} from "../objects/biter";
-import {Sword} from "../objects/sword";
 
 export class GameScene extends Phaser.Scene {
     private background: Phaser.GameObjects.TileSprite;
     private player: Player;
     private biter: Biter;
-    private sword: Sword;
 
     private counter = 1;
 
-    private globals = {};
-
     private debug = true;
     private debugText: Phaser.GameObjects.Text;
-
-    // https://labs.phaser.io/index.html?dir=physics/matterjs/&q=
 
     constructor() {
         super({
@@ -39,13 +33,6 @@ export class GameScene extends Phaser.Scene {
         this.matter.world.setBounds();
 
         this.player = new Player(this, 500, 500);
-        this.sword = new Sword(this, 600, 500, null);
-
-        const group = this.matter.world.nextGroup(true);
-        this.player.physics.setCollisionGroup(group);
-        this.sword.physics.setCollisionGroup(group);
-
-        this.matter.add.constraint(this.player.physics, this.sword.physics, 100, 0);
 
 
 
@@ -68,13 +55,24 @@ export class GameScene extends Phaser.Scene {
         this.input.keyboard.on('keydown', (event) => {
             // my keyboard ghosts combination: UpArrow + LeftArrow + Space, which makes space as attack annoying
             if (event.key === "q") {
-                this.sword.physics.setAngularVelocity(this.sword.physics.body.angularVelocity - 0.1);
+                this.player.startAttack();
+
+                // this.player.physics.setDensity(0.01);
+                // this.sword.physics.setDensity(0.01);
+                // this.sword.physics.setAngle(130);
+                // this.sword.physics.setAngularVelocity(-0.5);
+                // this.player.physics.setStatic(true);
+                // this.player.physics.setDensity(10000);
+                // this.player.physics.setDensity(0.001);
+                // this.sword.physics.setAngle(this.player.physics.angle + 130);
+                // this.sword.physics.setAngularVelocity(-0.5);
+                // this.sword.physics.setAngularVelocity(this.sword.physics.body.angularVelocity - 0.1);
                 // this.sword.physics.body.acceleration = new Phaser.Math.Vector2(200, 200);
                 // this.sword.physics.body.setAcceleration(0, 2);
                 // this.sword.physics.setVelocity(0, -2);
             }
             if (event.key === "e") {
-                this.sword.physics.setAngularVelocity(this.sword.physics.body.angularVelocity + 0.1);
+                this.player.sword.physics.setAngularVelocity(this.player.sword.physics.body.angularVelocity + 0.1);
                 // this.player.startAttack();
             }
         });
@@ -88,7 +86,6 @@ export class GameScene extends Phaser.Scene {
 
     update(): void {
         this.player.update();
-        // this.sword.update();
 
         if (this.debug) {
             if (this.game.input.mousePointer.isDown) {
@@ -96,7 +93,6 @@ export class GameScene extends Phaser.Scene {
                 console.log("y: " + this.game.input.mousePointer.y);
             }
         }
-
 
         if (this.debug) {
             this.debugText.text = this.getDebugText();
@@ -106,7 +102,9 @@ export class GameScene extends Phaser.Scene {
     }
 
     private getDebugText(): string {
-        return this.sword.physics.body.angularVelocity + "";
+        if (this.player.sword) {
+            return this.player.sword.physics.body.angularVelocity + "";
+        }
         // return "clustersize: " + String(this.globals.enemyClusterSize) + "\nsomething";
     }
 }
