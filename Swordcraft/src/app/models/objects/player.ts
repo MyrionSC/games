@@ -1,4 +1,5 @@
 import {Sword} from "./sword";
+import Vector2 = Phaser.Math.Vector2;
 
 export class Player {
   physics: Phaser.Physics.Matter.Image;
@@ -10,6 +11,9 @@ export class Player {
 
   private isAttacking = false;
   private attackCounter = 0;
+
+  private debugPoint1: Phaser.GameObjects.Arc;
+  private debugPoint4: Phaser.GameObjects.Arc;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     this.scene = scene;
@@ -26,33 +30,51 @@ export class Player {
   update(): void {
     if (this.isAttacking) {
       this.attackCounter++;
-      console.log(this.attackCounter);
+      // console.log(this.attackCounter);
 
+      if (this.attackCounter > 5 && this.attackCounter < 80) {
 
-
-      if (this.attackCounter === 10) {
-        this.physics.setStatic(true);
-        // this.sword.physics.setAngle(130);
-      } else if (this.attackCounter === 20) {
-        // this.physics.setStatic(false);
+        // console.log(this.sword.physics.body);
+        // console.log(this.sword.physics.body.angle);
+        this.sword.physics.applyForce(new Vector2(0, -0.001));
       }
-      //   // @ts-ignore
-      //   this.swordConstraint = new Phaser.Physics.Matter.Matter.Constraint.create({
-      //     bodyB: this.physics.body,
-      //     pointA: { x: 0, y: 90 },
-      //     bodyA: this.sword.physics.body,
-      //     stiffness: 0.5,
-      //     length: 0
-      //   });
-      //   this.scene.matter.world.add(this.swordConstraint);
-      //
-      // } else if (this.attackCounter === 10) {
-      //   // this.sword.physics.setAngularVelocity(-1);
-      // } else
 
-      if (this.attackCounter >= 90) {
-        console.log("comeon");
+      if (this.attackCounter % 2 === 0) {
+        // @ts-ignore
+        // console.log(Object.assign({}, this.sword.physics.body.vertices[1].x));
+
+
+        // @ts-ignore
+        let v = new Phaser.Math.Vector2(
+            // @ts-ignore
+            this.sword.physics.body.vertices[3].x - this.sword.physics.body.vertices[0].x,
+            // @ts-ignore
+            this.sword.physics.body.vertices[3].y - this.sword.physics.body.vertices[0].y
+        );
+
+        // v = new Phaser.Math.Vector2(-v.x, v.y);
+
+        // x' = -(y - py) + px
+        // y' = (x - px) + py
+
+        console.log(v);
+
+
+        // @ts-ignore
+        this.debugPoint1.setPosition(this.sword.physics.body.vertices[3].x, this.sword.physics.body.vertices[3].y);
+        // @ts-ignore
+        this.debugPoint4.setPosition(this.sword.physics.body.vertices[3].x - v.x,
+            // @ts-ignore
+            this.sword.physics.body.vertices[3].y - v.y);
+
+
+        console.log("-");
+      }
+
+      if (this.attackCounter >= 360) {
+        console.log(this.sword.physics.body);
         this.physics.setStatic(false);
+        console.log(this.scene.game);
 
         this.endAttack();
       }
@@ -82,6 +104,11 @@ export class Player {
       length: 0
     });
     this.scene.matter.world.add(this.swordConstraint);
+
+    this.sword.physics.setAngle(130);
+
+    this.debugPoint1 = this.scene.add.circle(100, 100, 5, 0x000000);
+    this.debugPoint4 = this.scene.add.circle(100, 100, 5, 0x555555);
   }
 
   endAttack(): void {

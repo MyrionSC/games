@@ -56,20 +56,6 @@ export class GameScene extends Phaser.Scene {
             // my keyboard ghosts combination: UpArrow + LeftArrow + Space, which makes space as attack annoying
             if (event.key === "q") {
                 this.player.startAttack();
-
-                // this.player.physics.setDensity(0.01);
-                // this.sword.physics.setDensity(0.01);
-                // this.sword.physics.setAngle(130);
-                // this.sword.physics.setAngularVelocity(-0.5);
-                // this.player.physics.setStatic(true);
-                // this.player.physics.setDensity(10000);
-                // this.player.physics.setDensity(0.001);
-                // this.sword.physics.setAngle(this.player.physics.angle + 130);
-                // this.sword.physics.setAngularVelocity(-0.5);
-                // this.sword.physics.setAngularVelocity(this.sword.physics.body.angularVelocity - 0.1);
-                // this.sword.physics.body.acceleration = new Phaser.Math.Vector2(200, 200);
-                // this.sword.physics.body.setAcceleration(0, 2);
-                // this.sword.physics.setVelocity(0, -2);
             }
             if (event.key === "e") {
                 this.player.sword.physics.setAngularVelocity(this.player.sword.physics.body.angularVelocity + 0.1);
@@ -103,7 +89,12 @@ export class GameScene extends Phaser.Scene {
 
     private getDebugText(): string {
         if (this.player.sword) {
-            return this.player.sword.physics.body.angularVelocity + "";
+            return this.player.sword.physics.body.angularVelocity + "\n" +
+                // @ts-ignore
+                this.player.sword.physics.body.torque + "\n" +
+            // @ts-ignore
+                this.player.sword.physics.body.angularSpeed + "\n" + ""
+                ;
         }
         // return "clustersize: " + String(this.globals.enemyClusterSize) + "\nsomething";
     }
