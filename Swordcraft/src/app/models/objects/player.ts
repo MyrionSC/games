@@ -32,9 +32,9 @@ export class Player {
 
       if (this.attackCounter === 10) {
         this.physics.setStatic(true);
-        this.sword.physics.setAngle(130);
+        // this.sword.physics.setAngle(130);
       } else if (this.attackCounter === 20) {
-        this.physics.setStatic(false);
+        // this.physics.setStatic(false);
       }
       //   // @ts-ignore
       //   this.swordConstraint = new Phaser.Physics.Matter.Matter.Constraint.create({
@@ -52,6 +52,8 @@ export class Player {
 
       if (this.attackCounter >= 90) {
         console.log("comeon");
+        this.physics.setStatic(false);
+
         this.endAttack();
       }
 
@@ -62,6 +64,8 @@ export class Player {
 
   startAttack(): void {
     this.isAttacking = true;
+
+    this.physics.setStatic(true);
 
     this.sword = new Sword(this.scene, this.physics.x, this.physics.y, this);
 
