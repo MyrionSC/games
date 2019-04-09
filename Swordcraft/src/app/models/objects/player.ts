@@ -12,8 +12,10 @@ export class Player {
   private isAttacking = false;
   private attackCounter = 0;
 
-  private debugPoint1: Phaser.GameObjects.Arc;
-  private debugPoint4: Phaser.GameObjects.Arc;
+  // private debugPoint1: Phaser.GameObjects.Arc;
+  // private debugPoint4: Phaser.GameObjects.Arc;
+  // private debugPointSword1: Phaser.GameObjects.Arc;
+  // private debugPointSword2: Phaser.GameObjects.Arc;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     this.scene = scene;
@@ -32,46 +34,51 @@ export class Player {
       this.attackCounter++;
       // console.log(this.attackCounter);
 
-      if (this.attackCounter > 5 && this.attackCounter < 80) {
-
-        // console.log(this.sword.physics.body);
-        // console.log(this.sword.physics.body.angle);
+      if (this.attackCounter > 2 && this.attackCounter < 80) {
         this.sword.physics.applyForce(new Vector2(0, -0.001));
-      }
-
-      if (this.attackCounter % 2 === 0) {
-        // @ts-ignore
-        // console.log(Object.assign({}, this.sword.physics.body.vertices[1].x));
 
 
         // @ts-ignore
-        let v = new Phaser.Math.Vector2(
+        const swordVector = new Phaser.Math.Vector2(
             // @ts-ignore
-            this.sword.physics.body.vertices[3].x - this.sword.physics.body.vertices[0].x,
+            (this.sword.physics.body.vertices[3].x - this.sword.physics.body.vertices[0].x) * -1,
             // @ts-ignore
-            this.sword.physics.body.vertices[3].y - this.sword.physics.body.vertices[0].y
+            // this.sword.physics.body.vertices[3].y - this.sword.physics.body.vertices[0].y
+            (this.sword.physics.body.vertices[3].y - this.sword.physics.body.vertices[0].y) * -1
         );
 
-        // v = new Phaser.Math.Vector2(-v.x, v.y);
-
-        // x' = -(y - py) + px
-        // y' = (x - px) + py
-
-        console.log(v);
-
+        // @ts-ignore
+        // this.debugPointSword1.setPosition(this.sword.physics.body.vertices[3].x, this.sword.physics.body.vertices[3].y);
+        // // @ts-ignore
+        // this.debugPointSword2.setPosition(this.sword.physics.body.vertices[3].x + swordVector.x,
+        //     // @ts-ignore
+        //     this.sword.physics.body.vertices[3].y + swordVector.y);
 
         // @ts-ignore
-        this.debugPoint1.setPosition(this.sword.physics.body.vertices[3].x, this.sword.physics.body.vertices[3].y);
-        // @ts-ignore
-        this.debugPoint4.setPosition(this.sword.physics.body.vertices[3].x - v.x,
+        let forceVector = new Phaser.Math.Vector2(
             // @ts-ignore
-            this.sword.physics.body.vertices[3].y - v.y);
+            swordVector.y,
+            // @ts-ignore
+            -1 * swordVector.x
+        );
+
+        forceVector = forceVector.normalize().scale(0.01);
 
 
-        console.log("-");
+        // @ts-ignore
+        // this.debugPoint1.setPosition(this.sword.physics.body.vertices[3].x + swordVector.x / 2
+        //     // @ts-ignore
+        //     , this.sword.physics.body.vertices[3].y + swordVector.y / 2);
+        // // @ts-ignore
+        // this.debugPoint4.setPosition(this.sword.physics.body.vertices[3].x + swordVector.x / 2 + forceVector.x,
+        //     // @ts-ignore
+        //     this.sword.physics.body.vertices[3].y + swordVector.y / 2 + forceVector.y);
+
+        this.sword.physics.applyForce(forceVector);
       }
 
-      if (this.attackCounter >= 360) {
+      if (this.attackCounter >= 60) {
+        console.log(this.sword.physics);
         console.log(this.sword.physics.body);
         this.physics.setStatic(false);
         console.log(this.scene.game);
@@ -107,8 +114,10 @@ export class Player {
 
     this.sword.physics.setAngle(130);
 
-    this.debugPoint1 = this.scene.add.circle(100, 100, 5, 0x000000);
-    this.debugPoint4 = this.scene.add.circle(100, 100, 5, 0x555555);
+    // this.debugPointSword1 = this.scene.add.circle(100, 100, 5, 0xff0000);
+    // this.debugPointSword2 = this.scene.add.circle(100, 100, 5, 0xaa0000);
+    // this.debugPoint1 = this.scene.add.circle(100, 100, 5, 0x000000);
+    // this.debugPoint4 = this.scene.add.circle(100, 100, 5, 0x555555);
   }
 
   endAttack(): void {
