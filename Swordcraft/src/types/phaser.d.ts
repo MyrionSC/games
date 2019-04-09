@@ -58134,6 +58134,8 @@ declare namespace Phaser {
                  */
                 readonly bottom: number;
 
+                vertices: Phaser.Math.Vector2[];
+
             }
 
 

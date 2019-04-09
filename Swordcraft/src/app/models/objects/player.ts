@@ -6,8 +6,14 @@ export class Player {
   sword: Sword;
   private swordConstraint: any;
   private cursors: Phaser.Input.Keyboard.CursorKeys;
-  private walkingSpeed = 2.5;
   private scene: Phaser.Scene;
+
+  private walkingSpeed = 2.5;
+  private swingForce = 0.015;
+  private swingTime = 60;
+  private attackTime = 80;
+
+  private startSwingAngle = 0;
 
   private isAttacking = false;
   private attackCounter = 0;
@@ -32,47 +38,18 @@ export class Player {
   update(): void {
     if (this.isAttacking) {
       this.attackCounter++;
-      // console.log(this.attackCounter);
 
-      if (this.attackCounter > 2 && this.attackCounter < 80) {
-        this.sword.physics.applyForce(new Vector2(0, -0.001));
-
-
-        // @ts-ignore
+      if (this.attackCounter > 2 && this.attackCounter < this.swingTime) {
         const swordVector = new Phaser.Math.Vector2(
-            // @ts-ignore
             (this.sword.physics.body.vertices[3].x - this.sword.physics.body.vertices[0].x) * -1,
-            // @ts-ignore
-            // this.sword.physics.body.vertices[3].y - this.sword.physics.body.vertices[0].y
             (this.sword.physics.body.vertices[3].y - this.sword.physics.body.vertices[0].y) * -1
         );
-
-        // @ts-ignore
-        // this.debugPointSword1.setPosition(this.sword.physics.body.vertices[3].x, this.sword.physics.body.vertices[3].y);
-        // // @ts-ignore
-        // this.debugPointSword2.setPosition(this.sword.physics.body.vertices[3].x + swordVector.x,
-        //     // @ts-ignore
-        //     this.sword.physics.body.vertices[3].y + swordVector.y);
-
-        // @ts-ignore
         let forceVector = new Phaser.Math.Vector2(
-            // @ts-ignore
             swordVector.y,
-            // @ts-ignore
             -1 * swordVector.x
         );
 
-        forceVector = forceVector.normalize().scale(0.01);
-
-
-        // @ts-ignore
-        // this.debugPoint1.setPosition(this.sword.physics.body.vertices[3].x + swordVector.x / 2
-        //     // @ts-ignore
-        //     , this.sword.physics.body.vertices[3].y + swordVector.y / 2);
-        // // @ts-ignore
-        // this.debugPoint4.setPosition(this.sword.physics.body.vertices[3].x + swordVector.x / 2 + forceVector.x,
-        //     // @ts-ignore
-        //     this.sword.physics.body.vertices[3].y + swordVector.y / 2 + forceVector.y);
+        forceVector = forceVector.normalize().scale(this.swingForce);
 
         this.sword.physics.applyForce(forceVector);
       }
@@ -96,6 +73,8 @@ export class Player {
 
     this.physics.setStatic(true);
 
+    console.log(this.physics.angle);
+
     this.sword = new Sword(this.scene, this.physics.x, this.physics.y, this);
 
     const group = this.scene.matter.world.nextGroup(true);
@@ -112,12 +91,7 @@ export class Player {
     });
     this.scene.matter.world.add(this.swordConstraint);
 
-    this.sword.physics.setAngle(130);
-
-    // this.debugPointSword1 = this.scene.add.circle(100, 100, 5, 0xff0000);
-    // this.debugPointSword2 = this.scene.add.circle(100, 100, 5, 0xaa0000);
-    // this.debugPoint1 = this.scene.add.circle(100, 100, 5, 0x000000);
-    // this.debugPoint4 = this.scene.add.circle(100, 100, 5, 0x555555);
+    this.sword.physics.setAngle(this.physics.angle + this.sword.originAngle);
   }
 
   endAttack(): void {
@@ -180,3 +154,27 @@ export class Player {
         this.cursors.down.isDown;
   }
 }
+
+
+
+
+// this.debugPointSword1.setPosition(this.sword.physics.body.vertices[3].x, this.sword.physics.body.vertices[3].y);
+// this.debugPointSword2.setPosition(this.sword.physics.body.vertices[3].x + swordVector.x,
+//     this.sword.physics.body.vertices[3].y + swordVector.y);
+
+
+
+
+// this.debugPoint1.setPosition(this.sword.physics.body.vertices[3].x + swordVector.x / 2
+//     , this.sword.physics.body.vertices[3].y + swordVector.y / 2);
+// this.debugPoint4.setPosition(this.sword.physics.body.vertices[3].x + swordVector.x / 2 + forceVector.x,
+//     this.sword.physics.body.vertices[3].y + swordVector.y / 2 + forceVector.y);
+
+
+// const l = this.scene.add.line(0, 0, 0, 0, 200, 200, 0xff0000);
+// l.setTo(200, 200, 500, 300);
+
+// this.debugPointSword1 = this.scene.add.circle(100, 100, 5, 0xff0000);
+// this.debugPointSword2 = this.scene.add.circle(100, 100, 5, 0xaa0000);
+// this.debugPoint1 = this.scene.add.circle(100, 100, 5, 0x000000);
+// this.debugPoint4 = this.scene.add.circle(100, 100, 5, 0x555555);
