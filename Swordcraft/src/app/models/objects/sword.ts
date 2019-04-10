@@ -2,33 +2,34 @@ import {Player} from "./player";
 
 export class Sword {
   physics: Phaser.Physics.Matter.Image;
-  originAngle = 130;
+  swordConstraint: any;
+  startAngle = 130;
+  endSwingAngle = 240;
 
   constructor(scene: Phaser.Scene, x: number, y: number, player: Player) {
     this.physics = scene.matter.add.image(x, y, 'sword');
     this.physics.setScale(0.30);
-    // this.physics.setAngle(this.originAngle);
 
-    // this.physics.visible = false;
-    // console.log(this.physics.centerOfMass);
-    // this.physics.body.offset = new Phaser.Math.Vector2(200, 200);
+    const group = scene.matter.world.nextGroup(true);
+    player.physics.setCollisionGroup(group);
+    this.physics.setCollisionGroup(group);
 
-    // this.physics.body.center = new Phaser.Math.Vector2(200, 200);
-
-    // this.physics.body.immovable = true;
-    // this.physics.setStatic(true);
-
-
-
-    // this.physics.setDensity(10000);
-    // this.physics.setOriginFromFrame();
-
-    // this.physics.setOrigin(0.5, 1.15);
-    // this.physics.setDensity(0.00001);
+    // @ts-ignore
+    this.swordConstraint = new Phaser.Physics.Matter.Matter.Constraint.create({
+      bodyB: player.physics.body,
+      pointA: { x: 0, y: 90 },
+      bodyA: this.physics.body,
+      stiffness: 0.5,
+      length: 0
+    });
+    scene.matter.world.add(this.swordConstraint);
   }
 
-  update(): void {
-    // this.physics.setAngle(this.physics.angle += 2);
-    // this.physics.setAngularVelocity(0.05);
+  update(): void {}
+
+  delete(scene: Phaser.Scene) {
+    this.physics.visible = false;
+    scene.matter.world.remove(this.physics, true);
+    scene.matter.world.removeConstraint(this.swordConstraint, true);
   }
 }

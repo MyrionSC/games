@@ -1,19 +1,18 @@
 import {Sword} from "./sword";
-import Vector2 = Phaser.Math.Vector2;
 
 export class Player {
   physics: Phaser.Physics.Matter.Image;
   sword: Sword;
-  private swordConstraint: any;
   private cursors: Phaser.Input.Keyboard.CursorKeys;
   private scene: Phaser.Scene;
 
-  private walkingSpeed = 2.5;
+  private walkingSpeed = 3.5;
   private swingForce = 0.015;
-  private swingTime = 60;
-  private attackTime = 80;
+  private swingTime = 49;
+  private attackTime = 50;
 
   private startSwingAngle = 0;
+  private endSwingAngle = 0;
 
   private isAttacking = false;
   private attackCounter = 0;
@@ -39,7 +38,9 @@ export class Player {
     if (this.isAttacking) {
       this.attackCounter++;
 
+      // start swinging
       if (this.attackCounter > 2 && this.attackCounter < this.swingTime) {
+        // compute force to apply to sword as vector perpendicular to sword
         const swordVector = new Phaser.Math.Vector2(
             (this.sword.physics.body.vertices[3].x - this.sword.physics.body.vertices[0].x) * -1,
             (this.sword.physics.body.vertices[3].y - this.sword.physics.body.vertices[0].y) * -1
@@ -48,18 +49,13 @@ export class Player {
             swordVector.y,
             -1 * swordVector.x
         );
-
         forceVector = forceVector.normalize().scale(this.swingForce);
-
         this.sword.physics.applyForce(forceVector);
       }
 
-      if (this.attackCounter >= 60) {
-        console.log(this.sword.physics);
-        console.log(this.sword.physics.body);
-        this.physics.setStatic(false);
-        console.log(this.scene.game);
-
+      // end attack
+      if (this.attackCounter >= this.attackTime ||
+          Math.abs((this.endSwingAngle + 180) - (this.sword.physics.angle + 180)) < 10) {
         this.endAttack();
       }
 
@@ -70,37 +66,25 @@ export class Player {
 
   startAttack(): void {
     this.isAttacking = true;
-
     this.physics.setStatic(true);
-
-    console.log(this.physics.angle);
-
     this.sword = new Sword(this.scene, this.physics.x, this.physics.y, this);
 
-    const group = this.scene.matter.world.nextGroup(true);
-    this.physics.setCollisionGroup(group);
-    this.sword.physics.setCollisionGroup(group);
+    this.startSwingAngle = this.physics.angle + this.sword.startAngle;
+    if (this.startSwingAngle > 180) this.startSwingAngle -= 360;
 
-    // @ts-ignore
-    this.swordConstraint = new Phaser.Physics.Matter.Matter.Constraint.create({
-      bodyB: this.physics.body,
-      pointA: { x: 0, y: 90 },
-      bodyA: this.sword.physics.body,
-      stiffness: 0.5,
-      length: 0
-    });
-    this.scene.matter.world.add(this.swordConstraint);
+    this.endSwingAngle = this.startSwingAngle - this.sword.endSwingAngle;
+    if (this.endSwingAngle < -180) this.endSwingAngle += 360;
 
-    this.sword.physics.setAngle(this.physics.angle + this.sword.originAngle);
+    this.sword.physics.setAngle(this.startSwingAngle);
   }
 
   endAttack(): void {
+    this.physics.setStatic(false);
+
     this.isAttacking = false;
     this.attackCounter = 0;
 
-    this.sword.physics.visible = false;
-    this.scene.matter.world.remove(this.sword.physics, true);
-    this.scene.matter.world.removeConstraint(this.swordConstraint, true);
+    this.sword.delete(this.scene);
   }
 
   private handleInput(): void {

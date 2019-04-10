@@ -47,11 +47,6 @@ export class GameScene extends Phaser.Scene {
 
 
 
-
-
-
-
-
         this.input.keyboard.on('keydown', (event) => {
             // my keyboard ghosts combination: UpArrow + LeftArrow + Space, which makes space as attack annoying
             if (event.key === "q") {
@@ -64,25 +59,25 @@ export class GameScene extends Phaser.Scene {
         });
 
 
-        if (this.debug) {
-            this.debugText = this.add.text(5, 5, this.getDebugText(),
-                {fontSize: '12px', color: '#000000'});
-        }
+        // if (this.debug) {
+        //     this.debugText = this.add.text(5, 5, this.getDebugText(),
+        //         {fontSize: '12px', color: '#000000'});
+        // }
     }
 
     update(): void {
         this.player.update();
 
-        if (this.debug) {
-            if (this.game.input.mousePointer.isDown) {
-                console.log("x: " + this.game.input.mousePointer.x);
-                console.log("y: " + this.game.input.mousePointer.y);
-            }
-        }
+        // if (this.debug) {
+        //     if (this.game.input.mousePointer.isDown) {
+        //         console.log("x: " + this.game.input.mousePointer.x);
+        //         console.log("y: " + this.game.input.mousePointer.y);
+        //     }
+        // }
 
-        if (this.debug) {
-            this.debugText.text = this.getDebugText();
-        }
+        // if (this.debug) {
+        //     this.debugText.text = this.getDebugText();
+        // }
 
         this.counter++;
     }
