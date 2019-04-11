@@ -4,12 +4,17 @@ import {Biter} from "../objects/biter";
 export class GameScene extends Phaser.Scene {
     private background: Phaser.GameObjects.TileSprite;
     private player: Player;
-    private biter: Biter;
+    private biters: Biter[];
+
+    private spawnTimer = 250;
+    private lastSpawn = 0;
 
     private counter = 1;
 
-    private debug = true;
-    private debugText: Phaser.GameObjects.Text;
+    private score = 0;
+    private scoreText: Phaser.GameObjects.Text;
+
+    private gameOver = false;
 
     constructor() {
         super({
@@ -30,28 +35,17 @@ export class GameScene extends Phaser.Scene {
         this.background = this.add.tileSprite(Number(Number(this.game.config.width)) / 2, Number(this.game.config.height) / 2,
             Number(this.game.config.width), Number(this.game.config.height), 'background');
 
-        // this.matter.world.setBounds();
-
         this.player = new Player(this, 500, 500);
 
-        this.biter = new Biter(this, 300, 100);
-        this.biter.physics.setVelocityY(10);
-
-        // for (let i = 0; i < 4; i++) {
-        //     const b1 = new Biter(this, 400 + i * 30, 100);
-        //     const b2 = new Biter(this, 400 + i * 30, 150);
-        //     const b3 = new Biter(this, 400 + i * 30, 200);
-        // }
+        this.biters = [];
 
         this.input.keyboard.on('keydown', (event) => {
-            // my keyboard ghosts combination: UpArrow + LeftArrow + Space, which makes space as attack annoying
-            if (event.key === "q") {
-                if (!this.player.isAttacking) {
-                    this.player.startAttack();
+            if (!this.gameOver) {
+                if (event.key === "q") {
+                    if (!this.player.isAttacking) {
+                        this.player.startAttack();
+                    }
                 }
-            }
-            if (event.key === "e") {
-                // swing the other way
             }
         });
 
@@ -59,64 +53,68 @@ export class GameScene extends Phaser.Scene {
             // sword / biter collision
             if (this.player.sword &&
                 (bodyA === this.player.sword.physics.body || bodyB === this.player.sword.physics.body) &&
-                (bodyA === this.biter.physics.body || bodyB === this.biter.physics.body)) {
-                let sword = bodyA === this.player.sword.physics.body ? bodyA : bodyB;
-                let biter = bodyA === this.biter.physics.body ? bodyA : bodyB;
-                console.log("sword biter coll");
-                biter.gameObject.setTint(0x888888);
+                (this.biters.some(b => bodyA === b.physics.body)  || this.biters.some(b => bodyB === b.physics.body))) {
+                const sword = bodyA === this.player.sword.physics.body ? bodyA : bodyB;
+                const biterBody = this.biters.some(b => bodyA === b.physics.body) ? bodyA : bodyB;
+                const index = this.biters.findIndex((b: Biter) => b.physics.body === biterBody);
+                this.biters.splice(index, 1);
+                biterBody.gameObject.setTint(0x888888);
+                this.score += 100;
             }
-
-
 
             // player / biter collision
             if ((bodyA === this.player.physics.body || bodyB === this.player.physics.body) &&
-                (bodyA === this.biter.physics.body || bodyB === this.biter.physics.body)) {
-                let player = bodyA === this.player.physics.body ? bodyA : bodyB;
-                let biter = bodyA === this.biter.physics.body ? bodyA : bodyB;
+                (this.biters.some(b => bodyA === b.physics.body)  || this.biters.some(b => bodyB === b.physics.body))) {
+                const player = bodyA === this.player.physics.body ? bodyA : bodyB;
+                const biter = this.biters.some(b => bodyA === b.physics.body) ? bodyA : bodyB;
                 console.log("player biter coll");
                 player.gameObject.setTint(0x888888);
+
+                this.gameOver = true;
+                const t = this.add.text(- 200, -200,
+                    "\t\tGAME OVER\nFinal score: " + this.score,
+                    {fontSize: '48px', color: '#000000', textAlign: 'center'});
+                t.setPosition(this.game.config.width / 2 - t.width / 2, this.game.config.height / 2 - t.height / 2);
             }
-
-
-            console.log(event);
-            console.log(bodyA);
-            console.log(bodyB);
         });
 
 
-        // if (this.debug) {
-        //     this.debugText = this.add.text(5, 5, this.getDebugText(),
-        //         {fontSize: '12px', color: '#000000'});
-        // }
+        this.scoreText = this.add.text(10, 10, this.scoreText + "",
+            {fontSize: '18px', color: '#222222'});
     }
 
     update(): void {
-        this.player.update();
-        this.biter.update(this.player);
+        if (!this.gameOver) {
+            this.player.update();
 
-        // if (this.debug) {
-        //     if (this.game.input.mousePointer.isDown) {
-        //         console.log("x: " + this.game.input.mousePointer.x);
-        //         console.log("y: " + this.game.input.mousePointer.y);
-        //     }
-        // }
+            for (const biter of this.biters) {
+                biter.update(this.player);
+            }
 
-        // if (this.debug) {
-        //     this.debugText.text = this.getDebugText();
-        // }
+            if (this.counter > this.lastSpawn + this.spawnTimer) {
 
-        this.counter++;
-    }
+                const spawnDirection = Math.random();
+                if (spawnDirection < 0.25) { // top
+                    this.biters.push(new Biter(this, Math.random() * this.game.config.width, -50));
+                } else if (spawnDirection < 0.5) { // right
+                    this.biters.push(new Biter(this, this.game.config.width + 50, Math.random() * this.game.config.height));
+                } else if (spawnDirection < 0.75) { // bottom
+                    this.biters.push(new Biter(this, Math.random() * this.game.config.width, this.game.config.height + 50));
+                } else { // left
+                    this.biters.push(new Biter(this, -50, Math.random() * this.game.config.height));
+                }
 
-    private getDebugText(): string {
-        if (this.player.sword) {
-            return this.player.sword.physics.body.angularVelocity + "\n" +
-                // @ts-ignore
-                this.player.sword.physics.body.torque + "\n" +
-                // @ts-ignore
-                this.player.sword.physics.body.angularSpeed + "\n" + ""
-                ;
+                this.spawnTimer = this.spawnTimer * 0.95;
+                if (this.spawnTimer < 20) {
+                    this.spawnTimer = 20;
+                }
+
+                this.lastSpawn = this.counter;
+            }
+
+            this.counter++;
+            this.score += 1;
+            this.scoreText.text = this.score + "";
         }
-        // return "clustersize: " + String(this.globals.enemyClusterSize) + "\nsomething";
     }
 }

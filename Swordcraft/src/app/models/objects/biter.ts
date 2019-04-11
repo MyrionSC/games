@@ -5,6 +5,8 @@ export class Biter {
 
     accel = 0.0002;
 
+    isDead = false;
+
 
     private dline: Phaser.GameObjects.Line;
     private dpoint: Phaser.GameObjects.Arc;
@@ -36,13 +38,12 @@ export class Biter {
 
         forceVector = forceVector.normalize().scale(this.accel);
         this.physics.applyForce(forceVector);
-
-
-
         // this.dline.setTo(this.physics.x, this.physics.y, this.physics.x + forceVector.x, this.physics.y + forceVector.y);
         //
         // // this.dpoint2.setPosition(this.physics.x, this.physics.y);
         // this.dpoint2.setPosition(this.physics.x, this.physics.y);
         // this.dpoint.setPosition(this.physics.x + forceVector.x, this.physics.y + forceVector.y);
     }
+
+
 }

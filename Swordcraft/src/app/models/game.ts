@@ -19,10 +19,7 @@ const config: GameConfig = {
                 x: 0,
                 y: 0
             },
-            debug: true,
-            showAngleIndicator: true,
-            showCollisions: true,
-            showVelocity: true
+            debug: false
         }
     },
     parent: 'game',
