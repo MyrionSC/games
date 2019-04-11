@@ -37,11 +37,11 @@ export class GameScene extends Phaser.Scene {
         this.biter = new Biter(this, 300, 100);
         this.biter.physics.setVelocityY(10);
 
-        for (let i = 0; i < 4; i++) {
-            const b1 = new Biter(this, 400 + i * 30, 100);
-            const b2 = new Biter(this, 400 + i * 30, 150);
-            const b3 = new Biter(this, 400 + i * 30, 200);
-        }
+        // for (let i = 0; i < 4; i++) {
+        //     const b1 = new Biter(this, 400 + i * 30, 100);
+        //     const b2 = new Biter(this, 400 + i * 30, 150);
+        //     const b3 = new Biter(this, 400 + i * 30, 200);
+        // }
 
         this.input.keyboard.on('keydown', (event) => {
             // my keyboard ghosts combination: UpArrow + LeftArrow + Space, which makes space as attack annoying
@@ -64,6 +64,7 @@ export class GameScene extends Phaser.Scene {
 
     update(): void {
         this.player.update();
+        this.biter.update(this.player);
 
         // if (this.debug) {
         //     if (this.game.input.mousePointer.isDown) {
