@@ -55,6 +55,29 @@ export class GameScene extends Phaser.Scene {
             }
         });
 
+        this.matter.world.on('collisionstart', (event, bodyA, bodyB) => {
+
+            if (bodyA === this.player.physics.body) {
+                console.log("A: player");
+            } else if (bodyA === this.biter.physics.body) {
+                console.log("A: biter");
+            } else if (this.player.sword && bodyA === this.player.sword.physics.body) {
+                console.log("A: sword");
+            }
+
+            if (bodyB === this.player.physics.body) {
+                console.log("B: player");
+            } else if (bodyB === this.biter.physics.body) {
+                console.log("B: biter");
+            } else if (this.player.sword && bodyB === this.player.sword.physics.body) {
+                console.log("B: sword");
+            }
+
+            console.log(event);
+            console.log(bodyA);
+            console.log(bodyB);
+        });
+
 
         // if (this.debug) {
         //     this.debugText = this.add.text(5, 5, this.getDebugText(),
