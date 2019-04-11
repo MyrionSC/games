@@ -30,7 +30,7 @@ export class GameScene extends Phaser.Scene {
         this.background = this.add.tileSprite(Number(Number(this.game.config.width)) / 2, Number(this.game.config.height) / 2,
             Number(this.game.config.width), Number(this.game.config.height), 'background');
 
-        this.matter.world.setBounds();
+        // this.matter.world.setBounds();
 
         this.player = new Player(this, 500, 500);
 
@@ -56,22 +56,27 @@ export class GameScene extends Phaser.Scene {
         });
 
         this.matter.world.on('collisionstart', (event, bodyA, bodyB) => {
-
-            if (bodyA === this.player.physics.body) {
-                console.log("A: player");
-            } else if (bodyA === this.biter.physics.body) {
-                console.log("A: biter");
-            } else if (this.player.sword && bodyA === this.player.sword.physics.body) {
-                console.log("A: sword");
+            // sword / biter collision
+            if (this.player.sword &&
+                (bodyA === this.player.sword.physics.body || bodyB === this.player.sword.physics.body) &&
+                (bodyA === this.biter.physics.body || bodyB === this.biter.physics.body)) {
+                let sword = bodyA === this.player.sword.physics.body ? bodyA : bodyB;
+                let biter = bodyA === this.biter.physics.body ? bodyA : bodyB;
+                console.log("sword biter coll");
+                biter.gameObject.setTint(0x888888);
             }
 
-            if (bodyB === this.player.physics.body) {
-                console.log("B: player");
-            } else if (bodyB === this.biter.physics.body) {
-                console.log("B: biter");
-            } else if (this.player.sword && bodyB === this.player.sword.physics.body) {
-                console.log("B: sword");
+
+
+            // player / biter collision
+            if ((bodyA === this.player.physics.body || bodyB === this.player.physics.body) &&
+                (bodyA === this.biter.physics.body || bodyB === this.biter.physics.body)) {
+                let player = bodyA === this.player.physics.body ? bodyA : bodyB;
+                let biter = bodyA === this.biter.physics.body ? bodyA : bodyB;
+                console.log("player biter coll");
+                player.gameObject.setTint(0x888888);
             }
+
 
             console.log(event);
             console.log(bodyA);
