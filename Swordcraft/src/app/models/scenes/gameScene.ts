@@ -34,8 +34,6 @@ export class GameScene extends Phaser.Scene {
 
         this.player = new Player(this, 500, 500);
 
-
-
         this.biter = new Biter(this, 300, 100);
         this.biter.physics.setVelocityY(10);
 
@@ -45,16 +43,15 @@ export class GameScene extends Phaser.Scene {
             const b3 = new Biter(this, 400 + i * 30, 200);
         }
 
-
-
         this.input.keyboard.on('keydown', (event) => {
             // my keyboard ghosts combination: UpArrow + LeftArrow + Space, which makes space as attack annoying
             if (event.key === "q") {
-                this.player.startAttack();
+                if (!this.player.isAttacking) {
+                    this.player.startAttack();
+                }
             }
             if (event.key === "e") {
-                this.player.sword.physics.setAngularVelocity(this.player.sword.physics.body.angularVelocity + 0.1);
-                // this.player.startAttack();
+                // swing the other way
             }
         });
 
@@ -87,7 +84,7 @@ export class GameScene extends Phaser.Scene {
             return this.player.sword.physics.body.angularVelocity + "\n" +
                 // @ts-ignore
                 this.player.sword.physics.body.torque + "\n" +
-            // @ts-ignore
+                // @ts-ignore
                 this.player.sword.physics.body.angularSpeed + "\n" + ""
                 ;
         }
