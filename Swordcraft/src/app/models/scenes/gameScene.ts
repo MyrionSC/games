@@ -6,11 +6,13 @@ export class GameScene extends Phaser.Scene {
     private player: Player;
     private biters: Biter[];
 
-    private spawnTimer = 120;
-    private lastSpawn = 0;
+    // tweakable vars
+    private spawnTimer = 100;
+    private spawnDecreaseMultiplier = 0.97;
 
+    // non tweakable
     private counter = 1;
-
+    private lastSpawn = 0;
     private score = 0;
     private scoreText: Phaser.GameObjects.Text;
 
@@ -104,7 +106,7 @@ export class GameScene extends Phaser.Scene {
                     this.biters.push(new Biter(this, -50, Math.random() * this.game.config.height));
                 }
 
-                this.spawnTimer = this.spawnTimer * 0.97;
+                this.spawnTimer = this.spawnTimer * this.spawnDecreaseMultiplier;
                 if (this.spawnTimer < 20) {
                     this.spawnTimer = 20;
                 }
