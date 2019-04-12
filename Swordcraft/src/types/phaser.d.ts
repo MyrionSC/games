@@ -6594,17 +6594,17 @@ declare namespace Phaser {
             /**
              * The width of the underlying canvas, in pixels.
              */
-            readonly width: integer | string;
+            readonly width: number;
 
             /**
              * The height of the underlying canvas, in pixels.
              */
-            readonly height: integer | string;
+            readonly height: number;
 
             /**
              * The zoom factor, as used by the Scale Manager.
              */
-            readonly zoom: Phaser.Scale.ZoomType | integer;
+            readonly zoom: Phaser.Scale.ZoomType | number;
 
             /**
              * The canvas device pixel resolution. Currently un-used.

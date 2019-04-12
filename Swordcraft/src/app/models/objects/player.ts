@@ -6,8 +6,8 @@ export class Player {
     private cursors: Phaser.Input.Keyboard.CursorKeys;
     private scene: Phaser.Scene;
 
-    private walkingSpeed = 3.5;
-    private swingForce = 0.015;
+    private walkingSpeed = 5;
+    private swingForce = 0.03;
     private swingTime = 49;
     private attackTime = 50;
 

@@ -3,7 +3,7 @@ import {Player} from "./player";
 export class Biter {
     physics: Phaser.Physics.Matter.Image;
 
-    accel = 0.0002;
+    accel = 0.0003;
 
     isDead = false;
 
