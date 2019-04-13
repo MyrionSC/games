@@ -11,8 +11,8 @@ export class Player {
     private swingTime = 49;
     private attackTime = 50;
 
-    private startSwingAngle = 0;
-    private endSwingAngle = 0;
+    startSwingAngle = 0;
+    endSwingAngle = 0;
 
     isAttacking = false;
     private attackCounter = 0;
@@ -50,6 +50,8 @@ export class Player {
                     -1 * swordVector.x
                 );
                 forceVector = forceVector.normalize().scale(this.swingForce);
+                if (!this.sword.rightSwing)
+                    forceVector = forceVector.scale(-1);
                 this.sword.physics.applyForce(forceVector);
             }
 
@@ -64,18 +66,10 @@ export class Player {
         }
     }
 
-    startAttack(): void {
+    startAttack(rightSwing = true): void {
         this.isAttacking = true;
         this.physics.setStatic(true);
-        this.sword = new Sword(this.scene, this.physics.x, this.physics.y, this);
-
-        this.startSwingAngle = this.physics.angle + this.sword.startAngle;
-        if (this.startSwingAngle > 180) this.startSwingAngle -= 360;
-
-        this.endSwingAngle = this.startSwingAngle - this.sword.endSwingAngle;
-        if (this.endSwingAngle < -180) this.endSwingAngle += 360;
-
-        this.sword.physics.setAngle(this.startSwingAngle);
+        this.sword = new Sword(this.scene, this.physics.x, this.physics.y, this, rightSwing);
     }
 
     endAttack(): void {

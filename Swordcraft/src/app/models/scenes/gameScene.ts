@@ -43,41 +43,18 @@ export class GameScene extends Phaser.Scene {
 
         this.input.keyboard.on('keydown', (event) => {
             if (!this.gameOver) {
-                if (event.key === "q") {
-                    if (!this.player.isAttacking) {
-                        this.player.startAttack();
+                if (!this.player.isAttacking) {
+                    if (event.key === "q") {
+                        this.player.startAttack(true);
+                    } else if (event.key === "e") {
+                        this.player.startAttack(false);
                     }
                 }
             }
         });
 
         this.matter.world.on('collisionstart', (event, bodyA, bodyB) => {
-            // sword / biter collision
-            if (this.player.sword &&
-                (bodyA === this.player.sword.physics.body || bodyB === this.player.sword.physics.body) &&
-                (this.biters.some(b => bodyA === b.physics.body)  || this.biters.some(b => bodyB === b.physics.body))) {
-                const sword = bodyA === this.player.sword.physics.body ? bodyA : bodyB;
-                const biterBody = this.biters.some(b => bodyA === b.physics.body) ? bodyA : bodyB;
-                const index = this.biters.findIndex((b: Biter) => b.physics.body === biterBody);
-                this.biters.splice(index, 1);
-                biterBody.gameObject.setTint(0x888888);
-                this.score += 100;
-            }
-
-            // player / biter collision
-            if ((bodyA === this.player.physics.body || bodyB === this.player.physics.body) &&
-                (this.biters.some(b => bodyA === b.physics.body)  || this.biters.some(b => bodyB === b.physics.body))) {
-                const player = bodyA === this.player.physics.body ? bodyA : bodyB;
-                const biter = this.biters.some(b => bodyA === b.physics.body) ? bodyA : bodyB;
-                console.log("player biter coll");
-                player.gameObject.setTint(0x888888);
-
-                this.gameOver = true;
-                const t = this.add.text(- 200, -200,
-                    "\t\tGAME OVER\nFinal score: " + this.score,
-                    {fontSize: '48px', color: '#000000', textAlign: 'center'});
-                t.setPosition(this.game.config.width / 2 - t.width / 2, this.game.config.height / 2 - t.height / 2);
-            }
+            this.handleCollision(event, bodyA, bodyB);
         });
 
 
@@ -117,6 +94,35 @@ export class GameScene extends Phaser.Scene {
             this.counter++;
             this.score += 1;
             this.scoreText.text = this.score + "";
+        }
+    }
+
+    private handleCollision(event: any, bodyA: any, bodyB: any) {
+        // sword / biter collision
+        if (this.player.sword &&
+            (bodyA === this.player.sword.physics.body || bodyB === this.player.sword.physics.body) &&
+            (this.biters.some(b => bodyA === b.physics.body)  || this.biters.some(b => bodyB === b.physics.body))) {
+            const sword = bodyA === this.player.sword.physics.body ? bodyA : bodyB;
+            const biterBody = this.biters.some(b => bodyA === b.physics.body) ? bodyA : bodyB;
+            const index = this.biters.findIndex((b: Biter) => b.physics.body === biterBody);
+            this.biters.splice(index, 1);
+            biterBody.gameObject.setTint(0x888888);
+            this.score += 100;
+        }
+
+        // player / biter collision
+        if ((bodyA === this.player.physics.body || bodyB === this.player.physics.body) &&
+            (this.biters.some(b => bodyA === b.physics.body)  || this.biters.some(b => bodyB === b.physics.body))) {
+            const player = bodyA === this.player.physics.body ? bodyA : bodyB;
+            const biter = this.biters.some(b => bodyA === b.physics.body) ? bodyA : bodyB;
+            console.log("player biter coll");
+            player.gameObject.setTint(0x888888);
+
+            this.gameOver = true;
+            const t = this.add.text(- 200, -200,
+                "\t\tGAME OVER\nFinal score: " + this.score,
+                {fontSize: '48px', color: '#000000', textAlign: 'center'});
+            t.setPosition(this.game.config.width / 2 - t.width / 2, this.game.config.height / 2 - t.height / 2);
         }
     }
 }

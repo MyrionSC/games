@@ -5,8 +5,9 @@ export class Sword {
     swordConstraint: any;
     startAngle = 130;
     endSwingAngle = 240;
+    rightSwing: boolean;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, player: Player) {
+    constructor(scene: Phaser.Scene, x: number, y: number, player: Player, rightSwing: boolean) {
         this.physics = scene.matter.add.image(x, y, 'sword');
         this.physics.setScale(0.30);
 
@@ -23,6 +24,21 @@ export class Sword {
             length: 0
         });
         scene.matter.world.add(this.swordConstraint);
+
+        this.rightSwing = rightSwing;
+        if (rightSwing) {
+            player.startSwingAngle = player.physics.angle + this.startAngle;
+            if (player.startSwingAngle > 180) player.startSwingAngle -= 360;
+            player.endSwingAngle = player.startSwingAngle - this.endSwingAngle;
+            if (player.endSwingAngle < -180) player.endSwingAngle += 360;
+        } else {
+            this.physics.setFlipX(true);
+            player.startSwingAngle = player.physics.angle - this.startAngle;
+            if (player.startSwingAngle > 180) player.startSwingAngle -= 360;
+            player.endSwingAngle = player.startSwingAngle + this.endSwingAngle;
+            if (player.endSwingAngle < -180) player.endSwingAngle += 360;
+        }
+        this.physics.setAngle(player.startSwingAngle);
     }
 
     update(): void {
