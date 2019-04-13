@@ -2,7 +2,7 @@ import 'phaser';
 import {GameScene} from './scenes/gameScene';
 
 const config: GameConfig = {
-    title: 'Typescript',
+    title: 'Swordcraft',
     url: '',
     version: '0.1',
     width: 900,
