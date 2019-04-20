@@ -17,6 +17,7 @@ export class GameScene extends Phaser.Scene {
     private scoreText: Phaser.GameObjects.Text;
 
     private gameOver = false;
+    private deadFuckers: any[];
 
     constructor() {
         super({
@@ -40,6 +41,8 @@ export class GameScene extends Phaser.Scene {
         this.player = new Player(this, 500, 500);
 
         this.biters = [];
+
+        this.deadFuckers = [];
 
         this.input.keyboard.on('keydown', (event) => {
             if (!this.gameOver) {
@@ -65,19 +68,19 @@ export class GameScene extends Phaser.Scene {
             this.player.update();
 
             for (const biter of this.biters) {
-                biter.update(this.player);
+                biter.update();
             }
 
             if (this.counter > this.lastSpawn + this.spawnTimer) {
                 const spawnDirection = Math.random();
                 if (spawnDirection < 0.25) { // top
-                    this.biters.push(new Biter(this, Math.random() * this.game.config.width, -50));
+                    this.biters.push(new Biter(this, Math.random() * this.game.config.width, -50, this.player));
                 } else if (spawnDirection < 0.5) { // right
-                    this.biters.push(new Biter(this, this.game.config.width + 50, Math.random() * this.game.config.height));
+                    this.biters.push(new Biter(this, this.game.config.width + 50, Math.random() * this.game.config.height, this.player));
                 } else if (spawnDirection < 0.75) { // bottom
-                    this.biters.push(new Biter(this, Math.random() * this.game.config.width, this.game.config.height + 50));
+                    this.biters.push(new Biter(this, Math.random() * this.game.config.width, this.game.config.height + 50, this.player));
                 } else { // left
-                    this.biters.push(new Biter(this, -50, Math.random() * this.game.config.height));
+                    this.biters.push(new Biter(this, -50, Math.random() * this.game.config.height, this.player));
                 }
 
                 this.spawnTimer = this.spawnTimer * this.spawnDecreaseMultiplier;

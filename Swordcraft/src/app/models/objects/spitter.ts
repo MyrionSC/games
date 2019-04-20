@@ -1,10 +1,12 @@
 import {Player} from "./player";
-import {Enemy} from "./enemy";
 
-export class Biter extends Enemy{
+export class Biter {
+    physics: Phaser.Physics.Matter.Image;
+
     accel = 0.0003;
+
     isDead = false;
-    private player: Player;
+
 
     private dline: Phaser.GameObjects.Line;
     private dpoint: Phaser.GameObjects.Arc;
@@ -12,15 +14,14 @@ export class Biter extends Enemy{
 
 
 
-    constructor(scene: Phaser.Scene, x: number, y: number, player: Player) {
-        super(scene, x, y, 'biter');
+    constructor(scene: Phaser.Scene, x: number, y: number) {
+        this.physics = scene.matter.add.image(x, y, 'biter');
         this.physics.setScale(0.08);
         this.physics.setBody({
             type: 'circle',
             radius: this.physics.width * 0.04
         }, {});
 
-        this.player = player;
 
         this.dline = scene.add.line(0, 0, 0, 0, 0, 0, 0xff0000);
         // this.dline.setTo(200, 200, 500, 300);
@@ -29,10 +30,10 @@ export class Biter extends Enemy{
         this.dpoint2 = scene.add.circle(0 ,0, 5, 0x0000ff);
     }
 
-    update() {
+    update(player: Player) {
         let forceVector = new Phaser.Math.Vector2(
-            this.player.physics.x - this.physics.x,
-            this.player.physics.y - this.physics.y
+            player.physics.x - this.physics.x,
+            player.physics.y - this.physics.y
         );
 
         forceVector = forceVector.normalize().scale(this.accel);
