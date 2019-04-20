@@ -1,15 +1,21 @@
 import {Player} from '../objects/player';
 import {Biter} from "../objects/biter";
 import {Enemy} from "../objects/enemy";
+import {Spitter} from "../objects/spitter";
 
 export class GameScene extends Phaser.Scene {
     private background: Phaser.GameObjects.TileSprite;
+    private gameBounds: Phaser.Geom.Rectangle;
+
+    // objects
     private player: Player;
     private enemies: Enemy[];
+    private deadFuckers: any[];
 
     // tweakable vars
     private spawnTimer = 100;
     private spawnDecreaseMultiplier = 0.97;
+    private spawnPossibilities: any = [Biter, Biter, Spitter];
 
     // non tweakable
     private counter = 1;
@@ -18,8 +24,6 @@ export class GameScene extends Phaser.Scene {
     private scoreText: Phaser.GameObjects.Text;
 
     private gameOver = false;
-    private deadFuckers: any[];
-    private gameBounds: Phaser.Geom.Rectangle;
 
     constructor() {
         super({
@@ -74,24 +78,26 @@ export class GameScene extends Phaser.Scene {
             }
 
             if (this.counter > this.lastSpawn + this.spawnTimer) {
+                const randomEnemy = this.spawnPossibilities[Math.floor(Math.random() * this.spawnPossibilities.length)];
+
                 const spawnDirection = Math.random();
                 if (spawnDirection < 0.25) { // top
-                    this.enemies.push(new Biter(this, Math.random() * this.game.config.width, -50, this.player));
+                    this.enemies.push(new randomEnemy(this, Math.random() * this.game.config.width, -50, this.player));
                 } else if (spawnDirection < 0.5) { // right
-                    this.enemies.push(new Biter(this, this.game.config.width + 50, Math.random() * this.game.config.height, this.player));
+                    this.enemies.push(new randomEnemy(this, this.game.config.width + 50,
+                        Math.random() * this.game.config.height, this.player));
                 } else if (spawnDirection < 0.75) { // bottom
-                    this.enemies.push(new Biter(this, Math.random() * this.game.config.width, this.game.config.height + 50, this.player));
+                    this.enemies.push(new randomEnemy(this, Math.random() * this.game.config.width,
+                        this.game.config.height + 50, this.player));
                 } else { // left
-                    this.enemies.push(new Biter(this, -50, Math.random() * this.game.config.height, this.player));
+                    this.enemies.push(new randomEnemy(this, -50, Math.random() * this.game.config.height, this.player));
                 }
 
-                this.lastSpawn = 1000000;
-
-                // this.spawnTimer = this.spawnTimer * this.spawnDecreaseMultiplier;
-                // if (this.spawnTimer < 20) {
-                //     this.spawnTimer = 20;
-                // }
-                // this.lastSpawn = this.counter;
+                this.spawnTimer = this.spawnTimer * this.spawnDecreaseMultiplier;
+                if (this.spawnTimer < 20) {
+                    this.spawnTimer = 20;
+                }
+                this.lastSpawn = this.counter;
             }
 
             // Remove dead guys outside bounds
@@ -121,7 +127,8 @@ export class GameScene extends Phaser.Scene {
             const sword = bodyA === this.player.sword.physics.body ? bodyA : bodyB;
             const enemyBody = this.enemies.some(b => bodyA === b.physics.body) ? bodyA : bodyB;
             const index = this.enemies.findIndex((b: Biter) => b.physics.body === enemyBody);
-            this.deadFuckers.push(this.enemies.splice(index, 1)[0]);
+            const deadEnemy = this.enemies.splice(index, 1)[0];
+            this.deadFuckers.push(deadEnemy);
             enemyBody.gameObject.setTint(0x888888);
             this.score += 100;
         }

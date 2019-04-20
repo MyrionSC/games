@@ -1,9 +1,8 @@
 import {Player} from "./player";
 import {Enemy} from "./enemy";
 
-export class Biter extends Enemy{
+export class Spitter extends Enemy {
     accel = 0.0003;
-    isDead = false;
     private player: Player;
 
     private dline: Phaser.GameObjects.Line;
