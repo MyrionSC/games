@@ -2,9 +2,13 @@ export abstract class Enemy {
     physics: Phaser.Physics.Matter.Image;
     scene: Phaser.Scene;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, key) {
+    isAttacking = false;
+    type: string;
+
+    constructor(scene: Phaser.Scene, x: number, y: number, key: string) {
         this.scene = scene;
         this.physics = scene.matter.add.image(x, y, key);
+        this.type = key;
     }
 
     update() {}

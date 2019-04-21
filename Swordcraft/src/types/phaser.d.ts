@@ -15882,6 +15882,13 @@ declare namespace Phaser {
             setActive(value: boolean): this;
 
             /**
+             * Set Tint of game object
+             * @param hex value. example: 0xff0000
+             */
+            setTint(value: number);
+
+
+            /**
              * Sets the `name` property of this Game Object and returns this Game Object for further chaining.
              * The `name` property is not populated by Phaser and is presented for your own use.
              * @param value The name to be given to this Game Object.

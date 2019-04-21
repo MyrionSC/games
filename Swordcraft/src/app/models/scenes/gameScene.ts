@@ -10,12 +10,14 @@ export class GameScene extends Phaser.Scene {
     // objects
     private player: Player;
     private enemies: Enemy[];
-    private deadFuckers: any[];
+    private deadEnemies: any[];
 
     // tweakable vars
     private spawnTimer = 100;
-    private spawnDecreaseMultiplier = 0.97;
-    private spawnPossibilities: any = [Biter, Biter, Spitter];
+    // private spawnDecreaseMultiplier = 0.97;
+    private spawnDecreaseMultiplier = 1;
+    // private spawnPossibilities: any = [Biter, Biter, Spitter];
+    private spawnPossibilities: any = [Spitter];
 
     // non tweakable
     private counter = 1;
@@ -48,7 +50,7 @@ export class GameScene extends Phaser.Scene {
 
         this.player = new Player(this, 500, 500);
         this.enemies = [];
-        this.deadFuckers = [];
+        this.deadEnemies = [];
 
         this.input.keyboard.on('keydown', (event) => {
             if (!this.gameOver) {
@@ -93,21 +95,23 @@ export class GameScene extends Phaser.Scene {
                     this.enemies.push(new randomEnemy(this, -50, Math.random() * this.game.config.height, this.player));
                 }
 
-                this.spawnTimer = this.spawnTimer * this.spawnDecreaseMultiplier;
-                if (this.spawnTimer < 20) {
-                    this.spawnTimer = 20;
-                }
-                this.lastSpawn = this.counter;
+                this.lastSpawn = 100000;
+
+                // this.spawnTimer = this.spawnTimer * this.spawnDecreaseMultiplier;
+                // if (this.spawnTimer < 20) {
+                //     this.spawnTimer = 20;
+                // }
+                // this.lastSpawn = this.counter;
             }
 
             // Remove dead guys outside bounds
             if (this.counter % 10 === 0) {
-                for (const deadguy of this.deadFuckers) {
-                    if (!Phaser.Geom.Rectangle.Overlaps(this.gameBounds, deadguy.physics.getBounds())) {
-                        const index = this.deadFuckers.findIndex(o => o === deadguy);
+                for (const deadEnemy of this.deadEnemies) {
+                    if (!Phaser.Geom.Rectangle.Overlaps(this.gameBounds, deadEnemy.physics.getBounds())) {
+                        const index = this.deadEnemies.findIndex(o => o === deadEnemy);
                         if (index !== -1) {
-                            this.deadFuckers.splice(index, 1);
-                            deadguy.destroy();
+                            this.deadEnemies.splice(index, 1);
+                            deadEnemy.destroy();
                         }
                     }
                 }
@@ -128,7 +132,7 @@ export class GameScene extends Phaser.Scene {
             const enemyBody = this.enemies.some(b => bodyA === b.physics.body) ? bodyA : bodyB;
             const index = this.enemies.findIndex((b: Biter) => b.physics.body === enemyBody);
             const deadEnemy = this.enemies.splice(index, 1)[0];
-            this.deadFuckers.push(deadEnemy);
+            this.deadEnemies.push(deadEnemy);
             enemyBody.gameObject.setTint(0x888888);
             this.score += 100;
         }

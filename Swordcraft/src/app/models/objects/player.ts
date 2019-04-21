@@ -6,10 +6,10 @@ export class Player {
     private cursors: Phaser.Input.Keyboard.CursorKeys;
     private scene: Phaser.Scene;
 
-    private walkingSpeed = 5;
-    private swingForce = 0.03;
-    private swingTime = 49;
-    private attackTime = 50;
+    private WALKING_SPEED = 5;
+    private SWING_FORCE = 0.03;
+    private SWING_TIME = 49;
+    private ATTACK_TIME = 50;
 
     private startSwingAngle = 0;
     private endSwingAngle = 0;
@@ -39,7 +39,7 @@ export class Player {
             this.attackCounter++;
 
             // start swinging
-            if (this.attackCounter > 2 && this.attackCounter < this.swingTime) {
+            if (this.attackCounter > 2 && this.attackCounter < this.SWING_TIME) {
                 // compute force to apply to sword as vector perpendicular to sword
                 const swordVector = new Phaser.Math.Vector2(
                     (this.sword.physics.body.vertices[3].x - this.sword.physics.body.vertices[0].x) * -1,
@@ -49,12 +49,12 @@ export class Player {
                     swordVector.y,
                     -1 * swordVector.x
                 );
-                forceVector = forceVector.normalize().scale(this.swingForce);
+                forceVector = forceVector.normalize().scale(this.SWING_FORCE);
                 this.sword.physics.applyForce(forceVector);
             }
 
             // end attack
-            if (this.attackCounter >= this.attackTime ||
+            if (this.attackCounter >= this.ATTACK_TIME ||
                 Math.abs((this.endSwingAngle + 180) - (this.sword.physics.angle + 180)) < 10) {
                 this.endAttack();
             }
@@ -113,17 +113,17 @@ export class Player {
 
         if (this.anyCursorsDown()) {
             if (this.cursors.right.isDown) {
-                this.physics.setVelocityX(this.walkingSpeed);
+                this.physics.setVelocityX(this.WALKING_SPEED);
             } else if (this.cursors.left.isDown) {
-                this.physics.setVelocityX(-this.walkingSpeed);
+                this.physics.setVelocityX(-this.WALKING_SPEED);
             } else {
                 this.physics.setVelocityX(0);
             }
 
             if (this.cursors.up.isDown) {
-                this.physics.setVelocityY(-this.walkingSpeed);
+                this.physics.setVelocityY(-this.WALKING_SPEED);
             } else if (this.cursors.down.isDown) {
-                this.physics.setVelocityY(this.walkingSpeed);
+                this.physics.setVelocityY(this.WALKING_SPEED);
             } else {
                 this.physics.setVelocityY(0);
             }
