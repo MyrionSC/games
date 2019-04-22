@@ -9,8 +9,6 @@ export class Biter extends Enemy {
     private dpoint: Phaser.GameObjects.Arc;
     private dpoint2: Phaser.GameObjects.Arc;
 
-
-
     constructor(scene: Phaser.Scene, x: number, y: number, player: Player) {
         super(scene, x, y, 'biter');
         this.physics.setScale(0.08);

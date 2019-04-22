@@ -1,8 +1,10 @@
 import {Player} from "./player";
 import {Enemy} from "./enemy";
+import {SpitterBullet} from "./spitter-bullet";
 
 export class Spitter extends Enemy {
     private player: Player;
+    private enemies: Enemy[];
 
     // tweakable
     private MOVE_SPEED = 3;
@@ -20,7 +22,7 @@ export class Spitter extends Enemy {
     private dpoint: Phaser.GameObjects.Arc;
     private dpoint2: Phaser.GameObjects.Arc;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, player: Player) {
+    constructor(scene: Phaser.Scene, x: number, y: number, player: Player, enemies: Enemy[]) {
         super(scene, x, y, 'spitter');
         this.physics.setScale(0.08);
         this.physics.setBody({
@@ -29,6 +31,7 @@ export class Spitter extends Enemy {
         }, {});
 
         this.player = player;
+        this.enemies = enemies;
 
         // this.dline = scene.add.line(0, 0, 0, 0, 0, 0, 0xff0000);
         // this.dline.setTo(200, 200, 500, 300);
@@ -72,6 +75,7 @@ export class Spitter extends Enemy {
 
                 if (this.attackCounter >= this.ATTACK_TIME) {
                     console.log("Bang!");
+                    this.fireBullet();
                     this.lastAttack = this.counter;
                     this.stopAttack();
                 }
@@ -87,5 +91,19 @@ export class Spitter extends Enemy {
     private stopAttack() {
         this.physics.body.gameObject.setTint(0xffffff);
         this.isAttacking = false;
+    }
+
+    private fireBullet() {
+        const directionVector = new Phaser.Math.Vector2(
+            this.player.physics.x - this.physics.x,
+            this.player.physics.y - this.physics.y
+        ).normalize();
+
+        const b = new SpitterBullet(this.scene,
+            this.physics.x + directionVector.x * 5,
+            this.physics.y + directionVector.y * 5, this.enemies, directionVector);
+
+        this.enemies.push(b);
+        // b.physics.setVelocityY(10);
     }
 }

@@ -2,6 +2,7 @@ import {Player} from '../objects/player';
 import {Biter} from "../objects/biter";
 import {Enemy} from "../objects/enemy";
 import {Spitter} from "../objects/spitter";
+import {SpitterBullet} from "../objects/spitter-bullet";
 
 export class GameScene extends Phaser.Scene {
     private background: Phaser.GameObjects.TileSprite;
@@ -14,10 +15,10 @@ export class GameScene extends Phaser.Scene {
 
     // tweakable vars
     private spawnTimer = 100;
-    // private spawnDecreaseMultiplier = 0.97;
-    private spawnDecreaseMultiplier = 1;
-    // private spawnPossibilities: any = [Biter, Biter, Spitter];
-    private spawnPossibilities: any = [Spitter];
+    private spawnDecreaseMultiplier = 0.97;
+    // private spawnDecreaseMultiplier = 1;
+    private spawnPossibilities: any = ['biter', 'biter', 'spitter'];
+    // private spawnPossibilities: any = ['spitter'];
 
     // non tweakable
     private counter = 1;
@@ -39,6 +40,7 @@ export class GameScene extends Phaser.Scene {
         this.load.image('sword', 'assets/Swordcraft/grandsword.png');
         this.load.image('biter', 'assets/Swordcraft/biter.png');
         this.load.image('spitter', 'assets/Swordcraft/spitter.png');
+        this.load.image('spitter-bullet', 'assets/Swordcraft/spitter.png');
     }
 
     create(): void {
@@ -51,6 +53,9 @@ export class GameScene extends Phaser.Scene {
         this.player = new Player(this, 500, 500);
         this.enemies = [];
         this.deadEnemies = [];
+
+        // const b = new SpitterBullet(this, 100, 100, this.enemies);
+        // this.enemies.push(b);
 
         this.input.keyboard.on('keydown', (event) => {
             if (!this.gameOver) {
@@ -73,35 +78,35 @@ export class GameScene extends Phaser.Scene {
 
     update(): void {
         if (!this.gameOver) {
+            // updates
             this.player.update();
-
             for (const enemy of this.enemies) {
                 enemy.update();
             }
 
+            // Spawn new enemy
             if (this.counter > this.lastSpawn + this.spawnTimer) {
-                const randomEnemy = this.spawnPossibilities[Math.floor(Math.random() * this.spawnPossibilities.length)];
-
+                let pos = [0, 0];
                 const spawnDirection = Math.random();
                 if (spawnDirection < 0.25) { // top
-                    this.enemies.push(new randomEnemy(this, Math.random() * this.game.config.width, -50, this.player));
+                    pos = [Math.random() * this.game.config.width, -50];
                 } else if (spawnDirection < 0.5) { // right
-                    this.enemies.push(new randomEnemy(this, this.game.config.width + 50,
-                        Math.random() * this.game.config.height, this.player));
+                    pos = [this.game.config.width + 50, Math.random() * this.game.config.height];
                 } else if (spawnDirection < 0.75) { // bottom
-                    this.enemies.push(new randomEnemy(this, Math.random() * this.game.config.width,
-                        this.game.config.height + 50, this.player));
+                    pos = [Math.random() * this.game.config.width, this.game.config.height + 50];
                 } else { // left
-                    this.enemies.push(new randomEnemy(this, -50, Math.random() * this.game.config.height, this.player));
+                    pos = [-50, Math.random() * this.game.config.height];
                 }
 
-                this.lastSpawn = 100000;
+                const newEnemy = this.createEnemy(pos[0], pos[1]);
+                this.enemies.push(newEnemy);
 
-                // this.spawnTimer = this.spawnTimer * this.spawnDecreaseMultiplier;
-                // if (this.spawnTimer < 20) {
-                //     this.spawnTimer = 20;
-                // }
-                // this.lastSpawn = this.counter;
+                // this.lastSpawn = 100000;
+                this.spawnTimer = this.spawnTimer * this.spawnDecreaseMultiplier;
+                if (this.spawnTimer < 20) {
+                    this.spawnTimer = 20;
+                }
+                this.lastSpawn = this.counter;
             }
 
             // Remove dead guys outside bounds
@@ -150,6 +155,16 @@ export class GameScene extends Phaser.Scene {
                 "\t\tGAME OVER\nFinal score: " + this.score,
                 {fontSize: '48px', color: '#000000', textAlign: 'center'});
             t.setPosition(this.game.config.width / 2 - t.width / 2, this.game.config.height / 2 - t.height / 2);
+        }
+    }
+
+    private createEnemy(x: number, y: number) {
+        const newEnemy = this.spawnPossibilities[Math.floor(Math.random() * this.spawnPossibilities.length)];
+
+        if (newEnemy === 'biter') {
+            return new Biter(this, x, y, this.player);
+        } else if (newEnemy === 'spitter') {
+            return new Spitter(this, x, y, this.player, this.enemies);
         }
     }
 }
