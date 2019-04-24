@@ -1,4 +1,4 @@
-import {Player} from "./player";
+import {Player} from "../player";
 import {Enemy} from "./enemy";
 import {SpitterBullet} from "./spitter-bullet";
 

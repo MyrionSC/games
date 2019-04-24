@@ -1,8 +1,9 @@
 import {Player} from '../objects/player';
-import {Biter} from "../objects/biter";
-import {Enemy} from "../objects/enemy";
-import {Spitter} from "../objects/spitter";
-import {SpitterBullet} from "../objects/spitter-bullet";
+import {Biter} from "../objects/enemies/biter";
+import {Enemy} from "../objects/enemies/enemy";
+import {Spitter} from "../objects/enemies/spitter";
+import {SpitterBullet} from "../objects/enemies/spitter-bullet";
+import {Gople} from "../objects/enemies/gople";
 
 export class GameScene extends Phaser.Scene {
     private background: Phaser.GameObjects.TileSprite;
@@ -17,7 +18,8 @@ export class GameScene extends Phaser.Scene {
     private spawnTimer = 100;
     private spawnDecreaseMultiplier = 0.97;
     // private spawnDecreaseMultiplier = 1;
-    private spawnPossibilities: any = ['biter', 'biter', 'spitter'];
+    // private spawnPossibilities: any = ['biter', 'biter', 'spitter'];
+    private spawnPossibilities: any = ['gople'];
     // private spawnPossibilities: any = ['spitter'];
 
     // non tweakable
@@ -38,6 +40,7 @@ export class GameScene extends Phaser.Scene {
         this.load.image('background', 'assets/Background/grasstile.png');
         this.load.image('player', 'assets/Swordcraft/swordguy.png');
         this.load.image('sword', 'assets/Swordcraft/grandsword.png');
+        this.load.image('gople', 'assets/Swordcraft/green_gople.png');
         this.load.image('biter', 'assets/Swordcraft/biter.png');
         this.load.image('spitter', 'assets/Swordcraft/spitter.png');
         this.load.image('spitter-bullet', 'assets/Swordcraft/spitter.png');
@@ -161,7 +164,9 @@ export class GameScene extends Phaser.Scene {
     private createEnemy(x: number, y: number) {
         const newEnemy = this.spawnPossibilities[Math.floor(Math.random() * this.spawnPossibilities.length)];
 
-        if (newEnemy === 'biter') {
+        if (newEnemy === 'gople') {
+            return new Gople(this, x, y);
+        } else if (newEnemy === 'biter') {
             return new Biter(this, x, y, this.player);
         } else if (newEnemy === 'spitter') {
             return new Spitter(this, x, y, this.player, this.enemies);
