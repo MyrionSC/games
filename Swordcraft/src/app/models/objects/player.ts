@@ -5,6 +5,7 @@ export class Player {
     sword: Sword;
     private cursors: Phaser.Input.Keyboard.CursorKeys;
     private scene: Phaser.Scene;
+    public type = 'player';
 
     private WALKING_SPEED = 5;
     private SWING_FORCE = 0.03;
@@ -30,6 +31,7 @@ export class Player {
             type: 'circle',
             radius: 24
         }, {});
+        this.physics.body.unit = this;
 
         this.cursors = scene.input.keyboard.createCursorKeys();
     }

@@ -28,6 +28,7 @@ export class Spitter extends Enemy {
             type: 'circle',
             radius: this.physics.width * 0.04
         }, {});
+        this.physics.body.unit = this;
 
         this.player = player;
         this.enemies = enemies;

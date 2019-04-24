@@ -11,6 +11,7 @@ export class Gople extends Enemy {
             type: 'circle',
             radius: this.physics.width * 0.04
         }, {});
+        this.physics.body.unit = this;
 
         // move into map based on spawn position
         const moveX = x < 0 ? Math.random() : -Math.random();

@@ -16,14 +16,15 @@ export class Biter extends Enemy {
             type: 'circle',
             radius: this.physics.width * 0.04
         }, {});
+        this.physics.body.unit = this;
 
         this.player = player;
 
         this.dline = scene.add.line(0, 0, 0, 0, 0, 0, 0xff0000);
         // this.dline.setTo(200, 200, 500, 300);
 
-        this.dpoint = scene.add.circle(0 ,0, 5, 0x00ff00);
-        this.dpoint2 = scene.add.circle(0 ,0, 5, 0x0000ff);
+        this.dpoint = scene.add.circle(0 , 0, 5, 0x00ff00);
+        this.dpoint2 = scene.add.circle(0 , 0, 5, 0x0000ff);
     }
 
     update() {

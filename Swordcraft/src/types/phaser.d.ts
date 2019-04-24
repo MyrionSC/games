@@ -57431,6 +57431,8 @@ declare namespace Phaser {
                  */
                 world: Phaser.Physics.Arcade.World;
 
+                unit: Unit;
+
                 /**
                  * The Game Object this Body belongs to.
                  */
@@ -78414,6 +78416,10 @@ declare type Purchase = {
 };
 
 declare type integer = number;
+
+declare type Unit = {
+    type: string;
+}
 
 declare module 'phaser' {
     export = Phaser;

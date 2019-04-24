@@ -2,7 +2,6 @@ import {Player} from '../objects/player';
 import {Biter} from "../objects/enemies/biter";
 import {Enemy} from "../objects/enemies/enemy";
 import {Spitter} from "../objects/enemies/spitter";
-import {SpitterBullet} from "../objects/enemies/spitter-bullet";
 import {Gople} from "../objects/enemies/gople";
 
 export class GameScene extends Phaser.Scene {
@@ -20,7 +19,6 @@ export class GameScene extends Phaser.Scene {
     // private spawnDecreaseMultiplier = 1;
     private spawnPossibilities: any = ['gople', 'gople', 'gople', 'biter', 'spitter'];
     // private spawnPossibilities: any = ['gople'];
-    // private spawnPossibilities: any = ['spitter'];
 
     // non tweakable
     private counter = 1;
@@ -56,9 +54,6 @@ export class GameScene extends Phaser.Scene {
         this.player = new Player(this, 500, 500);
         this.enemies = [];
         this.deadEnemies = [];
-
-        // const b = new SpitterBullet(this, 100, 100, this.enemies);
-        // this.enemies.push(b);
 
         this.input.keyboard.on('keydown', (event) => {
             if (!this.gameOver) {
@@ -141,7 +136,9 @@ export class GameScene extends Phaser.Scene {
         }
     }
 
-    private handleCollisions(event: any, bodyA: any, bodyB: any) {
+    private handleCollisions(event: Phaser.Physics.Matter.Events.CollisionStartEvent, bodyA: Phaser.Physics.Matter.Body, bodyB: Phaser.Physics.Matter.Body) {
+        // todo: use body.unit and body.unit.type for checks
+
         // sword / enemy collision
         if (this.player.sword &&
             (bodyA === this.player.sword.physics.body || bodyB === this.player.sword.physics.body) &&

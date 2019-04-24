@@ -15,6 +15,7 @@ export class SpitterBullet extends Enemy {
             type: 'circle',
             radius: this.physics.width * 0.017
         }, {});
+        this.physics.body.unit = this;
 
         this.physics.setFriction(0, 0);
 
