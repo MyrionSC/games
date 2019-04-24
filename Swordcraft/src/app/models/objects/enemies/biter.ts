@@ -27,6 +27,8 @@ export class Biter extends Enemy {
     }
 
     update() {
+        super.update();
+
         let forceVector = new Phaser.Math.Vector2(
             this.player.physics.x - this.physics.x,
             this.player.physics.y - this.physics.y

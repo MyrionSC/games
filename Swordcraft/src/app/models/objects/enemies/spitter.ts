@@ -14,7 +14,6 @@ export class Spitter extends Enemy {
     private COOL_DOWN_TIME = 90;
 
     private attackCounter = 0;
-    private counter = 0;
     private lastAttack = -1000;
 
     // debug
@@ -41,7 +40,7 @@ export class Spitter extends Enemy {
     }
 
     update() {
-        this.counter++;
+        super.update();
         const dist = Phaser.Math.Distance.Between(this.physics.x, this.physics.y,
             this.player.physics.x, this.player.physics.y);
 
@@ -58,7 +57,7 @@ export class Spitter extends Enemy {
             } else if (dist < this.RETREAT_DIST) {
                 this.physics.setVelocity(moveVector.x * -1, moveVector.y * -1);
             } else {
-                if (this.counter > this.lastAttack + this.COOL_DOWN_TIME) {
+                if (this.liveCounter > this.lastAttack + this.COOL_DOWN_TIME) {
                     this.physics.setVelocity(0, 0);
                     this.startAttack();
                 }
@@ -76,7 +75,7 @@ export class Spitter extends Enemy {
                 if (this.attackCounter >= this.ATTACK_TIME) {
                     console.log("Bang!");
                     this.fireBullet();
-                    this.lastAttack = this.counter;
+                    this.lastAttack = this.liveCounter;
                     this.stopAttack();
                 }
             }

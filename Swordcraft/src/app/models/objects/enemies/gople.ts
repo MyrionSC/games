@@ -19,6 +19,7 @@ export class Gople extends Enemy {
     }
 
     update() {
+        super.update();
         this.physics.setVelocity(this.moveVector.x, this.moveVector.y);
     }
 }

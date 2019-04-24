@@ -25,8 +25,8 @@ export class SpitterBullet extends Enemy {
     }
 
     update() {
-        this.counter++;
-        if (this.counter > this.LIVE_TIME) {
+        super.update();
+        if (this.liveCounter > this.LIVE_TIME) {
             console.log("spitter bullet destroy");
             const index = this.enemies.findIndex(o => o === this);
             console.log(index);

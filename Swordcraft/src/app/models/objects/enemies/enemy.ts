@@ -4,6 +4,7 @@ export abstract class Enemy {
 
     isAttacking = false;
     type: string;
+    public liveCounter = 0;
 
     constructor(scene: Phaser.Scene, x: number, y: number, key: string) {
         this.scene = scene;
@@ -11,7 +12,9 @@ export abstract class Enemy {
         this.type = key;
     }
 
-    update() {}
+    update() {
+        this.liveCounter++;
+    }
 
     destroy() {
         this.scene.matter.world.remove(this.physics, true);

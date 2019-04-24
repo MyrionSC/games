@@ -18,8 +18,8 @@ export class GameScene extends Phaser.Scene {
     private spawnTimer = 100;
     private spawnDecreaseMultiplier = 0.97;
     // private spawnDecreaseMultiplier = 1;
-    // private spawnPossibilities: any = ['biter', 'biter', 'spitter'];
-    private spawnPossibilities: any = ['gople'];
+    private spawnPossibilities: any = ['gople', 'gople', 'gople', 'biter', 'spitter'];
+    // private spawnPossibilities: any = ['gople'];
     // private spawnPossibilities: any = ['spitter'];
 
     // non tweakable
@@ -112,14 +112,24 @@ export class GameScene extends Phaser.Scene {
                 this.lastSpawn = this.counter;
             }
 
-            // Remove dead guys outside bounds
-            if (this.counter % 10 === 0) {
+            // Remove enemies outside bounds
+            if (this.counter % 6 === 0) {
                 for (const deadEnemy of this.deadEnemies) {
                     if (!Phaser.Geom.Rectangle.Overlaps(this.gameBounds, deadEnemy.physics.getBounds())) {
                         const index = this.deadEnemies.findIndex(o => o === deadEnemy);
                         if (index !== -1) {
                             this.deadEnemies.splice(index, 1);
                             deadEnemy.destroy();
+                        }
+                    }
+                }
+
+                for (const enemy of this.enemies) {
+                    if (enemy.liveCounter > 100 && !Phaser.Geom.Rectangle.Overlaps(this.gameBounds, enemy.physics.getBounds())) {
+                        const index = this.enemies.findIndex(o => o === enemy);
+                        if (index !== -1) {
+                            this.enemies.splice(index, 1);
+                            enemy.destroy();
                         }
                     }
                 }
