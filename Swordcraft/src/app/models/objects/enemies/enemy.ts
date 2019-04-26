@@ -1,9 +1,10 @@
 export abstract class Enemy {
-    physics: Phaser.Physics.Matter.Image;
-    scene: Phaser.Scene;
+    public physics: Phaser.Physics.Matter.Image;
+    public scene: Phaser.Scene;
 
-    isAttacking = false;
-    type: string;
+    public isAttacking = false;
+    public isDead = false;
+    public type: string;
     public liveCounter = 0;
 
     constructor(scene: Phaser.Scene, x: number, y: number, key: string) {

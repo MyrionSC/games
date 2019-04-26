@@ -98,12 +98,9 @@ export class Spitter extends Enemy {
             this.player.physics.x - this.physics.x,
             this.player.physics.y - this.physics.y
         ).normalize();
-
         const b = new SpitterBullet(this.scene,
-            this.physics.x + directionVector.x * 5,
-            this.physics.y + directionVector.y * 5, this.enemies, directionVector);
-
+            this.physics.x + directionVector.x * 25,
+            this.physics.y + directionVector.y * 25, this.enemies, directionVector);
         this.enemies.push(b);
-        // b.physics.setVelocityY(10);
     }
 }

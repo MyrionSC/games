@@ -11,7 +11,6 @@ export class GameScene extends Phaser.Scene {
     // objects
     private player: Player;
     private enemies: Enemy[];
-    private deadEnemies: any[];
 
     // tweakable vars
     private spawnTimer = 100;
@@ -53,7 +52,6 @@ export class GameScene extends Phaser.Scene {
 
         this.player = new Player(this, 500, 500);
         this.enemies = [];
-        this.deadEnemies = [];
 
         this.input.keyboard.on('keydown', (event) => {
             if (!this.gameOver) {
@@ -109,16 +107,6 @@ export class GameScene extends Phaser.Scene {
 
             // Remove enemies outside bounds
             if (this.counter % 6 === 0) {
-                for (const deadEnemy of this.deadEnemies) {
-                    if (!Phaser.Geom.Rectangle.Overlaps(this.gameBounds, deadEnemy.physics.getBounds())) {
-                        const index = this.deadEnemies.findIndex(o => o === deadEnemy);
-                        if (index !== -1) {
-                            this.deadEnemies.splice(index, 1);
-                            deadEnemy.destroy();
-                        }
-                    }
-                }
-
                 for (const enemy of this.enemies) {
                     if (enemy.liveCounter > 100 && !Phaser.Geom.Rectangle.Overlaps(this.gameBounds, enemy.physics.getBounds())) {
                         const index = this.enemies.findIndex(o => o === enemy);
@@ -136,7 +124,8 @@ export class GameScene extends Phaser.Scene {
         }
     }
 
-    private handleCollisions(event: Phaser.Physics.Matter.Events.CollisionStartEvent, bodyA: Phaser.Physics.Matter.Body, bodyB: Phaser.Physics.Matter.Body) {
+    private handleCollisions(event: Phaser.Physics.Matter.Events.CollisionStartEvent,
+                             bodyA: Phaser.Physics.Matter.Body, bodyB: Phaser.Physics.Matter.Body) {
         // todo: use body.unit and body.unit.type for checks
 
         // sword / enemy collision
@@ -147,7 +136,7 @@ export class GameScene extends Phaser.Scene {
             const enemyBody = this.enemies.some(b => bodyA === b.physics.body) ? bodyA : bodyB;
             const index = this.enemies.findIndex((b: Biter) => b.physics.body === enemyBody);
             const deadEnemy = this.enemies.splice(index, 1)[0];
-            this.deadEnemies.push(deadEnemy);
+            deadEnemy.isDead = true;
             enemyBody.gameObject.setTint(0x888888);
             this.score += 100;
         }
