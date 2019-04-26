@@ -3,6 +3,7 @@ import {Biter} from "../objects/enemies/biter";
 import {Enemy} from "../objects/enemies/enemy";
 import {Spitter} from "../objects/enemies/spitter";
 import {Gople} from "../objects/enemies/gople";
+import * as helper from "../helpers";
 
 export class GameScene extends Phaser.Scene {
     private background: Phaser.GameObjects.TileSprite;
@@ -15,9 +16,8 @@ export class GameScene extends Phaser.Scene {
     // tweakable vars
     private spawnTimer = 100;
     private spawnDecreaseMultiplier = 0.97;
-    // private spawnDecreaseMultiplier = 1;
-    private spawnPossibilities: any = ['gople', 'gople', 'gople', 'biter', 'spitter'];
-    // private spawnPossibilities: any = ['gople'];
+    private spawnPossibilities = ['gople', 'gople', 'gople', 'biter', 'spitter'];
+    private enemyTypes = ['gople', 'biter', 'spitter', 'spitter-bullet'];
 
     // non tweakable
     private counter = 1;
@@ -77,7 +77,9 @@ export class GameScene extends Phaser.Scene {
             // updates
             this.player.update();
             for (const enemy of this.enemies) {
-                enemy.update();
+                if (!enemy.isDead) {
+                    enemy.update();
+                }
             }
 
             // Spawn new enemy
@@ -128,29 +130,37 @@ export class GameScene extends Phaser.Scene {
                              bodyA: Phaser.Physics.Matter.Body, bodyB: Phaser.Physics.Matter.Body) {
         // todo: use body.unit and body.unit.type for checks
 
+        const typeA = bodyA.unit.type;
+        const typeB = bodyB.unit.type;
+        const types = [bodyA.unit.type, bodyB.unit.type];
+        console.log(types);
+
         // sword / enemy collision
-        if (this.player.sword &&
-            (bodyA === this.player.sword.physics.body || bodyB === this.player.sword.physics.body) &&
-            (this.enemies.some(b => bodyA === b.physics.body)  || this.enemies.some(b => bodyB === b.physics.body))) {
-            const sword = bodyA === this.player.sword.physics.body ? bodyA : bodyB;
+        if (types.includes('sword')) {
             const enemyBody = this.enemies.some(b => bodyA === b.physics.body) ? bodyA : bodyB;
             const index = this.enemies.findIndex((b: Biter) => b.physics.body === enemyBody);
+            if (index === -1) return;
             const deadEnemy = this.enemies.splice(index, 1)[0];
             deadEnemy.isDead = true;
             enemyBody.gameObject.setTint(0x888888);
             this.score += 100;
         }
 
-        // player / biter collision
+        // enemy / enemy collision
+        if (this.enemyTypes.includes(typeA) && this.enemyTypes.includes(typeB)) {
+            // stun enemies
+        }
+
+        // player / enemy collision
         if ((bodyA === this.player.physics.body || bodyB === this.player.physics.body) &&
-            (this.enemies.some(b => bodyA === b.physics.body)  || this.enemies.some(b => bodyB === b.physics.body))) {
+            (this.enemies.some(b => bodyA === b.physics.body) || this.enemies.some(b => bodyB === b.physics.body))) {
             const player = bodyA === this.player.physics.body ? bodyA : bodyB;
-            const biter = this.enemies.some(b => bodyA === b.physics.body) ? bodyA : bodyB;
-            console.log("player biter coll");
+            const enemy = bodyB === this.player.physics.body ? bodyA : bodyB;
+            console.log("player enemy coll");
             player.gameObject.setTint(0x888888);
 
             this.gameOver = true;
-            const t = this.add.text(- 200, -200,
+            const t = this.add.text(-200, -200,
                 "\t\tGAME OVER\nFinal score: " + this.score,
                 {fontSize: '48px', color: '#000000', textAlign: 'center'});
             t.setPosition(this.game.config.width / 2 - t.width / 2, this.game.config.height / 2 - t.height / 2);
