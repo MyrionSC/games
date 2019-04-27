@@ -20,23 +20,23 @@ export class Biter extends Enemy {
 
         this.player = player;
 
-        this.dline = scene.add.line(0, 0, 0, 0, 0, 0, 0xff0000);
+        // this.dline = scene.add.line(0, 0, 0, 0, 0, 0, 0xff0000);
         // this.dline.setTo(200, 200, 500, 300);
 
-        this.dpoint = scene.add.circle(0 , 0, 5, 0x00ff00);
-        this.dpoint2 = scene.add.circle(0 , 0, 5, 0x0000ff);
+        // this.dpoint = scene.add.circle(0 , 0, 5, 0x00ff00);
+        // this.dpoint2 = scene.add.circle(0 , 0, 5, 0x0000ff);
     }
 
     update() {
-        super.update();
+        super.update(() => {
+            let forceVector = new Phaser.Math.Vector2(
+                this.player.physics.x - this.physics.x,
+                this.player.physics.y - this.physics.y
+            );
 
-        let forceVector = new Phaser.Math.Vector2(
-            this.player.physics.x - this.physics.x,
-            this.player.physics.y - this.physics.y
-        );
-
-        forceVector = forceVector.normalize().scale(this.accel);
-        this.physics.applyForce(forceVector);
+            forceVector = forceVector.normalize().scale(this.accel);
+            this.physics.applyForce(forceVector);
+        });
         // this.dline.setTo(this.physics.x, this.physics.y, this.physics.x + forceVector.x, this.physics.y + forceVector.y);
         //
         // // this.dpoint2.setPosition(this.physics.x, this.physics.y);

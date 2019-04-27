@@ -41,46 +41,47 @@ export class Spitter extends Enemy {
     }
 
     update() {
-        super.update();
-        const dist = Phaser.Math.Distance.Between(this.physics.x, this.physics.y,
-            this.player.physics.x, this.player.physics.y);
+        super.update(() => {
+            const dist = Phaser.Math.Distance.Between(this.physics.x, this.physics.y,
+                this.player.physics.x, this.player.physics.y);
 
-        if (!this.isAttacking) {
-            let moveVector = new Phaser.Math.Vector2(
-                this.player.physics.x - this.physics.x,
-                this.player.physics.y - this.physics.y
-            );
-            moveVector = moveVector.normalize().scale(this.MOVE_SPEED);
+            if (!this.isAttacking) {
+                let moveVector = new Phaser.Math.Vector2(
+                    this.player.physics.x - this.physics.x,
+                    this.player.physics.y - this.physics.y
+                );
+                moveVector = moveVector.normalize().scale(this.MOVE_SPEED);
 
-            // advance to shooting range
-            if (dist > this.SHOOTING_DIST) {
-                this.physics.setVelocity(moveVector.x, moveVector.y);
-            } else if (dist < this.RETREAT_DIST) {
-                this.physics.setVelocity(moveVector.x * -1, moveVector.y * -1);
-            } else {
-                if (this.liveCounter > this.lastAttack + this.COOL_DOWN_TIME) {
-                    this.physics.setVelocity(0, 0);
-                    this.startAttack();
+                // advance to shooting range
+                if (dist > this.SHOOTING_DIST) {
+                    this.physics.setVelocity(moveVector.x, moveVector.y);
+                } else if (dist < this.RETREAT_DIST) {
+                    this.physics.setVelocity(moveVector.x * -1, moveVector.y * -1);
+                } else {
+                    if (this.liveCounter > this.lastAttack + this.COOL_DOWN_TIME) {
+                        this.physics.setVelocity(0, 0);
+                        this.startAttack();
+                    }
                 }
-            }
-        } else {
-            // if player is too close or far away, cancel attack
-            if (dist > this.SHOOTING_DIST || dist < this.RETREAT_DIST) {
-                this.stopAttack();
             } else {
-                this.attackCounter++;
-
-                const hexTint = (256 - this.attackCounter).toString(16);
-                this.physics.body.gameObject.setTint(Number('0xffff' + hexTint));
-
-                if (this.attackCounter >= this.ATTACK_TIME) {
-                    console.log("Bang!");
-                    this.fireBullet();
-                    this.lastAttack = this.liveCounter;
+                // if player is too close or far away, cancel attack
+                if (dist > this.SHOOTING_DIST || dist < this.RETREAT_DIST) {
                     this.stopAttack();
+                } else {
+                    this.attackCounter++;
+
+                    const hexTint = (256 - this.attackCounter).toString(16);
+                    this.physics.body.gameObject.setTint(Number('0xffff' + hexTint));
+
+                    if (this.attackCounter >= this.ATTACK_TIME) {
+                        console.log("Bang!");
+                        this.fireBullet();
+                        this.lastAttack = this.liveCounter;
+                        this.stopAttack();
+                    }
                 }
             }
-        }
+        });
     }
 
     private startAttack() {

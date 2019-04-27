@@ -27,8 +27,8 @@ export class Sword {
         scene.matter.world.add(this.swordConstraint);
     }
 
-    update(): void {
-    }
+    update(): void {}
+    stun() {}
 
     delete(scene: Phaser.Scene) {
         this.physics.visible = false;

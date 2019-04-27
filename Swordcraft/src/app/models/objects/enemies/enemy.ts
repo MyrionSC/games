@@ -2,7 +2,11 @@ export abstract class Enemy {
     public physics: Phaser.Physics.Matter.Image;
     public scene: Phaser.Scene;
 
+    public STUNNED_TIME = 90;
+
     public isAttacking = false;
+    public isStunned = false;
+    public stunnedCounter = 0;
     public isDead = false;
     public type: string;
     public liveCounter = 0;
@@ -13,8 +17,21 @@ export abstract class Enemy {
         this.type = key;
     }
 
-    update() {
+    update(callback?: () => void): void {
         this.liveCounter++;
+        if (!this.isStunned && callback) {
+            callback();
+        } else {
+            this.stunnedCounter++;
+            if (this.stunnedCounter >= this.STUNNED_TIME) {
+                this.isStunned = false;
+                this.stunnedCounter = 0;
+            }
+        }
+    }
+
+    stun() {
+        this.isStunned = true;
     }
 
     destroy() {

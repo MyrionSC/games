@@ -11,7 +11,10 @@ export class Player {
     private SWING_FORCE = 0.03;
     private SWING_TIME = 49;
     private ATTACK_TIME = 50;
+    public STUNNED_TIME = 90;
 
+    public isStunned = false;
+    public stunnedCounter = 0;
     private startSwingAngle = 0;
     private endSwingAngle = 0;
 
@@ -37,7 +40,16 @@ export class Player {
     }
 
     update(): void {
-        if (this.isAttacking) {
+        if (this.isStunned) {
+            if (this.isAttacking) {
+                this.endAttack();
+            }
+            this.stunnedCounter++;
+            if (this.stunnedCounter >= this.STUNNED_TIME) {
+                this.isStunned = false;
+                this.stunnedCounter = 0;
+            }
+        } else if (this.isAttacking) {
             this.attackCounter++;
 
             // start swinging
@@ -64,6 +76,10 @@ export class Player {
         } else {
             this.handleInput();
         }
+    }
+
+    stun() {
+        this.isStunned = true;
     }
 
     startAttack(): void {

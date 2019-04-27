@@ -149,6 +149,7 @@ export class GameScene extends Phaser.Scene {
         // enemy / enemy collision
         if (this.enemyTypes.includes(typeA) && this.enemyTypes.includes(typeB)) {
             // stun enemies
+            bodyA.unit.stun();
         }
 
         // player / enemy collision
