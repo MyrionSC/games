@@ -144,16 +144,12 @@ export class GameScene extends Phaser.Scene {
             deadEnemy.isDead = true;
             enemyBody.gameObject.setTint(0x888888);
             this.score += 100;
-        }
-
-        // enemy / enemy collision
-        if (this.enemyTypes.includes(typeA) && this.enemyTypes.includes(typeB)) {
-            // stun enemies
+        } else if (this.enemyTypes.includes(typeA) && this.enemyTypes.includes(typeB)) {
+            // enemy / enemy collision
             bodyA.unit.stun();
-        }
-
-        // player / enemy collision
-        if ((bodyA === this.player.physics.body || bodyB === this.player.physics.body) &&
+            bodyB.unit.stun();
+        } else if ((bodyA === this.player.physics.body || bodyB === this.player.physics.body) &&
+            // player / enemy collision
             (this.enemies.some(b => bodyA === b.physics.body) || this.enemies.some(b => bodyB === b.physics.body))) {
             const player = bodyA === this.player.physics.body ? bodyA : bodyB;
             const enemy = bodyB === this.player.physics.body ? bodyA : bodyB;
