@@ -153,14 +153,18 @@ export class GameScene extends Phaser.Scene {
             (this.enemies.some(b => bodyA === b.physics.body) || this.enemies.some(b => bodyB === b.physics.body))) {
             const player = bodyA === this.player.physics.body ? bodyA : bodyB;
             const enemy = bodyB === this.player.physics.body ? bodyA : bodyB;
-            console.log("player enemy coll");
-            player.gameObject.setTint(0x888888);
 
-            this.gameOver = true;
-            const t = this.add.text(-200, -200,
-                "\t\tGAME OVER\nFinal score: " + this.score,
-                {fontSize: '48px', color: '#000000', textAlign: 'center'});
-            t.setPosition(this.game.config.width / 2 - t.width / 2, this.game.config.height / 2 - t.height / 2);
+            if (enemy.unit.type !== 'biter') {
+                player.unit.stun();
+                enemy.unit.stun();
+            } else {
+                player.gameObject.setTint(0x888888);
+                this.gameOver = true;
+                const t = this.add.text(-200, -200,
+                    "\t\tGAME OVER\nFinal score: " + this.score,
+                    {fontSize: '48px', color: '#000000', textAlign: 'center'});
+                t.setPosition(this.game.config.width / 2 - t.width / 2, this.game.config.height / 2 - t.height / 2);
+            }
         }
     }
 
