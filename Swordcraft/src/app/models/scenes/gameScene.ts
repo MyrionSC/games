@@ -3,7 +3,6 @@ import {Biter} from "../objects/enemies/biter";
 import {Enemy} from "../objects/enemies/enemy";
 import {Spitter} from "../objects/enemies/spitter";
 import {Gople} from "../objects/enemies/gople";
-import * as helper from "../helpers";
 
 export class GameScene extends Phaser.Scene {
     private background: Phaser.GameObjects.TileSprite;
@@ -16,7 +15,8 @@ export class GameScene extends Phaser.Scene {
     // tweakable vars
     private spawnTimer = 100;
     private spawnDecreaseMultiplier = 0.97;
-    private spawnPossibilities = ['gople', 'gople', 'gople', 'biter', 'spitter'];
+    private spawnPossibilities = ['biter'];
+    // private spawnPossibilities = ['gople', 'gople', 'gople', 'biter', 'spitter'];
     private enemyTypes = ['gople', 'biter', 'spitter', 'spitter-bullet'];
 
     // non tweakable
@@ -99,12 +99,12 @@ export class GameScene extends Phaser.Scene {
                 const newEnemy = this.createEnemy(pos[0], pos[1]);
                 this.enemies.push(newEnemy);
 
-                // this.lastSpawn = 100000;
-                this.spawnTimer = this.spawnTimer * this.spawnDecreaseMultiplier;
-                if (this.spawnTimer < 20) {
-                    this.spawnTimer = 20;
-                }
-                this.lastSpawn = this.counter;
+                this.lastSpawn = 100000;
+                // this.spawnTimer = this.spawnTimer * this.spawnDecreaseMultiplier;
+                // if (this.spawnTimer < 20) {
+                //     this.spawnTimer = 20;
+                // }
+                // this.lastSpawn = this.counter;
             }
 
             // Remove enemies outside bounds

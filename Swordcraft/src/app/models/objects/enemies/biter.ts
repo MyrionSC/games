@@ -5,9 +5,10 @@ export class Biter extends Enemy {
     accel = 0.0003;
     private player: Player;
 
-    private dline: Phaser.GameObjects.Line;
-    private dpoint: Phaser.GameObjects.Arc;
-    private dpoint2: Phaser.GameObjects.Arc;
+    private MAX_TURN_DEG = 1;
+
+    private distline: Phaser.GameObjects.Line;
+    private dirline: Phaser.GameObjects.Line;
 
     constructor(scene: Phaser.Scene, x: number, y: number, player: Player) {
         super(scene, x, y, 'biter');
@@ -20,11 +21,23 @@ export class Biter extends Enemy {
 
         this.player = player;
 
-        // this.dline = scene.add.line(0, 0, 0, 0, 0, 0, 0xff0000);
-        // this.dline.setTo(200, 200, 500, 300);
+        // set startangle as facing player
+        let playerDirectionVector = new Phaser.Math.Vector2(
+            this.player.physics.x - this.physics.x,
+            this.player.physics.y - this.physics.y
+        ).normalize();
 
-        // this.dpoint = scene.add.circle(0 , 0, 5, 0x00ff00);
-        // this.dpoint2 = scene.add.circle(0 , 0, 5, 0x0000ff);
+        const radian = this.physics.angle / 360 * 2 * Math.PI;
+        let angleVector = new Phaser.Math.Vector2(
+            Math.cos(radian),
+            Math.sin(radian)
+        ).scale(100);
+
+
+
+
+        this.distline = scene.add.line(0, 0, 0, 0, 0, 0, 0xff0000);
+        this.dirline = scene.add.line(0, 0, 0, 0, 0, 0, 0x0000ff);
     }
 
     update() {
@@ -33,15 +46,22 @@ export class Biter extends Enemy {
                 this.player.physics.x - this.physics.x,
                 this.player.physics.y - this.physics.y
             );
+            this.distline.setTo(this.physics.x, this.physics.y, this.physics.x + forceVector.x, this.physics.y + forceVector.y);
+
+
+            // this.physics.setAngle(this.physics.angle + 1);
+            const radian = this.physics.angle / 360 * 2 * Math.PI;
+            //
+            let angleVector = new Phaser.Math.Vector2(
+                Math.cos(radian),
+                Math.sin(radian)
+            ).scale(100);
+
+            this.dirline.setTo(this.physics.x, this.physics.y, this.physics.x + angleVector.x, this.physics.y + angleVector.y);
 
             forceVector = forceVector.normalize().scale(this.accel);
             this.physics.applyForce(forceVector);
         });
-        // this.dline.setTo(this.physics.x, this.physics.y, this.physics.x + forceVector.x, this.physics.y + forceVector.y);
-        //
-        // // this.dpoint2.setPosition(this.physics.x, this.physics.y);
-        // this.dpoint2.setPosition(this.physics.x, this.physics.y);
-        // this.dpoint.setPosition(this.physics.x + forceVector.x, this.physics.y + forceVector.y);
     }
 
 
