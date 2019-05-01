@@ -63,6 +63,8 @@ export class GameScene extends Phaser.Scene {
             }
         });
 
+        this.enemies.push(new Biter(this, 700, 200, this.player));
+
         this.matter.world.on('collisionstart', (event, bodyA, bodyB) => {
             this.handleCollisions(event, bodyA, bodyB);
         });
@@ -83,29 +85,29 @@ export class GameScene extends Phaser.Scene {
             }
 
             // Spawn new enemy
-            if (this.counter > this.lastSpawn + this.spawnTimer) {
-                let pos = [0, 0];
-                const spawnDirection = Math.random();
-                if (spawnDirection < 0.25) { // top
-                    pos = [Math.random() * this.game.config.width, -50];
-                } else if (spawnDirection < 0.5) { // right
-                    pos = [this.game.config.width + 50, Math.random() * this.game.config.height];
-                } else if (spawnDirection < 0.75) { // bottom
-                    pos = [Math.random() * this.game.config.width, this.game.config.height + 50];
-                } else { // left
-                    pos = [-50, Math.random() * this.game.config.height];
-                }
-
-                const newEnemy = this.createEnemy(pos[0], pos[1]);
-                this.enemies.push(newEnemy);
-
-                this.lastSpawn = 100000;
-                // this.spawnTimer = this.spawnTimer * this.spawnDecreaseMultiplier;
-                // if (this.spawnTimer < 20) {
-                //     this.spawnTimer = 20;
-                // }
-                // this.lastSpawn = this.counter;
-            }
+            // if (this.counter > this.lastSpawn + this.spawnTimer) {
+            //     let pos = [0, 0];
+            //     const spawnDirection = Math.random();
+            //     if (spawnDirection < 0.25) { // top
+            //         pos = [Math.random() * this.game.config.width, -50];
+            //     } else if (spawnDirection < 0.5) { // right
+            //         pos = [this.game.config.width + 50, Math.random() * this.game.config.height];
+            //     } else if (spawnDirection < 0.75) { // bottom
+            //         pos = [Math.random() * this.game.config.width, this.game.config.height + 50];
+            //     } else { // left
+            //         pos = [-50, Math.random() * this.game.config.height];
+            //     }
+            //
+            //     const newEnemy = this.createEnemy(pos[0], pos[1]);
+            //     this.enemies.push(newEnemy);
+            //
+            //     this.lastSpawn = 100000;
+            //     // this.spawnTimer = this.spawnTimer * this.spawnDecreaseMultiplier;
+            //     // if (this.spawnTimer < 20) {
+            //     //     this.spawnTimer = 20;
+            //     // }
+            //     // this.lastSpawn = this.counter;
+            // }
 
             // Remove enemies outside bounds
             if (this.counter % 6 === 0) {
