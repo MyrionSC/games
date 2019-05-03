@@ -6,7 +6,7 @@ export class Biter extends Enemy {
 
     private MAX_TURN_RAD = 0.03;
     private MOVE_SPEED = 3;
-    private LUNGE_SPEED = 5;
+    private LUNGE_SPEED = 6;
     private ATTACK_TIME = 60;
     private ATTACK_DISTANCE = 250;
     private ATTACK_ANGLE_RAD = 0.1;
@@ -77,12 +77,14 @@ export class Biter extends Enemy {
     startAttack(moveVector: Phaser.Math.Vector2) {
         this.isAttacking = true;
         this.lungeDirection = new Phaser.Math.Vector2(moveVector).normalize().scale(this.LUNGE_SPEED);
+        this.physics.setTexture('biter-attacking');
     }
 
     stopAttack() {
         this.isAttacking = false;
         this.attackCounter = 0;
         this.lungeDirection = undefined;
+        this.physics.setTexture('biter');
     }
 
     stun() {

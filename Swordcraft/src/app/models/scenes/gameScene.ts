@@ -13,7 +13,7 @@ export class GameScene extends Phaser.Scene {
     private enemies: Enemy[];
 
     // tweakable vars
-    private spawnTimer = 80;
+    private spawnTimer = 90;
     private spawnDecreaseMultiplier = 0.97;
     // private spawnPossibilities = ['biter'];
     private spawnPossibilities = ['gople', 'gople', 'gople', 'biter', 'spitter'];
@@ -39,6 +39,7 @@ export class GameScene extends Phaser.Scene {
         this.load.image('sword', 'assets/Swordcraft/grandsword.png');
         this.load.image('gople', 'assets/Swordcraft/green_gople.png');
         this.load.image('biter', 'assets/Swordcraft/biter.png');
+        this.load.image('biter-attacking', 'assets/Swordcraft/biter_attacking.png');
         this.load.image('spitter', 'assets/Swordcraft/spitter.png');
         this.load.image('spitter-bullet', 'assets/Swordcraft/spitter.png');
     }
@@ -63,12 +64,9 @@ export class GameScene extends Phaser.Scene {
             }
         });
 
-        this.enemies.push(new Biter(this, 700, 200, this.player));
-
         this.matter.world.on('collisionstart', (event, bodyA, bodyB) => {
             this.handleCollisions(event, bodyA, bodyB);
         });
-
 
         this.scoreText = this.add.text(10, 10, this.scoreText + "",
             {fontSize: '18px', color: '#222222'});
@@ -100,10 +98,11 @@ export class GameScene extends Phaser.Scene {
 
                 const newEnemy = this.createEnemy(pos[0], pos[1]);
                 this.enemies.push(newEnemy);
+                console.log(this.enemies.length);
 
                 this.spawnTimer = this.spawnTimer * this.spawnDecreaseMultiplier;
-                if (this.spawnTimer < 20) {
-                    this.spawnTimer = 20;
+                if (this.spawnTimer < 30) {
+                    this.spawnTimer = 30;
                 }
                 this.lastSpawn = this.counter;
             }
@@ -134,7 +133,6 @@ export class GameScene extends Phaser.Scene {
         const typeA = bodyA.unit.type;
         const typeB = bodyB.unit.type;
         const types = [bodyA.unit.type, bodyB.unit.type];
-        console.log(types);
 
         // sword / enemy collision
         if (types.includes('sword')) {

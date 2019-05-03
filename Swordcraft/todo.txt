@@ -1,0 +1,8 @@
+
+animation or tint change when stunned
+restrict player leaving area
+
+multiple scenes
+    menu
+    single player
+    coop
