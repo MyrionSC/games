@@ -31,7 +31,8 @@ const config: GameConfig = {
         touch: false,
         gamepad: false
     },
-    backgroundColor: '#3A99D9'
+    backgroundColor: '#222222'
+    // backgroundColor: '#3A99D9'
 };
 
 export class Game extends Phaser.Game {
