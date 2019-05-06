@@ -37,7 +37,16 @@ export class Player {
         }, {});
         this.physics.body.unit = this;
 
-        this.cursors = scene.input.keyboard.createCursorKeys();
+        // this.cursors = scene.input.keyboard.createCursorKeys();
+
+        // todo: choose keys for player1 and 2
+
+        this.cursors = scene.input.keyboard.addKeys(
+            {up: Phaser.Input.Keyboard.KeyCodes.W,
+                down: Phaser.Input.Keyboard.KeyCodes.S,
+                left: Phaser.Input.Keyboard.KeyCodes.A,
+                right: Phaser.Input.Keyboard.KeyCodes.D
+            });
     }
 
     update(): void {
@@ -89,10 +98,10 @@ export class Player {
         this.sword = new Sword(this.scene, this.physics.x, this.physics.y, this);
 
         this.startSwingAngle = this.physics.angle + this.sword.startAngle;
-        if (this.startSwingAngle > 180) this.startSwingAngle -= 360;
+        if (this.startSwingAngle > 180) { this.startSwingAngle -= 360; }
 
         this.endSwingAngle = this.startSwingAngle - this.sword.endSwingAngle;
-        if (this.endSwingAngle < -180) this.endSwingAngle += 360;
+        if (this.endSwingAngle < -180) { this.endSwingAngle += 360; }
 
         this.sword.physics.setAngle(this.startSwingAngle);
     }

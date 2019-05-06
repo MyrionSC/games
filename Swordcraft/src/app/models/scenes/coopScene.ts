@@ -49,13 +49,12 @@ export class CoopScene extends Phaser.Scene {
 
     create(): void {
         this.gameBounds = new Phaser.Geom.Rectangle(0, 0, this.game.config.width, this.game.config.height);
-
-        // create background
         this.background = this.add.tileSprite(Number(Number(this.game.config.width)) / 2, Number(this.game.config.height) / 2,
             Number(this.game.config.width), Number(this.game.config.height), 'background');
 
         this.player1 = new Player(this, 300, 500, 'player');
         this.player2 = new Player(this, 700, 500, 'player2');
+        this.players = [this.player1, this.player2];
         this.enemies = [];
 
         this.input.keyboard.on('keydown', (event) => {
