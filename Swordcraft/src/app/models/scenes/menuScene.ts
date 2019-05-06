@@ -46,7 +46,7 @@ export class MenuScene extends Phaser.Scene {
             });
         coopButton.setInteractive();
         coopButton.on('pointerdown', () => {
-            console.log("start coop scene");
+            this.scene.start('CoopScene');
         });
         coopButton.on('pointerover', () => {
             coopButton.setStyle({

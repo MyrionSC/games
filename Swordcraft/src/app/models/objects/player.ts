@@ -14,6 +14,7 @@ export class Player {
     public STUNNED_TIME = 90;
 
     public isStunned = false;
+    public isDead = false;
     public stunnedCounter = 0;
     private startSwingAngle = 0;
     private endSwingAngle = 0;
@@ -26,9 +27,9 @@ export class Player {
     // private debugPointSword1: Phaser.GameObjects.Arc;
     // private debugPointSword2: Phaser.GameObjects.Arc;
 
-    constructor(scene: Phaser.Scene, x: number, y: number) {
+    constructor(scene: Phaser.Scene, x: number, y: number, key?: string) {
         this.scene = scene;
-        this.physics = scene.matter.add.image(x, y, 'player');
+        this.physics = scene.matter.add.image(x, y, key ? key : 'player');
         this.physics.setScale(0.15);
         this.physics.setBody({
             type: 'circle',

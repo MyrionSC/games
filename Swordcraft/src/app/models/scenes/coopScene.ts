@@ -4,12 +4,14 @@ import {Enemy} from "../objects/enemies/enemy";
 import {Spitter} from "../objects/enemies/spitter";
 import {Gople} from "../objects/enemies/gople";
 
-export class GameScene extends Phaser.Scene {
+export class CoopScene extends Phaser.Scene {
     private background: Phaser.GameObjects.TileSprite;
     private gameBounds: Phaser.Geom.Rectangle;
 
     // objects
-    private player: Player;
+    private player1: Player;
+    private player2: Player;
+    private players: Player[];
     private enemies: Enemy[];
 
     // tweakable vars
@@ -29,13 +31,14 @@ export class GameScene extends Phaser.Scene {
 
     constructor() {
         super({
-            key: 'GameScene'
+            key: 'CoopScene'
         });
     }
 
     preload(): void {
         this.load.image('background', 'assets/Background/grasstile.png');
         this.load.image('player', 'assets/Swordcraft/swordguy.png');
+        this.load.image('player2', 'assets/Swordcraft/swordguy_blue.png');
         this.load.image('sword', 'assets/Swordcraft/grandsword.png');
         this.load.image('gople', 'assets/Swordcraft/green_gople.png');
         this.load.image('biter', 'assets/Swordcraft/biter.png');
@@ -51,14 +54,15 @@ export class GameScene extends Phaser.Scene {
         this.background = this.add.tileSprite(Number(Number(this.game.config.width)) / 2, Number(this.game.config.height) / 2,
             Number(this.game.config.width), Number(this.game.config.height), 'background');
 
-        this.player = new Player(this, 500, 500);
+        this.player1 = new Player(this, 300, 500, 'player');
+        this.player2 = new Player(this, 700, 500, 'player2');
         this.enemies = [];
 
         this.input.keyboard.on('keydown', (event) => {
             if (!this.gameOver) {
                 if (event.key === "q") {
-                    if (!this.player.isAttacking) {
-                        this.player.startAttack();
+                    if (!this.player1.isAttacking) {
+                        this.player1.startAttack();
                     }
                 }
             }
@@ -75,7 +79,7 @@ export class GameScene extends Phaser.Scene {
     update(): void {
         if (!this.gameOver) {
             // updates
-            this.player.update();
+            this.player1.update();
             for (const enemy of this.enemies) {
                 if (!enemy.isDead) {
                     enemy.update();
@@ -146,11 +150,11 @@ export class GameScene extends Phaser.Scene {
             // enemy / enemy collision
             bodyA.unit.stun();
             bodyB.unit.stun();
-        } else if ((bodyA === this.player.physics.body || bodyB === this.player.physics.body) &&
+        } else if ((bodyA === this.player1.physics.body || bodyB === this.player1.physics.body) &&
             // player / enemy collision
             (this.enemies.some(b => bodyA === b.physics.body) || this.enemies.some(b => bodyB === b.physics.body))) {
-            const player = bodyA === this.player.physics.body ? bodyA : bodyB;
-            const enemy = bodyB === this.player.physics.body ? bodyA : bodyB;
+            const player = typeA === 'player' ? bodyA : bodyB;
+            const enemy = typeB === 'player' ? bodyA : bodyB;
 
             if (enemy.unit.type !== 'biter') {
                 player.unit.stun();
@@ -172,9 +176,9 @@ export class GameScene extends Phaser.Scene {
         if (newEnemy === 'gople') {
             return new Gople(this, x, y);
         } else if (newEnemy === 'biter') {
-            return new Biter(this, x, y, this.player);
+            return new Biter(this, x, y, this.player1);
         } else if (newEnemy === 'spitter') {
-            return new Spitter(this, x, y, this.player, this.enemies);
+            return new Spitter(this, x, y, this.player1, this.enemies);
         }
     }
 }

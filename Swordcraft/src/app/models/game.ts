@@ -1,6 +1,7 @@
 import 'phaser';
 import {GameScene} from './scenes/gameScene';
 import {MenuScene} from "./scenes/menuScene";
+import {CoopScene} from "./scenes/coopScene";
 
 const config: GameConfig = {
     title: 'Swordcraft',
@@ -24,7 +25,7 @@ const config: GameConfig = {
         }
     },
     parent: 'game',
-    scene: [MenuScene, GameScene],
+    scene: [CoopScene, MenuScene, GameScene],
     input: {
         keyboard: true,
         mouse: true,
