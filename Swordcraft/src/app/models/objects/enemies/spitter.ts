@@ -1,6 +1,7 @@
 import {Player} from "../player";
 import {Enemy} from "./enemy";
 import {SpitterBullet} from "./spitter-bullet";
+import * as helper from "../../helpers";
 
 export class Spitter extends Enemy {
     private players: Player[];
@@ -42,16 +43,7 @@ export class Spitter extends Enemy {
 
     update() {
         super.update(() => {
-            let closestDist = 999999999, closestPlayer: Player;
-            for (const p of this.players) {
-                if (p.isDead) continue;
-                const d = Phaser.Math.Distance.Between(this.physics.x, this.physics.y,
-                    p.physics.x, p.physics.y);
-                if (d < closestDist) {
-                    closestDist = d;
-                    closestPlayer = p;
-                }
-            }
+            const [closestDist, closestPlayer] = helper.findClosestPlayer(this, this.players);
 
             if (!this.isAttacking) {
                 let moveVector = new Phaser.Math.Vector2(

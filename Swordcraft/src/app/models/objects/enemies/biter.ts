@@ -29,16 +29,7 @@ export class Biter extends Enemy {
 
         this.players = players;
 
-        let closestDist = 99999999, closestPlayer: Player;
-        for (const p of this.players) {
-            if (p.isDead) continue;
-            const d = Phaser.Math.Distance.Between(this.physics.x, this.physics.y,
-                p.physics.x, p.physics.y);
-            if (d < closestDist) {
-                closestDist = d;
-                closestPlayer = p;
-            }
-        }
+        const [closestDist, closestPlayer] = helper.findClosestPlayer(this, this.players);
 
         const playerDirAngleRad = Phaser.Math.Angle.Between(this.physics.x, this.physics.y, closestPlayer.physics.x, closestPlayer.physics.y);
         const playerDirAngleDeg = (playerDirAngleRad / (Math.PI * 2)) * 360;
@@ -59,16 +50,7 @@ export class Biter extends Enemy {
                     this.attackCounter++;
                 }
             } else {
-                let closestDist = 999999999, closestPlayer: Player;
-                for (const p of this.players) {
-                    const d = Phaser.Math.Distance.Between(this.physics.x, this.physics.y,
-                        p.physics.x, p.physics.y);
-                    if (d < closestDist) {
-                        closestDist = d;
-                        closestPlayer = p;
-                    }
-                }
-
+                const [closestDist, closestPlayer] = helper.findClosestPlayer(this, this.players);
 
                 // Find angle between biter and player
                 const facingAngleRad = this.physics.angle / 360 * 2 * Math.PI;
