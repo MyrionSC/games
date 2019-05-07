@@ -59,9 +59,14 @@ export class CoopScene extends Phaser.Scene {
 
         this.input.keyboard.on('keydown', (event) => {
             if (!this.gameOver) {
-                if (event.key === "q") {
+                if (event.key === "0") {
                     if (!this.player1.isAttacking) {
                         this.player1.startAttack();
+                    }
+                }
+                if (event.key === 'f' || event.key === 'Control' || event.key === 'Shift') {
+                    if (!this.player2.isAttacking) {
+                        this.player2.startAttack();
                     }
                 }
             }
@@ -148,17 +153,12 @@ export class CoopScene extends Phaser.Scene {
             if (index === -1) return;
             const deadEnemy = this.enemies.splice(index, 1)[0];
             deadEnemy.die();
-            // deadEnemy.isDead = true;
-            // enemyBody.gameObject.setTint(0x888888);
             this.score += 100;
         } else if (this.enemyTypes.includes(typeA) && this.enemyTypes.includes(typeB)) {
             // enemy / enemy collision
             bodyA.unit.stun();
             bodyB.unit.stun();
-        // } else if ((bodyA === this.player1.physics.body || bodyB === this.player1.physics.body) &&
-        //     (this.enemies.some(b => bodyA === b.physics.body) || this.enemies.some(b => bodyB === b.physics.body))) {
-        } else if ((typeA === 'player' || typeB === 'player') &&
-            (this.enemyTypes.includes(typeA) || this.enemyTypes.includes(typeB))) {
+        } else if ((typeA === 'player' || typeB === 'player') && (this.enemyTypes.includes(typeA) || this.enemyTypes.includes(typeB))) {
             // player / enemy collision
             const player = typeA === 'player' ? bodyA : bodyB;
             const enemy = typeB === 'player' ? bodyA : bodyB;
@@ -168,7 +168,6 @@ export class CoopScene extends Phaser.Scene {
                 enemy.unit.stun();
             } else {
                 player.unit.die();
-
                 if (this.players.every(p => p.isDead)) {
                     this.gameOver = true;
                     const t = this.add.text(-200, -200,
@@ -178,7 +177,7 @@ export class CoopScene extends Phaser.Scene {
                 }
             }
         } else {
-            console.log("This should not happen");
+            console.log("Collision: No action taken");
             console.log(types);
         }
     }

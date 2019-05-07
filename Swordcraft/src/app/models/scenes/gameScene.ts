@@ -56,7 +56,7 @@ export class GameScene extends Phaser.Scene {
 
         this.input.keyboard.on('keydown', (event) => {
             if (!this.gameOver) {
-                if (event.key === "q") {
+                if (event.key === "q" || event.key === "0") {
                     if (!this.player.isAttacking) {
                         this.player.startAttack();
                     }
@@ -133,8 +133,8 @@ export class GameScene extends Phaser.Scene {
         const typeB = bodyB.unit.type;
         const types = [bodyA.unit.type, bodyB.unit.type];
 
-        // sword / enemy collision
-        if (types.includes('sword')) {
+        if (types.includes('sword') && (this.enemyTypes.includes(typeA) || this.enemyTypes.includes(typeB))) {
+            // sword / enemy collision
             const enemyBody = this.enemies.some(b => bodyA === b.physics.body) ? bodyA : bodyB;
             const index = this.enemies.findIndex((b: Biter) => b.physics.body === enemyBody);
             if (index === -1) return;
@@ -146,9 +146,8 @@ export class GameScene extends Phaser.Scene {
             // enemy / enemy collision
             bodyA.unit.stun();
             bodyB.unit.stun();
-        } else if ((bodyA === this.player.physics.body || bodyB === this.player.physics.body) &&
+        } else if ((typeA === 'player' || typeB === 'player') && (this.enemyTypes.includes(typeA) || this.enemyTypes.includes(typeB))) {
             // player / enemy collision
-            (this.enemies.some(b => bodyA === b.physics.body) || this.enemies.some(b => bodyB === b.physics.body))) {
             const player = bodyA === this.player.physics.body ? bodyA : bodyB;
             const enemy = bodyB === this.player.physics.body ? bodyA : bodyB;
 
