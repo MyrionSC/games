@@ -37,7 +37,7 @@ export class CoopScene extends Phaser.Scene {
 
     preload(): void {
         this.load.image('background', 'assets/Background/grasstile.png');
-        this.load.image('player', 'assets/Swordcraft/swordguy.png');
+        this.load.image('player1', 'assets/Swordcraft/swordguy.png');
         this.load.image('player2', 'assets/Swordcraft/swordguy_blue.png');
         this.load.image('sword', 'assets/Swordcraft/grandsword.png');
         this.load.image('gople', 'assets/Swordcraft/green_gople.png');
@@ -52,7 +52,7 @@ export class CoopScene extends Phaser.Scene {
         this.background = this.add.tileSprite(Number(Number(this.game.config.width)) / 2, Number(this.game.config.height) / 2,
             Number(this.game.config.width), Number(this.game.config.height), 'background');
 
-        this.player1 = new Player(this, 300, 500, 'player');
+        this.player1 = new Player(this, 300, 500, 'player1');
         this.player2 = new Player(this, 700, 500, 'player2');
         this.players = [this.player1, this.player2];
         this.enemies = [];
@@ -78,7 +78,12 @@ export class CoopScene extends Phaser.Scene {
     update(): void {
         if (!this.gameOver) {
             // updates
-            this.player1.update();
+            for (const p of this.players) {
+                if (!p.isDead) {
+                    p.update();
+                }
+            }
+
             for (const enemy of this.enemies) {
                 if (!enemy.isDead) {
                     enemy.update();

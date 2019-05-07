@@ -29,7 +29,7 @@ export class Player {
 
     constructor(scene: Phaser.Scene, x: number, y: number, key?: string) {
         this.scene = scene;
-        this.physics = scene.matter.add.image(x, y, key ? key : 'player');
+        this.physics = scene.matter.add.image(x, y, key ? key : 'player1');
         this.physics.setScale(0.15);
         this.physics.setBody({
             type: 'circle',
@@ -37,16 +37,18 @@ export class Player {
         }, {});
         this.physics.body.unit = this;
 
-        // this.cursors = scene.input.keyboard.createCursorKeys();
-
-        // todo: choose keys for player1 and 2
-
-        this.cursors = scene.input.keyboard.addKeys(
-            {up: Phaser.Input.Keyboard.KeyCodes.W,
-                down: Phaser.Input.Keyboard.KeyCodes.S,
-                left: Phaser.Input.Keyboard.KeyCodes.A,
-                right: Phaser.Input.Keyboard.KeyCodes.D
-            });
+        if (key && key === 'player2') {
+            console.log("player2 keys");
+            this.cursors = scene.input.keyboard.addKeys(
+                {up: Phaser.Input.Keyboard.KeyCodes.W,
+                    down: Phaser.Input.Keyboard.KeyCodes.S,
+                    left: Phaser.Input.Keyboard.KeyCodes.A,
+                    right: Phaser.Input.Keyboard.KeyCodes.D
+                });
+        } else {
+            console.log("player1 keys");
+            this.cursors = scene.input.keyboard.createCursorKeys();
+        }
     }
 
     update(): void {

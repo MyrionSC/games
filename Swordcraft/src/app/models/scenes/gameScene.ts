@@ -35,7 +35,7 @@ export class GameScene extends Phaser.Scene {
 
     preload(): void {
         this.load.image('background', 'assets/Background/grasstile.png');
-        this.load.image('player', 'assets/Swordcraft/swordguy.png');
+        this.load.image('player1', 'assets/Swordcraft/swordguy.png');
         this.load.image('sword', 'assets/Swordcraft/grandsword.png');
         this.load.image('gople', 'assets/Swordcraft/green_gople.png');
         this.load.image('biter', 'assets/Swordcraft/biter.png');
