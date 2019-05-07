@@ -94,6 +94,11 @@ export class Player {
         this.isStunned = true;
     }
 
+    die() {
+        this.isDead = true;
+        this.physics.setTint(0x888888);
+    }
+
     startAttack(): void {
         this.isAttacking = true;
         this.physics.setStatic(true);

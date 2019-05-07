@@ -147,16 +147,19 @@ export class CoopScene extends Phaser.Scene {
             const index = this.enemies.findIndex((b: Biter) => b.physics.body === enemyBody);
             if (index === -1) return;
             const deadEnemy = this.enemies.splice(index, 1)[0];
-            deadEnemy.isDead = true;
-            enemyBody.gameObject.setTint(0x888888);
+            deadEnemy.die();
+            // deadEnemy.isDead = true;
+            // enemyBody.gameObject.setTint(0x888888);
             this.score += 100;
         } else if (this.enemyTypes.includes(typeA) && this.enemyTypes.includes(typeB)) {
             // enemy / enemy collision
             bodyA.unit.stun();
             bodyB.unit.stun();
-        } else if ((bodyA === this.player1.physics.body || bodyB === this.player1.physics.body) &&
+        // } else if ((bodyA === this.player1.physics.body || bodyB === this.player1.physics.body) &&
+        //     (this.enemies.some(b => bodyA === b.physics.body) || this.enemies.some(b => bodyB === b.physics.body))) {
+        } else if ((typeA === 'player' || typeB === 'player') &&
+            (this.enemyTypes.includes(typeA) || this.enemyTypes.includes(typeB))) {
             // player / enemy collision
-            (this.enemies.some(b => bodyA === b.physics.body) || this.enemies.some(b => bodyB === b.physics.body))) {
             const player = typeA === 'player' ? bodyA : bodyB;
             const enemy = typeB === 'player' ? bodyA : bodyB;
 
@@ -164,13 +167,19 @@ export class CoopScene extends Phaser.Scene {
                 player.unit.stun();
                 enemy.unit.stun();
             } else {
-                player.gameObject.setTint(0x888888);
-                this.gameOver = true;
-                const t = this.add.text(-200, -200,
-                    "\t\tGAME OVER\nFinal score: " + this.score,
-                    {fontSize: '48px', color: '#000000', textAlign: 'center'});
-                t.setPosition(this.game.config.width / 2 - t.width / 2, this.game.config.height / 2 - t.height / 2);
+                player.unit.die();
+
+                if (this.players.every(p => p.isDead)) {
+                    this.gameOver = true;
+                    const t = this.add.text(-200, -200,
+                        "\t\tGAME OVER\nFinal score: " + this.score,
+                        {fontSize: '48px', color: '#000000', textAlign: 'center'});
+                    t.setPosition(this.game.config.width / 2 - t.width / 2, this.game.config.height / 2 - t.height / 2);
+                }
             }
+        } else {
+            console.log("This should not happen");
+            console.log(types);
         }
     }
 

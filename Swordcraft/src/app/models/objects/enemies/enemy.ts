@@ -30,6 +30,11 @@ export abstract class Enemy {
         }
     }
 
+    die() {
+        this.isDead = true;
+        this.physics.setTint(0x888888);
+    }
+
     stun() {
         this.isStunned = true;
     }

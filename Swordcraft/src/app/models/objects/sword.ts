@@ -28,6 +28,7 @@ export class Sword {
     }
 
     update(): void {}
+    die() {}
     stun() {}
 
     delete(scene: Phaser.Scene) {

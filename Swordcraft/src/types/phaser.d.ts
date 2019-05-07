@@ -78419,7 +78419,8 @@ declare type integer = number;
 
 declare type Unit = {
     type: string;
-    stun();
+    stun(): void;
+    die(): void;
 }
 
 declare module 'phaser' {

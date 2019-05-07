@@ -74,7 +74,6 @@ export class Spitter extends Enemy {
                     this.physics.body.gameObject.setTint(Number('0xffff' + hexTint));
 
                     if (this.attackCounter >= this.ATTACK_TIME) {
-                        console.log("Bang!");
                         this.fireBullet();
                         this.lastAttack = this.liveCounter;
                         this.stopAttack();
