@@ -140,8 +140,6 @@ export class CoopScene extends Phaser.Scene {
 
     private handleCollisions(event: Phaser.Physics.Matter.Events.CollisionStartEvent,
                              bodyA: Phaser.Physics.Matter.Body, bodyB: Phaser.Physics.Matter.Body) {
-        // todo: use body.unit and body.unit.type for checks
-
         const typeA = bodyA.unit.type;
         const typeB = bodyB.unit.type;
         const types = [bodyA.unit.type, bodyB.unit.type];
@@ -185,12 +183,13 @@ export class CoopScene extends Phaser.Scene {
     private createEnemy(x: number, y: number) {
         const newEnemy = this.spawnPossibilities[Math.floor(Math.random() * this.spawnPossibilities.length)];
 
+        // could also pack refs into single object so signature for all enemies is the same
         if (newEnemy === 'gople') {
             return new Gople(this, x, y);
         } else if (newEnemy === 'biter') {
-            return new Biter(this, x, y, this.player1);
+            return new Biter(this, x, y, this.players);
         } else if (newEnemy === 'spitter') {
-            return new Spitter(this, x, y, this.player1, this.enemies);
+            return new Spitter(this, x, y, this.players, this.enemies);
         }
     }
 }

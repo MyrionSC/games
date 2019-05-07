@@ -3,7 +3,7 @@ import {Enemy} from "./enemy";
 import {SpitterBullet} from "./spitter-bullet";
 
 export class Spitter extends Enemy {
-    private player: Player;
+    private players: Player[];
     private enemies: Enemy[];
 
     // tweakable
@@ -21,7 +21,7 @@ export class Spitter extends Enemy {
     private dpoint: Phaser.GameObjects.Arc;
     private dpoint2: Phaser.GameObjects.Arc;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, player: Player, enemies: Enemy[]) {
+    constructor(scene: Phaser.Scene, x: number, y: number, players: Player[], enemies: Enemy[]) {
         super(scene, x, y, 'spitter');
         this.physics.setScale(0.08);
         this.physics.setBody({
@@ -30,7 +30,7 @@ export class Spitter extends Enemy {
         }, {});
         this.physics.body.unit = this;
 
-        this.player = player;
+        this.players = players;
         this.enemies = enemies;
 
         // this.dline = scene.add.line(0, 0, 0, 0, 0, 0, 0xff0000);
@@ -42,20 +42,28 @@ export class Spitter extends Enemy {
 
     update() {
         super.update(() => {
-            const dist = Phaser.Math.Distance.Between(this.physics.x, this.physics.y,
-                this.player.physics.x, this.player.physics.y);
+            let closestDist = 999999999, closestPlayer: Player;
+            for (const p of this.players) {
+                if (p.isDead) continue;
+                const d = Phaser.Math.Distance.Between(this.physics.x, this.physics.y,
+                    p.physics.x, p.physics.y);
+                if (d < closestDist) {
+                    closestDist = d;
+                    closestPlayer = p;
+                }
+            }
 
             if (!this.isAttacking) {
                 let moveVector = new Phaser.Math.Vector2(
-                    this.player.physics.x - this.physics.x,
-                    this.player.physics.y - this.physics.y
+                    closestPlayer.physics.x - this.physics.x,
+                    closestPlayer.physics.y - this.physics.y
                 );
                 moveVector = moveVector.normalize().scale(this.MOVE_SPEED);
 
                 // advance to shooting range
-                if (dist > this.SHOOTING_DIST) {
+                if (closestDist > this.SHOOTING_DIST) {
                     this.physics.setVelocity(moveVector.x, moveVector.y);
-                } else if (dist < this.RETREAT_DIST) {
+                } else if (closestDist < this.RETREAT_DIST) {
                     this.physics.setVelocity(moveVector.x * -1, moveVector.y * -1);
                 } else {
                     if (this.liveCounter > this.lastAttack + this.COOL_DOWN_TIME) {
@@ -65,7 +73,7 @@ export class Spitter extends Enemy {
                 }
             } else {
                 // if player is too close or far away, cancel attack
-                if (dist > this.SHOOTING_DIST || dist < this.RETREAT_DIST) {
+                if (closestDist > this.SHOOTING_DIST || closestDist < this.RETREAT_DIST) {
                     this.stopAttack();
                 } else {
                     this.attackCounter++;
@@ -74,7 +82,7 @@ export class Spitter extends Enemy {
                     this.physics.body.gameObject.setTint(Number('0xffff' + hexTint));
 
                     if (this.attackCounter >= this.ATTACK_TIME) {
-                        this.fireBullet();
+                        this.fireBullet(closestPlayer);
                         this.lastAttack = this.liveCounter;
                         this.stopAttack();
                     }
@@ -93,10 +101,10 @@ export class Spitter extends Enemy {
         this.isAttacking = false;
     }
 
-    private fireBullet() {
+    private fireBullet(closestPlayer: Player) {
         const directionVector = new Phaser.Math.Vector2(
-            this.player.physics.x - this.physics.x,
-            this.player.physics.y - this.physics.y
+            closestPlayer.physics.x - this.physics.x,
+            closestPlayer.physics.y - this.physics.y
         ).normalize();
         const b = new SpitterBullet(this.scene,
             this.physics.x + directionVector.x * 25,

@@ -10,6 +10,7 @@ export class GameScene extends Phaser.Scene {
 
     // objects
     private player: Player;
+    private players: Player[];
     private enemies: Enemy[];
 
     // tweakable vars
@@ -52,6 +53,7 @@ export class GameScene extends Phaser.Scene {
             Number(this.game.config.width), Number(this.game.config.height), 'background');
 
         this.player = new Player(this, 500, 500);
+        this.players = [this.player];
         this.enemies = [];
 
         this.input.keyboard.on('keydown', (event) => {
@@ -127,8 +129,6 @@ export class GameScene extends Phaser.Scene {
 
     private handleCollisions(event: Phaser.Physics.Matter.Events.CollisionStartEvent,
                              bodyA: Phaser.Physics.Matter.Body, bodyB: Phaser.Physics.Matter.Body) {
-        // todo: use body.unit and body.unit.type for checks
-
         const typeA = bodyA.unit.type;
         const typeB = bodyB.unit.type;
         const types = [bodyA.unit.type, bodyB.unit.type];
@@ -171,9 +171,9 @@ export class GameScene extends Phaser.Scene {
         if (newEnemy === 'gople') {
             return new Gople(this, x, y);
         } else if (newEnemy === 'biter') {
-            return new Biter(this, x, y, this.player);
+            return new Biter(this, x, y, this.players);
         } else if (newEnemy === 'spitter') {
-            return new Spitter(this, x, y, this.player, this.enemies);
+            return new Spitter(this, x, y, this.players, this.enemies);
         }
     }
 }

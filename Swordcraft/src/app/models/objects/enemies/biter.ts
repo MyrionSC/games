@@ -1,8 +1,9 @@
 import {Player} from "../player";
 import {Enemy} from "./enemy";
+import * as helper from "../../helpers";
 
 export class Biter extends Enemy {
-    private player: Player;
+    private players: Player[];
 
     private MAX_TURN_RAD = 0.03;
     private MOVE_SPEED = 3;
@@ -17,7 +18,7 @@ export class Biter extends Enemy {
     private distline: Phaser.GameObjects.Line;
     private dirline: Phaser.GameObjects.Line;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, player: Player) {
+    constructor(scene: Phaser.Scene, x: number, y: number, players: Player[]) {
         super(scene, x, y, 'biter');
         this.physics.setScale(0.08);
         this.physics.setBody({
@@ -26,9 +27,20 @@ export class Biter extends Enemy {
         }, {});
         this.physics.body.unit = this;
 
-        this.player = player;
+        this.players = players;
 
-        const playerDirAngleRad = Phaser.Math.Angle.Between(this.physics.x, this.physics.y, this.player.physics.x, this.player.physics.y);
+        let closestDist = 99999999, closestPlayer: Player;
+        for (const p of this.players) {
+            if (p.isDead) continue;
+            const d = Phaser.Math.Distance.Between(this.physics.x, this.physics.y,
+                p.physics.x, p.physics.y);
+            if (d < closestDist) {
+                closestDist = d;
+                closestPlayer = p;
+            }
+        }
+
+        const playerDirAngleRad = Phaser.Math.Angle.Between(this.physics.x, this.physics.y, closestPlayer.physics.x, closestPlayer.physics.y);
         const playerDirAngleDeg = (playerDirAngleRad / (Math.PI * 2)) * 360;
         this.physics.setAngle(playerDirAngleDeg);
 
@@ -47,10 +59,21 @@ export class Biter extends Enemy {
                     this.attackCounter++;
                 }
             } else {
+                let closestDist = 999999999, closestPlayer: Player;
+                for (const p of this.players) {
+                    const d = Phaser.Math.Distance.Between(this.physics.x, this.physics.y,
+                        p.physics.x, p.physics.y);
+                    if (d < closestDist) {
+                        closestDist = d;
+                        closestPlayer = p;
+                    }
+                }
+
+
                 // Find angle between biter and player
                 const facingAngleRad = this.physics.angle / 360 * 2 * Math.PI;
                 const playerDirAngleRad = Phaser.Math.Angle.Between(this.physics.x, this.physics.y,
-                    this.player.physics.x, this.player.physics.y);
+                    closestPlayer.physics.x, closestPlayer.physics.y);
 
                 // rotate
                 const rotatedAngleRad = Phaser.Math.Angle.RotateTo(facingAngleRad, playerDirAngleRad, this.MAX_TURN_RAD);
@@ -64,10 +87,8 @@ export class Biter extends Enemy {
                 ).scale(this.MOVE_SPEED);
                 this.physics.setVelocity(moveVector.x, moveVector.y);
 
-                const dist = Phaser.Math.Distance.Between(this.physics.x, this.physics.y,
-                    this.player.physics.x, this.player.physics.y);
                 const absAngleDiff = Math.abs(Phaser.Math.Angle.Normalize(playerDirAngleRad) - Phaser.Math.Angle.Normalize(facingAngleRad));
-                if (dist < this.ATTACK_DISTANCE && absAngleDiff < this.ATTACK_ANGLE_RAD) {
+                if (closestDist < this.ATTACK_DISTANCE && absAngleDiff < this.ATTACK_ANGLE_RAD) {
                     this.startAttack(moveVector);
                 }
             }
