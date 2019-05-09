@@ -161,7 +161,7 @@ export class CoopScene extends Phaser.Scene {
             const player = typeA === 'player' ? bodyA : bodyB;
             const enemy = typeB === 'player' ? bodyA : bodyB;
 
-            if (enemy.unit.type !== 'biter') {
+            if (enemy.unit.type !== 'biter' || enemy.unit.isDead || !enemy.unit.isAttacking) {
                 player.unit.stun();
                 enemy.unit.stun();
             } else {

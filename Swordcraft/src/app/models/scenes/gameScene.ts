@@ -151,7 +151,7 @@ export class GameScene extends Phaser.Scene {
             const player = bodyA === this.player.physics.body ? bodyA : bodyB;
             const enemy = bodyB === this.player.physics.body ? bodyA : bodyB;
 
-            if (enemy.unit.type !== 'biter') {
+            if (enemy.unit.type !== 'biter' || enemy.unit.isDead || !enemy.unit.isAttacking) {
                 player.unit.stun();
                 enemy.unit.stun();
             } else {

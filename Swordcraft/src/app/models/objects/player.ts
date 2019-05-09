@@ -14,12 +14,12 @@ export class Player {
     public STUNNED_TIME = 90;
 
     public isStunned = false;
+    public isAttacking = false;
     public isDead = false;
     public stunnedCounter = 0;
     private startSwingAngle = 0;
     private endSwingAngle = 0;
 
-    isAttacking = false;
     private attackCounter = 0;
 
     // private debugPoint1: Phaser.GameObjects.Arc;

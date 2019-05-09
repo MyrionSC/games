@@ -78419,6 +78419,8 @@ declare type integer = number;
 
 declare type Unit = {
     type: string;
+    isAttacking: boolean;
+    isDead: boolean;
     stun(): void;
     die(): void;
 }

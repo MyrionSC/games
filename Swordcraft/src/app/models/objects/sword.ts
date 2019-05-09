@@ -4,6 +4,8 @@ export class Sword {
     physics: Phaser.Physics.Matter.Image;
     swordConstraint: any;
     public type = 'sword';
+    isAttacking = false;
+    isDead = false;
     startAngle = 130;
     endSwingAngle = 240;
 

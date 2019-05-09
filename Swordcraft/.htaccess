@@ -1,7 +1,9 @@
+# only necessary when Angular routing included
+
 RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
 # not rewrite css, js and images
 RewriteCond %{REQUEST_URI} !\.(?:css|js|map|jpe?g|gif|png)$ [NC]
-RewriteRule ^(.*)$ /solid-state-drive/index.html?path=$1 [NC,L,QSA]
+RewriteRule ^(.*)$ /swordcraft/index.html?path=$1 [NC,L,QSA]
