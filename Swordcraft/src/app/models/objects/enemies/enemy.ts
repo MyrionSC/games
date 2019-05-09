@@ -26,6 +26,7 @@ export abstract class Enemy {
             if (this.stunnedCounter >= this.STUNNED_TIME) {
                 this.isStunned = false;
                 this.stunnedCounter = 0;
+                this.physics.setTint(0xffffff);
             }
         }
     }
@@ -37,6 +38,7 @@ export abstract class Enemy {
 
     stun() {
         this.isStunned = true;
+        this.physics.setTint(0xbbbbbb);
     }
 
     destroy() {
