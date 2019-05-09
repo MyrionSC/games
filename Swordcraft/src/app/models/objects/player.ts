@@ -58,8 +58,7 @@ export class Player {
             }
             this.stunnedCounter++;
             if (this.stunnedCounter >= this.STUNNED_TIME) {
-                this.isStunned = false;
-                this.stunnedCounter = 0;
+                this.endStun()
             }
         } else if (this.isAttacking) {
             this.attackCounter++;
@@ -92,6 +91,13 @@ export class Player {
 
     stun() {
         this.isStunned = true;
+        this.physics.setTint(0xbbbbbb);
+    }
+
+    private endStun() {
+        this.isStunned = false;
+        this.stunnedCounter = 0;
+        this.physics.setTint(0xffffff);
     }
 
     die() {
