@@ -8,10 +8,10 @@ export class Spitter extends Enemy {
     private enemies: Enemy[];
 
     // tweakable
-    private MOVE_SPEED = 3;
+    private MOVE_SPEED = 2.7;
     private SHOOTING_DIST = 300;
-    private RETREAT_DIST = 200;
-    private ATTACK_TIME = 120;
+    private RETREAT_DIST = 150;
+    private ATTACK_TIME = 100;
     private COOL_DOWN_TIME = 90;
 
     private attackCounter = 0;

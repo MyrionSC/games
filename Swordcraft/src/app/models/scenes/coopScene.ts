@@ -154,8 +154,12 @@ export class CoopScene extends Phaser.Scene {
             this.score += 100;
         } else if (this.enemyTypes.includes(typeA) && this.enemyTypes.includes(typeB)) {
             // enemy / enemy collision
-            bodyA.unit.stun();
-            bodyB.unit.stun();
+            if (!bodyA.unit.isDead) {
+                bodyA.unit.stun();
+            }
+            if (!bodyB.unit.isDead) {
+                bodyB.unit.stun();
+            }
         } else if ((typeA === 'player' || typeB === 'player') && (this.enemyTypes.includes(typeA) || this.enemyTypes.includes(typeB))) {
             // player / enemy collision
             const player = typeA === 'player' ? bodyA : bodyB;
@@ -163,7 +167,9 @@ export class CoopScene extends Phaser.Scene {
 
             if (enemy.unit.type !== 'biter' || enemy.unit.isDead || !enemy.unit.isAttacking) {
                 player.unit.stun();
-                enemy.unit.stun();
+                if (!enemy.unit.isDead) {
+                    enemy.unit.stun();
+                }
             } else {
                 player.unit.die();
                 if (this.players.every(p => p.isDead)) {
