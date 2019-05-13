@@ -3,6 +3,7 @@ import {Biter} from "../objects/enemies/biter";
 import {Enemy} from "../objects/enemies/enemy";
 import {Spitter} from "../objects/enemies/spitter";
 import {Gople} from "../objects/enemies/gople";
+import {Splatter} from "../objects/enemies/splatter";
 
 export class GameScene extends Phaser.Scene {
     private background: Phaser.GameObjects.TileSprite;
@@ -17,8 +18,9 @@ export class GameScene extends Phaser.Scene {
     private spawnTimer = 90;
     private spawnDecreaseMultiplier = 0.97;
     // private spawnPossibilities = ['biter'];
-    private spawnPossibilities = ['gople', 'gople', 'gople', 'biter', 'spitter'];
-    private enemyTypes = ['gople', 'biter', 'spitter', 'spitter-bullet'];
+    // private spawnPossibilities = ['gople', 'gople', 'gople', 'biter', 'spitter'];
+    private spawnPossibilities = ['splatter'];
+    private enemyTypes = ['gople', 'biter', 'spitter', 'spitter-bullet', 'splatter'];
 
     // non tweakable
     private counter = 1;
@@ -39,6 +41,7 @@ export class GameScene extends Phaser.Scene {
         this.load.image('player1', 'assets/Swordcraft/swordguy.png');
         this.load.image('sword', 'assets/Swordcraft/grandsword.png');
         this.load.image('gople', 'assets/Swordcraft/green_gople.png');
+        this.load.image('splatter', 'assets/Swordcraft/splatter.png');
         this.load.image('biter', 'assets/Swordcraft/biter.png');
         this.load.image('biter-attacking', 'assets/Swordcraft/biter_attacking.png');
         this.load.image('spitter', 'assets/Swordcraft/spitter.png');
@@ -180,6 +183,8 @@ export class GameScene extends Phaser.Scene {
             return new Biter(this, x, y, this.players);
         } else if (newEnemy === 'spitter') {
             return new Spitter(this, x, y, this.players, this.enemies);
+        } else if (newEnemy === 'splatter') {
+            return new Splatter(this, x, y);
         }
     }
 }

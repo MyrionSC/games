@@ -25,7 +25,7 @@ const config: GameConfig = {
         }
     },
     parent: 'game',
-    scene: [MenuScene, GameScene, CoopScene],
+    scene: [GameScene, MenuScene, CoopScene],
     input: {
         keyboard: true,
         mouse: true,
