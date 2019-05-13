@@ -5,7 +5,7 @@ import {CoopScene} from "./scenes/coopScene";
 
 const config: GameConfig = {
     title: 'Swordcraft',
-    url: '',
+    url: 'marand.dk/swordcraft',
     version: '0.1',
     width: 900,
     height: 900,
@@ -33,7 +33,6 @@ const config: GameConfig = {
         gamepad: false
     },
     backgroundColor: '#222222'
-    // backgroundColor: '#3A99D9'
 };
 
 export class Game extends Phaser.Game {
