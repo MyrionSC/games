@@ -38,7 +38,6 @@ export class Player {
         this.physics.body.unit = this;
 
         if (key && key === 'player2') {
-            console.log("player2 keys");
             this.cursors = scene.input.keyboard.addKeys(
                 {up: Phaser.Input.Keyboard.KeyCodes.W,
                     down: Phaser.Input.Keyboard.KeyCodes.S,
@@ -46,7 +45,6 @@ export class Player {
                     right: Phaser.Input.Keyboard.KeyCodes.D
                 });
         } else {
-            console.log("player1 keys");
             this.cursors = scene.input.keyboard.createCursorKeys();
         }
     }

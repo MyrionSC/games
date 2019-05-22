@@ -57433,6 +57433,8 @@ declare namespace Phaser {
 
                 unit: Unit;
 
+                isSensor: boolean;
+
                 /**
                  * The Game Object this Body belongs to.
                  */

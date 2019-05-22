@@ -4,6 +4,7 @@ import {Enemy} from "../objects/enemies/enemy";
 import {Spitter} from "../objects/enemies/spitter";
 import {Gople} from "../objects/enemies/gople";
 import {Splatter} from "../objects/enemies/splatter";
+import {SplatterPool} from "../objects/splatter-pool";
 
 export class GameScene extends Phaser.Scene {
     private background: Phaser.GameObjects.TileSprite;
@@ -42,6 +43,7 @@ export class GameScene extends Phaser.Scene {
         this.load.image('sword', 'assets/Swordcraft/grandsword.png');
         this.load.image('gople', 'assets/Swordcraft/green_gople.png');
         this.load.image('splatter', 'assets/Swordcraft/splatter.png');
+        this.load.image('splatter-pool', 'assets/Swordcraft/splatter_pool1.png');
         this.load.image('biter', 'assets/Swordcraft/biter.png');
         this.load.image('biter-attacking', 'assets/Swordcraft/biter_attacking.png');
         this.load.image('spitter', 'assets/Swordcraft/spitter.png');
@@ -58,6 +60,9 @@ export class GameScene extends Phaser.Scene {
         this.player = new Player(this, 500, 500);
         this.players = [this.player];
         this.enemies = [];
+
+        const pool = new SplatterPool(this, 200, 200);
+        console.log(pool);
 
         this.input.keyboard.on('keydown', (event) => {
             if (!this.gameOver) {
@@ -88,28 +93,28 @@ export class GameScene extends Phaser.Scene {
             }
 
             // Spawn new enemy
-            if (this.counter > this.lastSpawn + this.spawnTimer) {
-                let pos = [0, 0];
-                const spawnDirection = Math.random();
-                if (spawnDirection < 0.25) { // top
-                    pos = [Math.random() * this.game.config.width, -50];
-                } else if (spawnDirection < 0.5) { // right
-                    pos = [this.game.config.width + 50, Math.random() * this.game.config.height];
-                } else if (spawnDirection < 0.75) { // bottom
-                    pos = [Math.random() * this.game.config.width, this.game.config.height + 50];
-                } else { // left
-                    pos = [-50, Math.random() * this.game.config.height];
-                }
-
-                const newEnemy = this.createEnemy(pos[0], pos[1]);
-                this.enemies.push(newEnemy);
-
-                this.spawnTimer = this.spawnTimer * this.spawnDecreaseMultiplier;
-                if (this.spawnTimer < 30) {
-                    this.spawnTimer = 30;
-                }
-                this.lastSpawn = this.counter;
-            }
+            // if (this.counter > this.lastSpawn + this.spawnTimer) {
+            //     let pos = [0, 0];
+            //     const spawnDirection = Math.random();
+            //     if (spawnDirection < 0.25) { // top
+            //         pos = [Math.random() * this.game.config.width, -50];
+            //     } else if (spawnDirection < 0.5) { // right
+            //         pos = [this.game.config.width + 50, Math.random() * this.game.config.height];
+            //     } else if (spawnDirection < 0.75) { // bottom
+            //         pos = [Math.random() * this.game.config.width, this.game.config.height + 50];
+            //     } else { // left
+            //         pos = [-50, Math.random() * this.game.config.height];
+            //     }
+            //
+            //     const newEnemy = this.createEnemy(pos[0], pos[1]);
+            //     this.enemies.push(newEnemy);
+            //
+            //     this.spawnTimer = this.spawnTimer * this.spawnDecreaseMultiplier;
+            //     if (this.spawnTimer < 30) {
+            //         this.spawnTimer = 30;
+            //     }
+            //     this.lastSpawn = this.counter;
+            // }
 
             // Remove enemies outside bounds
             if (this.counter % 6 === 0) {
@@ -132,9 +137,27 @@ export class GameScene extends Phaser.Scene {
 
     private handleCollisions(event: Phaser.Physics.Matter.Events.CollisionStartEvent,
                              bodyA: Phaser.Physics.Matter.Body, bodyB: Phaser.Physics.Matter.Body) {
+
+        console.log(bodyA);
+        console.log(bodyB);
+
+
+        if (bodyA.gameObject == null || bodyB.gameObject == null) {
+            // one is a sensor
+            // return;
+        }
+
+        if (bodyA.isSensor) {
+
+        }
+
+
         const typeA = bodyA.unit.type;
         const typeB = bodyB.unit.type;
         const types = [bodyA.unit.type, bodyB.unit.type];
+
+
+        console.log(types);
 
         if (types.includes('sword') && (this.enemyTypes.includes(typeA) || this.enemyTypes.includes(typeB))) {
             // sword / enemy collision
@@ -142,8 +165,15 @@ export class GameScene extends Phaser.Scene {
             const index = this.enemies.findIndex((b: Biter) => b.physics.body === enemyBody);
             if (index === -1) return;
             const deadEnemy = this.enemies.splice(index, 1)[0];
-            deadEnemy.isDead = true;
-            enemyBody.gameObject.setTint(0x888888);
+
+            // splatters splatter (huhu)
+            if (enemyBody.unit.type === 'splatter') {
+                console.log("huhu");
+            } else {
+                deadEnemy.isDead = true;
+                enemyBody.gameObject.setTint(0x888888);
+            }
+
             this.score += 100;
         } else if (this.enemyTypes.includes(typeA) && this.enemyTypes.includes(typeB)) {
             // enemy / enemy collision
