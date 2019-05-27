@@ -21,7 +21,7 @@ export class Splatter extends Enemy {
 
     update() {
         super.update(() => {
-            this.physics.setVelocity(this.moveVector.x, this.moveVector.y);
+            // this.physics.setVelocity(this.moveVector.x, this.moveVector.y);
         });
     }
 }

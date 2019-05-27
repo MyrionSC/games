@@ -63,16 +63,7 @@ export class Player {
 
             // start swinging
             if (this.attackCounter > 2 && this.attackCounter < this.SWING_TIME) {
-                // compute force to apply to sword as vector perpendicular to sword
-                const swordVector = new Phaser.Math.Vector2(
-                    (this.sword.physics.body.vertices[3].x - this.sword.physics.body.vertices[0].x) * -1,
-                    (this.sword.physics.body.vertices[3].y - this.sword.physics.body.vertices[0].y) * -1
-                );
-                let forceVector = new Phaser.Math.Vector2(
-                    swordVector.y,
-                    -1 * swordVector.x
-                );
-                forceVector = forceVector.normalize().scale(this.SWING_FORCE);
+                const forceVector = this.sword.getPerpendicularVector().scale(this.SWING_FORCE);
                 this.sword.physics.applyForce(forceVector);
             }
 

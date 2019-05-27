@@ -62,6 +62,11 @@ export class GameScene extends Phaser.Scene {
         this.enemies = [];
 
         const pool = new SplatterPool(this, 200, 200);
+
+        const splatter = new Splatter(this, 500, 200);
+        this.enemies.push(splatter);
+
+
         console.log(pool);
 
         this.input.keyboard.on('keydown', (event) => {
@@ -168,7 +173,28 @@ export class GameScene extends Phaser.Scene {
 
             // splatters splatter (huhu)
             if (enemyBody.unit.type === 'splatter') {
-                console.log("huhu");
+                console.log("splatted!");
+
+                const [x, y] = [deadEnemy.physics.x, deadEnemy.physics.y];
+                deadEnemy.destroy();
+
+                // create splatter in swords direction
+                const splatterPool = new SplatterPool(this, x, y);
+
+                const swordPerpendicularVector = this.player.sword.getPerpendicularVector().scale(100);
+
+                // forceVector = forceVector.normalize().scale(30);
+                console.log(swordPerpendicularVector);
+
+                const l = this.add.line(0, 0, 0, 0, 200, 200, 0xff0000);
+                l.setTo(x, y, x + swordPerpendicularVector.x, y + swordPerpendicularVector.y);
+
+
+                // rotate in direction perpendicular to sword
+
+
+                this.enemies.push(splatterPool);
+
             } else {
                 deadEnemy.isDead = true;
                 enemyBody.gameObject.setTint(0x888888);
@@ -185,16 +211,31 @@ export class GameScene extends Phaser.Scene {
             }
         } else if ((typeA === 'player' || typeB === 'player') && (this.enemyTypes.includes(typeA) || this.enemyTypes.includes(typeB))) {
             // player / enemy collision
-            const player = bodyA === this.player.physics.body ? bodyA : bodyB;
-            const enemy = bodyB === this.player.physics.body ? bodyA : bodyB;
+            const playerBody = bodyA === this.player.physics.body ? bodyA : bodyB;
+            const enemyBody = bodyB === this.player.physics.body ? bodyA : bodyB;
 
-            if (enemy.unit.type !== 'biter' || enemy.unit.isDead || !enemy.unit.isAttacking) {
-                player.unit.stun();
-                if (!enemy.unit.isDead) {
-                    enemy.unit.stun();
+            if (enemyBody.unit.type !== 'biter' || enemyBody.unit.isDead || !enemyBody.unit.isAttacking) {
+
+                if (enemyBody.unit.type === 'splatter') {
+                    // splat all over player
+                    const index = this.enemies.findIndex((s: Splatter) => s.physics.body === enemyBody);
+                    if (index === -1) return;
+                    const deadSplatter = this.enemies.splice(index, 1)[0];
+                    const [x, y] = [deadSplatter.physics.x, deadSplatter.physics.y];
+                    deadSplatter.destroy();
+
+                    this.enemies.push(new SplatterPool(this, x, y));
+
+                    console.log('Splat!');
+
+                } else {
+                    playerBody.unit.stun();
+                    if (!enemyBody.unit.isDead) {
+                        enemyBody.unit.stun();
+                    }
                 }
             } else {
-                player.unit.die();
+                playerBody.unit.die();
                 this.gameOver = true;
                 const t = this.add.text(-200, -200,
                     "\t\tGAME OVER\nFinal score: " + this.score,

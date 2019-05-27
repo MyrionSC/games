@@ -29,6 +29,22 @@ export class Sword {
         scene.matter.world.add(this.swordConstraint);
     }
 
+    getDirectionVector(): Phaser.Math.Vector2 {
+        return new Phaser.Math.Vector2(
+            (this.physics.body.vertices[3].x - this.physics.body.vertices[0].x) * -1,
+            (this.physics.body.vertices[3].y - this.physics.body.vertices[0].y) * -1
+        );
+    }
+
+    getPerpendicularVector(): Phaser.Math.Vector2 {
+        const swordVector = this.getDirectionVector();
+        const perpVector = new Phaser.Math.Vector2(
+            swordVector.y,
+            -1 * swordVector.x
+        );
+        return perpVector.normalize();
+    }
+
     update(): void {}
     die() {}
     stun() {}
