@@ -57,6 +57,7 @@ export class GameScene extends Phaser.Scene {
         // create background
         this.background = this.add.tileSprite(Number(Number(this.game.config.width)) / 2, Number(this.game.config.height) / 2,
             Number(this.game.config.width), Number(this.game.config.height), 'background');
+        this.background.setDepth(-10);
 
         this.player = new Player(this, 500, 500);
         this.players = [this.player];
@@ -237,7 +238,7 @@ export class GameScene extends Phaser.Scene {
         const [x, y, moveVector] = [deadSplatter.physics.x, deadSplatter.physics.y, deadSplatter.moveVector.clone()];
         deadSplatter.destroy();
         
-        const splatterPool = new SplatterPool(this, x, y);
+        const splatterPool = new SplatterPool(this, x, y, this.enemies);
         const splatterDirVector = (sword ? sword.getPerpendicularVector() : moveVector).normalize().scale(splatterPool.OFFSET);
 
         // rotate in splatter move direction

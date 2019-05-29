@@ -1,11 +1,15 @@
 import {Enemy} from "./enemies/enemy";
+import {Biter} from "./enemies/biter";
+import {Splatter} from "./enemies/splatter";
 
 export class SplatterPool extends Enemy {
-    public LIVE_TIME = 150;
-    public OFFSET= 30;
+    public LIVE_TIME = 300;
+    public OFFSET = 30;
+    private enemies: Enemy[];
 
-    constructor(scene: Phaser.Scene, x: number, y: number) {
+    constructor(scene: Phaser.Scene, x: number, y: number, enemies: Enemy[]) {
         super(scene, x, y, 'splatter-pool');
+        this.enemies = enemies;
         // this.physics.setBody({
         //     type: 'circle',
         //     radius: this.physics.width * 0.04
@@ -39,6 +43,19 @@ export class SplatterPool extends Enemy {
         this.physics.body.unit = this;
         this.physics.setSensor(true);
 
-        console.log(this.physics.body);
+        this.physics.setDepth(-1);
+    }
+
+    update() {
+        super.update(() => {
+            if (this.liveCounter > this.LIVE_TIME) {
+                const index = this.enemies.findIndex(e => e === this);
+                if (index === -1) {
+                    throw new Error("Could not find and delete splatter pool");
+                }
+                this.enemies.splice(index, 1);
+                this.destroy();
+            }
+        });
     }
 }
