@@ -2,6 +2,7 @@ import {Enemy} from "./enemies/enemy";
 
 export class SplatterPool extends Enemy {
     public LIVE_TIME = 150;
+    public OFFSET= 30;
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y, 'splatter-pool');
@@ -15,16 +16,18 @@ export class SplatterPool extends Enemy {
         // });
         // this.physics.setExistingBody(b, false);
         // console.log([this.physics.displayWidth, this.physics.displayHeight]);
-        console.log([this.physics.x, this.physics.y]);
+        // console.log([this.physics.x, this.physics.y]);
         // scene.add.circle(x, y, 5, 0xff00ff);
-        scene.add.circle(this.physics.x, this.physics.y, 5, 0x00ffff);
-        // this.physics.setScale(0.2);
-        console.log([this.physics.x, this.physics.y]);
+        // scene.add.circle(this.physics.x, this.physics.y, 5, 0x00ffff);
+        this.physics.setScale(0.45);
+
+        this.OFFSET = this.physics.displayWidth / 3;
+        // console.log([this.physics.x, this.physics.y]);
         // console.log([this.physics.displayWidth, this.physics.displayHeight]);
 
         // this.physics.setPosition(x, y);
 
-        console.log(this.physics.width);
+        // console.log(this.physics.width);
 
         // this.physics.setBody({
         //     type: 'polygon',

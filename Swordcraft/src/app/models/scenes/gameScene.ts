@@ -5,6 +5,7 @@ import {Spitter} from "../objects/enemies/spitter";
 import {Gople} from "../objects/enemies/gople";
 import {Splatter} from "../objects/enemies/splatter";
 import {SplatterPool} from "../objects/splatter-pool";
+import {Sword} from "../objects/sword";
 
 export class GameScene extends Phaser.Scene {
     private background: Phaser.GameObjects.TileSprite;
@@ -67,7 +68,7 @@ export class GameScene extends Phaser.Scene {
         // this.enemies.push(new Splatter(this, 300, 200));
         // this.enemies.push(new Splatter(this, 700, 200));
         // this.enemies.push(new Splatter(this, 400, 300));
-        this.enemies.push(new Splatter(this, 600, 300));
+        // this.enemies.push(new Splatter(this, 600, 300));
 
         this.input.keyboard.on('keydown', (event) => {
             if (!this.gameOver) {
@@ -98,28 +99,28 @@ export class GameScene extends Phaser.Scene {
             }
 
             // Spawn new enemy
-            // if (this.counter > this.lastSpawn + this.spawnTimer) {
-            //     let pos = [0, 0];
-            //     const spawnDirection = Math.random();
-            //     if (spawnDirection < 0.25) { // top
-            //         pos = [Math.random() * this.game.config.width, -50];
-            //     } else if (spawnDirection < 0.5) { // right
-            //         pos = [this.game.config.width + 50, Math.random() * this.game.config.height];
-            //     } else if (spawnDirection < 0.75) { // bottom
-            //         pos = [Math.random() * this.game.config.width, this.game.config.height + 50];
-            //     } else { // left
-            //         pos = [-50, Math.random() * this.game.config.height];
-            //     }
-            //
-            //     const newEnemy = this.createEnemy(pos[0], pos[1]);
-            //     this.enemies.push(newEnemy);
-            //
-            //     this.spawnTimer = this.spawnTimer * this.spawnDecreaseMultiplier;
-            //     if (this.spawnTimer < 30) {
-            //         this.spawnTimer = 30;
-            //     }
-            //     this.lastSpawn = this.counter;
-            // }
+            if (this.counter > this.lastSpawn + this.spawnTimer) {
+                let pos = [0, 0];
+                const spawnDirection = Math.random();
+                if (spawnDirection < 0.25) { // top
+                    pos = [Math.random() * this.game.config.width, -50];
+                } else if (spawnDirection < 0.5) { // right
+                    pos = [this.game.config.width + 50, Math.random() * this.game.config.height];
+                } else if (spawnDirection < 0.75) { // bottom
+                    pos = [Math.random() * this.game.config.width, this.game.config.height + 50];
+                } else { // left
+                    pos = [-50, Math.random() * this.game.config.height];
+                }
+
+                const newEnemy = this.createEnemy(pos[0], pos[1]);
+                this.enemies.push(newEnemy);
+
+                this.spawnTimer = this.spawnTimer * this.spawnDecreaseMultiplier;
+                if (this.spawnTimer < 30) {
+                    this.spawnTimer = 30;
+                }
+                this.lastSpawn = this.counter;
+            }
 
             // Remove enemies outside bounds
             if (this.counter % 6 === 0) {
@@ -171,36 +172,8 @@ export class GameScene extends Phaser.Scene {
             if (index === -1) return;
             const deadEnemy = this.enemies.splice(index, 1)[0];
 
-            // splatters splatter (huhu)
             if (enemyBody.unit.type === 'splatter') {
-                console.log("splatted!");
-
-                const [x, y] = [deadEnemy.physics.x, deadEnemy.physics.y];
-                deadEnemy.destroy();
-
-                // create splatter in swords direction
-                const splatterPool = new SplatterPool(this, x, y);
-
-
-                const l = this.add.line(0, 0, 0, 0, 0, 0, 0xff0000);
-                l.setTo(splatterPool.physics.x, splatterPool.physics.y, 500, 500);
-
-
-                const POOL_OFFSET = splatterPool.physics.width / 4;
-                const swordPerpendicularVector = this.player.sword.getPerpendicularVector().scale(POOL_OFFSET);
-
-                console.log(swordPerpendicularVector);
-
-                // rotate in direction perpendicular to sword
-                const splatterDirAngleRad = Phaser.Math.Angle.Between(x, y, x + swordPerpendicularVector.x, y + swordPerpendicularVector.y);
-                const splatterDirAngleDeg = (splatterDirAngleRad / (Math.PI * 2)) * 360;
-                splatterPool.physics.setAngle(splatterDirAngleDeg);
-
-                // move pool after offset
-                splatterPool.physics.setPosition(x + swordPerpendicularVector.x, y + swordPerpendicularVector.y);
-
-                this.enemies.push(splatterPool);
-
+                this.createSplatterPool(deadEnemy as Splatter, this.player.sword);
             } else {
                 deadEnemy.isDead = true;
                 enemyBody.gameObject.setTint(0x888888);
@@ -223,17 +196,12 @@ export class GameScene extends Phaser.Scene {
             if (enemyBody.unit.type !== 'biter' || enemyBody.unit.isDead || !enemyBody.unit.isAttacking) {
 
                 if (enemyBody.unit.type === 'splatter') {
-                    // splat all over player
-                    const index = this.enemies.findIndex((s: Splatter) => s.physics.body === enemyBody);
+                    const index = this.enemies.findIndex((b: Biter) => b.physics.body === enemyBody);
                     if (index === -1) return;
-                    const deadSplatter = this.enemies.splice(index, 1)[0];
-                    const [x, y] = [deadSplatter.physics.x, deadSplatter.physics.y];
-                    deadSplatter.destroy();
+                    const deadSplatter = this.enemies.splice(index, 1)[0] as Splatter;
 
-                    this.enemies.push(new SplatterPool(this, x, y));
-
-                    console.log('Splat!');
-
+                    // splat all over player
+                    this.createSplatterPool(deadSplatter);
                 } else {
                     playerBody.unit.stun();
                     if (!enemyBody.unit.isDead) {
@@ -263,5 +231,23 @@ export class GameScene extends Phaser.Scene {
         } else if (newEnemy === 'splatter') {
             return new Splatter(this, x, y);
         }
+    }
+
+    private createSplatterPool(deadSplatter: Splatter, sword?: Sword) {
+        const [x, y, moveVector] = [deadSplatter.physics.x, deadSplatter.physics.y, deadSplatter.moveVector.clone()];
+        deadSplatter.destroy();
+        
+        const splatterPool = new SplatterPool(this, x, y);
+        const splatterDirVector = (sword ? sword.getPerpendicularVector() : moveVector).normalize().scale(splatterPool.OFFSET);
+
+        // rotate in splatter move direction
+        const splatterDirAngleRad = Phaser.Math.Angle.Between(x, y, x + splatterDirVector.x, y + splatterDirVector.y);
+        const splatterDirAngleDeg = (splatterDirAngleRad / (Math.PI * 2)) * 360;
+        splatterPool.physics.setAngle(splatterDirAngleDeg);
+
+        // move by offset
+        splatterPool.physics.setPosition(x + splatterDirVector.x, y + splatterDirVector.y);
+
+        this.enemies.push(splatterPool);
     }
 }

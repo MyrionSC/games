@@ -1,8 +1,8 @@
 import {Enemy} from "./enemy";
 
 export class Splatter extends Enemy {
-    private MOVE_SPEED = 2;
-    private moveVector: Phaser.Math.Vector2;
+    public MOVE_SPEED = 2;
+    public moveVector: Phaser.Math.Vector2;
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y, 'splatter');
@@ -21,7 +21,7 @@ export class Splatter extends Enemy {
 
     update() {
         super.update(() => {
-            // this.physics.setVelocity(this.moveVector.x, this.moveVector.y);
+            this.physics.setVelocity(this.moveVector.x, this.moveVector.y);
         });
     }
 }
