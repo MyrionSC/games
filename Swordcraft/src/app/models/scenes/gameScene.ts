@@ -61,13 +61,13 @@ export class GameScene extends Phaser.Scene {
         this.players = [this.player];
         this.enemies = [];
 
-        const pool = new SplatterPool(this, 200, 200);
+        // const pool = new SplatterPool(this, 200, 200);
 
-        const splatter = new Splatter(this, 500, 200);
-        this.enemies.push(splatter);
-
-
-        console.log(pool);
+        // this.enemies.push(new Splatter(this, 500, 200));
+        // this.enemies.push(new Splatter(this, 300, 200));
+        // this.enemies.push(new Splatter(this, 700, 200));
+        // this.enemies.push(new Splatter(this, 400, 300));
+        this.enemies.push(new Splatter(this, 600, 300));
 
         this.input.keyboard.on('keydown', (event) => {
             if (!this.gameOver) {
@@ -143,8 +143,8 @@ export class GameScene extends Phaser.Scene {
     private handleCollisions(event: Phaser.Physics.Matter.Events.CollisionStartEvent,
                              bodyA: Phaser.Physics.Matter.Body, bodyB: Phaser.Physics.Matter.Body) {
 
-        console.log(bodyA);
-        console.log(bodyB);
+        // console.log(bodyA);
+        // console.log(bodyB);
 
 
         if (bodyA.gameObject == null || bodyB.gameObject == null) {
@@ -162,7 +162,7 @@ export class GameScene extends Phaser.Scene {
         const types = [bodyA.unit.type, bodyB.unit.type];
 
 
-        console.log(types);
+        // console.log(types);
 
         if (types.includes('sword') && (this.enemyTypes.includes(typeA) || this.enemyTypes.includes(typeB))) {
             // sword / enemy collision
@@ -181,17 +181,23 @@ export class GameScene extends Phaser.Scene {
                 // create splatter in swords direction
                 const splatterPool = new SplatterPool(this, x, y);
 
-                const swordPerpendicularVector = this.player.sword.getPerpendicularVector().scale(100);
 
-                // forceVector = forceVector.normalize().scale(30);
+                const l = this.add.line(0, 0, 0, 0, 0, 0, 0xff0000);
+                l.setTo(splatterPool.physics.x, splatterPool.physics.y, 500, 500);
+
+
+                const POOL_OFFSET = splatterPool.physics.width / 4;
+                const swordPerpendicularVector = this.player.sword.getPerpendicularVector().scale(POOL_OFFSET);
+
                 console.log(swordPerpendicularVector);
 
-                const l = this.add.line(0, 0, 0, 0, 200, 200, 0xff0000);
-                l.setTo(x, y, x + swordPerpendicularVector.x, y + swordPerpendicularVector.y);
-
-
                 // rotate in direction perpendicular to sword
+                const splatterDirAngleRad = Phaser.Math.Angle.Between(x, y, x + swordPerpendicularVector.x, y + swordPerpendicularVector.y);
+                const splatterDirAngleDeg = (splatterDirAngleRad / (Math.PI * 2)) * 360;
+                splatterPool.physics.setAngle(splatterDirAngleDeg);
 
+                // move pool after offset
+                splatterPool.physics.setPosition(x + swordPerpendicularVector.x, y + swordPerpendicularVector.y);
 
                 this.enemies.push(splatterPool);
 

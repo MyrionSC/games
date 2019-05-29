@@ -14,7 +14,14 @@ export class SplatterPool extends Enemy {
         //     chamfer: { radius: [10, 40, 20, 40, 10] }
         // });
         // this.physics.setExistingBody(b, false);
-        this.physics.setScale(0.4);
+        // console.log([this.physics.displayWidth, this.physics.displayHeight]);
+        console.log([this.physics.x, this.physics.y]);
+        // scene.add.circle(x, y, 5, 0xff00ff);
+        scene.add.circle(this.physics.x, this.physics.y, 5, 0x00ffff);
+        // this.physics.setScale(0.2);
+        console.log([this.physics.x, this.physics.y]);
+        // console.log([this.physics.displayWidth, this.physics.displayHeight]);
+
         // this.physics.setPosition(x, y);
 
         console.log(this.physics.width);
