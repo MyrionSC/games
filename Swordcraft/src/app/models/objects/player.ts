@@ -45,7 +45,13 @@ export class Player {
                     right: Phaser.Input.Keyboard.KeyCodes.D
                 });
         } else {
-            this.cursors = scene.input.keyboard.createCursorKeys();
+            this.cursors = scene.input.keyboard.addKeys(
+                {up: Phaser.Input.Keyboard.KeyCodes.I,
+                    down: Phaser.Input.Keyboard.KeyCodes.K,
+                    left: Phaser.Input.Keyboard.KeyCodes.J,
+                    right: Phaser.Input.Keyboard.KeyCodes.L
+                });
+            // this.cursors = scene.input.keyboard.createCursorKeys();
         }
     }
 

@@ -58,13 +58,15 @@ export class CoopScene extends Phaser.Scene {
         this.enemies = [];
 
         this.input.keyboard.on('keydown', (event) => {
+            console.log(event.key);
+
             if (!this.gameOver) {
-                if (event.key === "0") {
+                if (event.key === " ") {
                     if (!this.player1.isAttacking) {
                         this.player1.startAttack();
                     }
                 }
-                if (event.key === 'f' || event.key === 'Control' || event.key === 'Shift') {
+                if (event.key === 'Control') {
                     if (!this.player2.isAttacking) {
                         this.player2.startAttack();
                     }
