@@ -2,7 +2,10 @@
 	"compilerOptions":
 	{
 		"module": "amd",
-		"sourceMap": true,
+		"sourceMap": false,
         "outDir": "build"
-	}
+	},
+    "include": [
+        "src/**/*"
+    ]
 }

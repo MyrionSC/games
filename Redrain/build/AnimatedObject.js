@@ -32,4 +32,3 @@ define(["require", "exports"], function (require, exports) {
     }());
     exports.AnimatedObject = AnimatedObject;
 });
-//# sourceMappingURL=AnimatedObject.js.map

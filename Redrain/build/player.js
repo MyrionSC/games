@@ -44,4 +44,3 @@ define(["require", "exports", "./AnimatedObject"], function (require, exports, A
     }(AnimatedObject_1.AnimatedObject));
     exports.Player = Player;
 });
-//# sourceMappingURL=player.js.map

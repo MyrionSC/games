@@ -32,4 +32,3 @@ define(["require", "exports", "./game", "./AnimatedObject"], function (require, 
     }(AnimatedObject_1.AnimatedObject));
     exports.Enemy = Enemy;
 });
-//# sourceMappingURL=enemy.js.map

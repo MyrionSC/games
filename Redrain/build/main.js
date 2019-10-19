@@ -112,4 +112,3 @@ define(["require", "exports", "./player", "./projectile", "./enemy", "./game"], 
         game.mouseY = e.clientY;
     };
 });
-//# sourceMappingURL=main.js.map

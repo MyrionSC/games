@@ -28,4 +28,3 @@ define(["require", "exports", "./AnimatedObject"], function (require, exports, A
     }(AnimatedObject_1.AnimatedObject));
     exports.Projectile = Projectile;
 });
-//# sourceMappingURL=projectile.js.map

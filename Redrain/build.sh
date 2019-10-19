@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-tsc && cp -r libs build && cp index.html build
+tsc && cp -r src/libs build && cp src/index.html build
