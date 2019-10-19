@@ -1,7 +1,7 @@
 // import log = require('./log')
 import {Player} from './player';
 import {Projectile} from './projectile';
-import {Enemy} from './Enemy';
+import {Enemy} from './enemy';
 import {Game} from './game';
 import {AnimatedObject} from './AnimatedObject';
 

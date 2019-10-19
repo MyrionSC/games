@@ -1,7 +1,8 @@
 {
-	"compilerOptions": 
+	"compilerOptions":
 	{
 		"module": "amd",
-		"sourceMap": true
+		"sourceMap": true,
+        "outDir": "build"
 	}
 }
