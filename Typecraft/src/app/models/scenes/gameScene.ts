@@ -28,8 +28,8 @@ export class GameScene extends Phaser.Scene {
     preload(): void {
         // this.load.image('background', 'assets/background.png');
         this.load.image('background', 'assets/Background/grasstile.png');
-        this.load.image('player', 'assets/Units/Terran/TerranMarineBlue2.png');
-        this.load.image('enemy', 'assets/Units/Zerg/ZergZerglingPurple.png');
+        this.load.image('player', 'assets/Units/TerranMarineBlue2.png');
+        this.load.image('enemy', 'assets/Units/ZergZerglingPurple.png');
 
         const url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/plugins/dist/rexbbcodetextplugin.min.js';
         this.load.plugin('rexbbcodetextplugin', url, true);
