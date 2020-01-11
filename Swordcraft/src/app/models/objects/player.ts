@@ -27,9 +27,9 @@ export class Player {
     // private debugPointSword1: Phaser.GameObjects.Arc;
     // private debugPointSword2: Phaser.GameObjects.Arc;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, key?: string) {
+    constructor(scene: Phaser.Scene, config: CustomConfig, x: number, y: number, key: string) {
         this.scene = scene;
-        this.physics = scene.matter.add.image(x, y, key ? key : 'player1');
+        this.physics = scene.matter.add.image(x, y, key);
         this.physics.setScale(0.15);
         this.physics.setBody({
             type: 'circle',
@@ -37,19 +37,19 @@ export class Player {
         }, {});
         this.physics.body.unit = this;
 
-        if (key && key === 'player2') {
+        if (key === 'player2') {
             this.cursors = scene.input.keyboard.addKeys(
-                {up: Phaser.Input.Keyboard.KeyCodes.W,
-                    down: Phaser.Input.Keyboard.KeyCodes.S,
-                    left: Phaser.Input.Keyboard.KeyCodes.A,
-                    right: Phaser.Input.Keyboard.KeyCodes.D
+                {up: Phaser.Input.Keyboard.KeyCodes[config.COOP_CONTROLS_P2_UP],
+                    down: Phaser.Input.Keyboard.KeyCodes[config.COOP_CONTROLS_P2_DOWN],
+                    left: Phaser.Input.Keyboard.KeyCodes[config.COOP_CONTROLS_P2_LEFT],
+                    right: Phaser.Input.Keyboard.KeyCodes[config.COOP_CONTROLS_P2_RIGHT]
                 });
         } else {
             this.cursors = scene.input.keyboard.addKeys(
-                {up: Phaser.Input.Keyboard.KeyCodes.I,
-                    down: Phaser.Input.Keyboard.KeyCodes.K,
-                    left: Phaser.Input.Keyboard.KeyCodes.J,
-                    right: Phaser.Input.Keyboard.KeyCodes.L
+                {up: Phaser.Input.Keyboard.KeyCodes[config.COOP_CONTROLS_P1_UP],
+                    down: Phaser.Input.Keyboard.KeyCodes[config.COOP_CONTROLS_P1_DOWN],
+                    left: Phaser.Input.Keyboard.KeyCodes[config.COOP_CONTROLS_P1_LEFT],
+                    right: Phaser.Input.Keyboard.KeyCodes[config.COOP_CONTROLS_P1_RIGHT]
                 });
             // this.cursors = scene.input.keyboard.createCursorKeys();
         }

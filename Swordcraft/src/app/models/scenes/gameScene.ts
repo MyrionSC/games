@@ -10,6 +10,7 @@ import {Sword} from "../objects/sword";
 export class GameScene extends Phaser.Scene {
     private background: Phaser.GameObjects.TileSprite;
     private gameBounds: Phaser.Geom.Rectangle;
+    private config: CustomConfig;
 
     // objects
     private player: Player;
@@ -39,6 +40,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     preload(): void {
+        this.load.json('config', 'assets/config.json');
         this.load.image('background', 'assets/Background/grasstile.png');
         this.load.image('player1', 'assets/Swordcraft/swordguy.png');
         this.load.image('sword', 'assets/Swordcraft/grandsword.png');
@@ -52,6 +54,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     create(): void {
+        this.config = this.cache.json.get('config');
         this.gameBounds = new Phaser.Geom.Rectangle(0, 0, this.game.config.width, this.game.config.height);
 
         // create background
@@ -59,7 +62,7 @@ export class GameScene extends Phaser.Scene {
             Number(this.game.config.width), Number(this.game.config.height), 'background');
         this.background.setDepth(-10);
 
-        this.player = new Player(this, 500, 500);
+        this.player = new Player(this, this.config, 500, 500, 'player1');
         this.players = [this.player];
         this.enemies = [];
 
@@ -73,7 +76,7 @@ export class GameScene extends Phaser.Scene {
 
         this.input.keyboard.on('keydown', (event) => {
             if (!this.gameOver) {
-                if (event.key === "q" || event.key === "0") {
+                if (event.key === this.config.SINGLE_CONTROLS_ATTACK) {
                     if (!this.player.isAttacking) {
                         this.player.startAttack();
                     }

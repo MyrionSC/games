@@ -25,7 +25,7 @@ const config: GameConfig = {
         }
     },
     parent: 'game',
-    scene: [MenuScene, GameScene, CoopScene],
+    scene: [MenuScene, GameScene, CoopScene], // MenuScene is first so starts up first
     input: {
         keyboard: true,
         mouse: true,

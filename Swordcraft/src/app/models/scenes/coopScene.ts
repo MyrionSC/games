@@ -7,6 +7,7 @@ import {Gople} from "../objects/enemies/gople";
 export class CoopScene extends Phaser.Scene {
     private background: Phaser.GameObjects.TileSprite;
     private gameBounds: Phaser.Geom.Rectangle;
+    private config: CustomConfig;
 
     // objects
     private player1: Player;
@@ -36,6 +37,7 @@ export class CoopScene extends Phaser.Scene {
     }
 
     preload(): void {
+        this.load.json('config', 'assets/config.json');
         this.load.image('background', 'assets/Background/grasstile.png');
         this.load.image('player1', 'assets/Swordcraft/swordguy.png');
         this.load.image('player2', 'assets/Swordcraft/swordguy_blue.png');
@@ -48,12 +50,13 @@ export class CoopScene extends Phaser.Scene {
     }
 
     create(): void {
+        this.config = this.cache.json.get('config');
         this.gameBounds = new Phaser.Geom.Rectangle(0, 0, this.game.config.width, this.game.config.height);
         this.background = this.add.tileSprite(Number(Number(this.game.config.width)) / 2, Number(this.game.config.height) / 2,
             Number(this.game.config.width), Number(this.game.config.height), 'background');
 
-        this.player1 = new Player(this, 300, 500, 'player1');
-        this.player2 = new Player(this, 700, 500, 'player2');
+        this.player1 = new Player(this, this.config, 300, 500, 'player1');
+        this.player2 = new Player(this, this.config, 700, 500, 'player2');
         this.players = [this.player1, this.player2];
         this.enemies = [];
 
@@ -61,12 +64,12 @@ export class CoopScene extends Phaser.Scene {
             console.log(event.key);
 
             if (!this.gameOver) {
-                if (event.key === " ") {
+                if (event.key === this.config.COOP_CONTROLS_P1_ATTACK) {
                     if (!this.player1.isAttacking) {
                         this.player1.startAttack();
                     }
                 }
-                if (event.key === 'Control') {
+                if (event.key === this.config.COOP_CONTROLS_P2_ATTACK) {
                     if (!this.player2.isAttacking) {
                         this.player2.startAttack();
                     }

@@ -1,6 +1,7 @@
 export class MenuScene extends Phaser.Scene {
     private sword: Phaser.GameObjects.Image;
     private swordRotationSpeed = 0.005;
+    private config: CustomConfig;
 
     constructor() {
         super({
@@ -9,10 +10,15 @@ export class MenuScene extends Phaser.Scene {
     }
 
     preload(): void {
+        this.load.json('config', 'assets/config.json');
         this.load.image('sword', 'assets/Swordcraft/grandsword.png');
     }
 
     create(): void {
+        this.config = this.cache.json.get('config');
+        console.log(this.config);
+        
+
         this.sword = this.add.image(600, 400, 'sword');
         this.sword.setInteractive();
         this.sword.on('pointerdown', () => {
