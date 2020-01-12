@@ -1,7 +1,8 @@
 import {Enemy} from "./enemy";
 
 export class Splatter extends Enemy {
-    public MOVE_SPEED = 2;
+    public INITIAL_MOVE_SPEED = 2;
+    public move_speed = this.INITIAL_MOVE_SPEED;
     public moveVector: Phaser.Math.Vector2;
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
@@ -16,12 +17,13 @@ export class Splatter extends Enemy {
         // move into map based on spawn position
         const moveX = x < 0 ? Math.random() : -Math.random();
         const moveY = y < 0 ? Math.random() : -Math.random();
-        this.moveVector = new Phaser.Math.Vector2(moveX, moveY).normalize().scale(this.MOVE_SPEED);
+        this.moveVector = new Phaser.Math.Vector2(moveX, moveY).normalize();
     }
 
     update() {
         super.update(() => {
-            this.physics.setVelocity(this.moveVector.x, this.moveVector.y);
+            this.physics.setVelocity(this.moveVector.x * this.move_speed, 
+                this.moveVector.y * this.move_speed);
         });
     }
 }

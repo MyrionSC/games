@@ -20,9 +20,7 @@ export class GameScene extends Phaser.Scene {
     // tweakable vars
     private spawnTimer = 90;
     private spawnDecreaseMultiplier = 0.97;
-    // private spawnPossibilities = ['biter'];
-    // private spawnPossibilities = ['gople', 'gople', 'gople', 'biter', 'spitter'];
-    private spawnPossibilities = ['splatter'];
+    private spawnPossibilities = ['gople', 'gople', 'splatter', 'biter', 'spitter'];
     private enemyTypes = ['gople', 'biter', 'spitter', 'spitter-bullet', 'splatter'];
 
     // non tweakable
@@ -165,14 +163,16 @@ export class GameScene extends Phaser.Scene {
         const typeA = bodyA.unit.type;
         const typeB = bodyB.unit.type;
         const types = [bodyA.unit.type, bodyB.unit.type];
+        console.log(types);
 
-        console.log(bodyA.unit.MOVE_SPEED);
-        
-
-
-        // console.log(types);
-
-        if (types.includes('sword') && (this.enemyTypes.includes(typeA) || this.enemyTypes.includes(typeB))) {
+        if (types.includes('splatter-pool')) {
+            if (types.includes('sword')) {
+                return;
+            }
+            const slowedObject = typeA == 'splatter-pool' ? bodyB : bodyA;
+            console.log("slowed: " + slowedObject.unit.type);
+            slowedObject.unit.slow();
+        } else if (types.includes('sword') && (this.enemyTypes.includes(typeA) || this.enemyTypes.includes(typeB))) {
             // sword / enemy collision
             const enemyBody = this.enemies.some(b => bodyA === b.physics.body) ? bodyA : bodyB;
             const index = this.enemies.findIndex((b: Biter) => b.physics.body === enemyBody);
@@ -228,6 +228,7 @@ export class GameScene extends Phaser.Scene {
 
     private createEnemy(x: number, y: number) {
         const newEnemy = this.spawnPossibilities[Math.floor(Math.random() * this.spawnPossibilities.length)];
+        console.log(newEnemy);
 
         if (newEnemy === 'gople') {
             return new Gople(this, x, y);

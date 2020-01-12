@@ -78420,12 +78420,12 @@ declare type Purchase = {
 declare type integer = number;
 
 declare type UnitType = {
-    MOVE_SPEED: number;
     type: string;
     isAttacking: boolean;
     isDead: boolean;
     stun(): void;
     die(): void;
+    slow(): void;
 }
 
 declare module 'phaser' {

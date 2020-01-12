@@ -16,9 +16,6 @@ export class MenuScene extends Phaser.Scene {
 
     create(): void {
         this.config = this.cache.json.get('config');
-        console.log(this.config);
-        
-
         this.sword = this.add.image(600, 400, 'sword');
         this.sword.setInteractive();
         this.sword.on('pointerdown', () => {

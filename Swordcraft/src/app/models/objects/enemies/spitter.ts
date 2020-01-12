@@ -8,7 +8,8 @@ export class Spitter extends Enemy {
     private enemies: Enemy[];
 
     // tweakable
-    public MOVE_SPEED = 2.7;
+    public INITIAL_MOVE_SPEED = 2.7;
+    public move_speed = this.INITIAL_MOVE_SPEED;
     private SHOOTING_DIST = 300;
     private RETREAT_DIST = 150;
     private ATTACK_TIME = 100;
@@ -50,7 +51,7 @@ export class Spitter extends Enemy {
                     closestPlayer.physics.x - this.physics.x,
                     closestPlayer.physics.y - this.physics.y
                 );
-                moveVector = moveVector.normalize().scale(this.MOVE_SPEED);
+                moveVector = moveVector.normalize().scale(this.move_speed);
 
                 // advance to shooting range
                 if (closestDist > this.SHOOTING_DIST) {

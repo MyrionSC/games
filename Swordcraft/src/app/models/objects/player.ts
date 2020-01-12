@@ -7,12 +7,15 @@ export class Player implements UnitType {
     sword: Sword;
     private cursors: Phaser.Input.Keyboard.CursorKeys;
 
-    public MOVE_SPEED = 5;
+    public INITIAL_MOVE_SPEED = 5;
+    public INITIAL_SLOW_TIME = 240;
     public STUNNED_TIME = 90;
     private SWING_FORCE = 0.03;
     private SWING_TIME = 49;
     private ATTACK_TIME = 50;
-
+    
+    public move_speed = this.INITIAL_MOVE_SPEED;
+    public slow_left = 0;
     public isStunned = false;
     public isAttacking = false;
     public isDead = false;
@@ -56,6 +59,15 @@ export class Player implements UnitType {
     }
 
     update(): void {
+        if (this.slow_left > 0) {
+            this.slow_left--;
+            console.log(this.slow_left);
+            if (this.slow_left <= 0) {
+                console.log("player slow ended");
+                this.endSlow();
+            }
+        }
+
         if (this.isStunned) {
             if (this.isAttacking) {
                 this.endAttack();
@@ -88,13 +100,20 @@ export class Player implements UnitType {
         this.isStunned = true;
         this.physics.setTint(0xbbbbbb);
     }
-
-    private endStun() {
+    endStun() {
         this.isStunned = false;
         this.stunnedCounter = 0;
         this.physics.setTint(0xffffff);
     }
-
+    slow() {
+        this.physics.setTint(0xffff00);
+        this.slow_left = this.INITIAL_SLOW_TIME;
+        this.move_speed = this.INITIAL_MOVE_SPEED / 2;
+    }
+    endSlow() {
+        this.move_speed = this.INITIAL_MOVE_SPEED;
+        this.physics.setTint(0xffffff);
+    }
     die() {
         this.isDead = true;
         this.physics.setTint(0x888888);
@@ -149,17 +168,17 @@ export class Player implements UnitType {
 
         if (this.anyCursorsDown()) {
             if (this.cursors.right.isDown) {
-                this.physics.setVelocityX(this.MOVE_SPEED);
+                this.physics.setVelocityX(this.move_speed);
             } else if (this.cursors.left.isDown) {
-                this.physics.setVelocityX(-this.MOVE_SPEED);
+                this.physics.setVelocityX(-this.move_speed);
             } else {
                 this.physics.setVelocityX(0);
             }
 
             if (this.cursors.up.isDown) {
-                this.physics.setVelocityY(-this.MOVE_SPEED);
+                this.physics.setVelocityY(-this.move_speed);
             } else if (this.cursors.down.isDown) {
-                this.physics.setVelocityY(this.MOVE_SPEED);
+                this.physics.setVelocityY(this.move_speed);
             } else {
                 this.physics.setVelocityY(0);
             }
