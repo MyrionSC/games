@@ -25,6 +25,7 @@ export class MenuScene extends Phaser.Scene {
             this.swordRotationSpeed += 0.005;
         });
 
+        // buttons
         const singleButton = this.add.text(50, 70, "Single",
             {
                 fontSize: '50px',
@@ -64,6 +65,15 @@ export class MenuScene extends Phaser.Scene {
                 color: 'green'
             });
         });
+
+        // controls
+        this.add.text(20, this.game.config.height - 180, "Controls", { fontSize: '26px' });
+        this.add.text(30, this.game.config.height - 146, `Singleplayer`, { fontSize: '20px' });
+        this.add.text(40, this.game.config.height - 120, `Up:      ${this.config.SINGLE_CONTROLS_UP}\nRight:   ${this.config.SINGLE_CONTROLS_RIGHT}\nDown:    ${this.config.SINGLE_CONTROLS_DOWN}\nLeft:    ${this.config.SINGLE_CONTROLS_LEFT}\nAttack:  ${this.config.SINGLE_CONTROLS_ATTACK}`);
+        this.add.text(210, this.game.config.height - 146, `Coop P1`, { fontSize: '20px' });
+        this.add.text(220, this.game.config.height - 120, `Up:      ${this.config.COOP_CONTROLS_P1_UP}\nRight:   ${this.config.COOP_CONTROLS_P1_RIGHT}\nDown:    ${this.config.COOP_CONTROLS_P1_DOWN}\nLeft:    ${this.config.COOP_CONTROLS_P1_LEFT}\nAttack:  Space`);
+        this.add.text(380, this.game.config.height - 146, `Coop P2`, { fontSize: '20px' });
+        this.add.text(390, this.game.config.height - 120, `Up:      ${this.config.COOP_CONTROLS_P2_UP}\nRight:   ${this.config.COOP_CONTROLS_P2_RIGHT}\nDown:    ${this.config.COOP_CONTROLS_P2_DOWN}\nLeft:    ${this.config.COOP_CONTROLS_P2_LEFT}\nAttack:  ${this.config.COOP_CONTROLS_P2_ATTACK}`);
     }
 
     update(): void {
