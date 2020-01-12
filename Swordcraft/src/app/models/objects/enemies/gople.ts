@@ -1,7 +1,7 @@
 import {Enemy} from "./enemy";
 
 export class Gople extends Enemy {
-    private MOVE_SPEED = 2;
+    public MOVE_SPEED = 2;
     private moveVector: Phaser.Math.Vector2;
 
     constructor(scene: Phaser.Scene, x: number, y: number) {

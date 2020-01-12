@@ -6,7 +6,7 @@ export class Biter extends Enemy {
     private players: Player[];
 
     private MAX_TURN_RAD = 0.03;
-    private MOVE_SPEED = 3;
+    public MOVE_SPEED = 3;
     private LUNGE_SPEED = 6;
     private ATTACK_TIME = 60;
     private ATTACK_DISTANCE = 250;

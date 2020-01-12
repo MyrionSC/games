@@ -1,6 +1,6 @@
 import {Player} from "./player";
 
-export class Sword {
+export class Sword implements UnitType {
     physics: Phaser.Physics.Matter.Image;
     swordConstraint: any;
     type = 'sword';
@@ -8,6 +8,7 @@ export class Sword {
     isDead = false;
     startAngle = 130;
     endSwingAngle = 240;
+    MOVE_SPEED = 0;
 
     constructor(scene: Phaser.Scene, x: number, y: number, player: Player) {
         this.physics = scene.matter.add.image(x, y, 'sword');

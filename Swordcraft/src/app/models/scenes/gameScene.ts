@@ -166,6 +166,9 @@ export class GameScene extends Phaser.Scene {
         const typeB = bodyB.unit.type;
         const types = [bodyA.unit.type, bodyB.unit.type];
 
+        console.log(bodyA.unit.MOVE_SPEED);
+        
+
 
         // console.log(types);
 

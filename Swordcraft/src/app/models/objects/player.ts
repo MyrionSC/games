@@ -1,17 +1,17 @@
 import {Sword} from "./sword";
 
-export class Player {
+export class Player implements UnitType {
     physics: Phaser.Physics.Matter.Image;
+    scene: Phaser.Scene;
+    type = 'player';
     sword: Sword;
     private cursors: Phaser.Input.Keyboard.CursorKeys;
-    private scene: Phaser.Scene;
-    public type = 'player';
 
-    private WALKING_SPEED = 5;
+    public MOVE_SPEED = 5;
+    public STUNNED_TIME = 90;
     private SWING_FORCE = 0.03;
     private SWING_TIME = 49;
     private ATTACK_TIME = 50;
-    public STUNNED_TIME = 90;
 
     public isStunned = false;
     public isAttacking = false;
@@ -149,17 +149,17 @@ export class Player {
 
         if (this.anyCursorsDown()) {
             if (this.cursors.right.isDown) {
-                this.physics.setVelocityX(this.WALKING_SPEED);
+                this.physics.setVelocityX(this.MOVE_SPEED);
             } else if (this.cursors.left.isDown) {
-                this.physics.setVelocityX(-this.WALKING_SPEED);
+                this.physics.setVelocityX(-this.MOVE_SPEED);
             } else {
                 this.physics.setVelocityX(0);
             }
 
             if (this.cursors.up.isDown) {
-                this.physics.setVelocityY(-this.WALKING_SPEED);
+                this.physics.setVelocityY(-this.MOVE_SPEED);
             } else if (this.cursors.down.isDown) {
-                this.physics.setVelocityY(this.WALKING_SPEED);
+                this.physics.setVelocityY(this.MOVE_SPEED);
             } else {
                 this.physics.setVelocityY(0);
             }

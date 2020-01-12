@@ -1,7 +1,8 @@
-export abstract class Enemy {
+export abstract class Enemy implements UnitType {
     public physics: Phaser.Physics.Matter.Image;
     public scene: Phaser.Scene;
 
+    public MOVE_SPEED = 0;
     public STUNNED_TIME = 90;
 
     public isAttacking = false;

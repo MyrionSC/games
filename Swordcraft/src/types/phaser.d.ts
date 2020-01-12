@@ -57431,7 +57431,7 @@ declare namespace Phaser {
                  */
                 world: Phaser.Physics.Arcade.World;
 
-                unit: Unit;
+                unit: UnitType;
 
                 isSensor: boolean;
 
@@ -78419,7 +78419,8 @@ declare type Purchase = {
 
 declare type integer = number;
 
-declare type Unit = {
+declare type UnitType = {
+    MOVE_SPEED: number;
     type: string;
     isAttacking: boolean;
     isDead: boolean;

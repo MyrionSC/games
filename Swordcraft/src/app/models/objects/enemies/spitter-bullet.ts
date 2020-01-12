@@ -1,7 +1,7 @@
 import {Enemy} from "./enemy";
 
 export class SpitterBullet extends Enemy {
-    private MOVE_SPEED = 7;
+    public MOVE_SPEED = 7;
     private LIVE_TIME = 150;
 
     private enemies: Enemy[];
