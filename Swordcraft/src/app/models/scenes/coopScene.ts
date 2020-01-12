@@ -3,6 +3,9 @@ import {Biter} from "../objects/enemies/biter";
 import {Enemy} from "../objects/enemies/enemy";
 import {Spitter} from "../objects/enemies/spitter";
 import {Gople} from "../objects/enemies/gople";
+import {Splatter} from "../objects/enemies/splatter";
+import {SplatterPool} from "../objects/splatter-pool";
+import {Sword} from "../objects/sword";
 
 export class CoopScene extends Phaser.Scene {
     private background: Phaser.GameObjects.TileSprite;
@@ -18,9 +21,8 @@ export class CoopScene extends Phaser.Scene {
     // tweakable vars
     private spawnTimer = 90;
     private spawnDecreaseMultiplier = 0.97;
-    // private spawnPossibilities = ['biter'];
-    private spawnPossibilities = ['gople', 'gople', 'gople', 'biter', 'spitter'];
-    private enemyTypes = ['gople', 'biter', 'spitter', 'spitter-bullet'];
+    private spawnPossibilities = ['gople', 'gople', 'splatter', 'biter', 'spitter'];
+    private enemyTypes = ['gople', 'biter', 'spitter', 'spitter-bullet', 'splatter'];
 
     // non tweakable
     private counter = 1;
@@ -43,6 +45,8 @@ export class CoopScene extends Phaser.Scene {
         this.load.image('player2', 'assets/Swordcraft/swordguy_blue.png');
         this.load.image('sword', 'assets/Swordcraft/grandsword.png');
         this.load.image('gople', 'assets/Swordcraft/green_gople.png');
+        this.load.image('splatter', 'assets/Swordcraft/splatter.png');
+        this.load.image('splatter-pool', 'assets/Swordcraft/splatter_pool1.png');
         this.load.image('biter', 'assets/Swordcraft/biter.png');
         this.load.image('biter-attacking', 'assets/Swordcraft/biter_attacking.png');
         this.load.image('spitter', 'assets/Swordcraft/spitter.png');
@@ -54,6 +58,7 @@ export class CoopScene extends Phaser.Scene {
         this.gameBounds = new Phaser.Geom.Rectangle(0, 0, this.game.config.width, this.game.config.height);
         this.background = this.add.tileSprite(Number(Number(this.game.config.width)) / 2, Number(this.game.config.height) / 2,
             Number(this.game.config.width), Number(this.game.config.height), 'background');
+        this.background.setDepth(-10);
 
         this.player1 = new Player(this, this.config, 300, 500, 'player1');
         this.player2 = new Player(this, this.config, 700, 500, 'player2');
@@ -61,8 +66,6 @@ export class CoopScene extends Phaser.Scene {
         this.enemies = [];
 
         this.input.keyboard.on('keydown', (event) => {
-            console.log(event.key);
-
             if (!this.gameOver) {
                 if (event.key === this.config.COOP_CONTROLS_P1_ATTACK) {
                     if (!this.player1.isAttacking) {
@@ -149,13 +152,28 @@ export class CoopScene extends Phaser.Scene {
         const typeB = bodyB.unit.type;
         const types = [bodyA.unit.type, bodyB.unit.type];
 
+        // Slow unit if it walks into splatterpool
+        if (types.includes('splatter-pool')) {
+            if (types.includes('sword')) {
+                return;
+            }
+            const slowedObject = typeA == 'splatter-pool' ? bodyB : bodyA;
+            slowedObject.unit.slow();
         // sword / enemy collision
-        if (types.includes('sword')) {
+        } else if (types.includes('sword')) {
             const enemyBody = this.enemies.some(b => bodyA === b.physics.body) ? bodyA : bodyB;
-            const index = this.enemies.findIndex((b: Biter) => b.physics.body === enemyBody);
+            const index = this.enemies.findIndex((b: Enemy) => b.physics.body === enemyBody);
             if (index === -1) return;
             const deadEnemy = this.enemies.splice(index, 1)[0];
-            deadEnemy.die();
+
+            if (enemyBody.unit.type === 'splatter') {
+                const swordBody = enemyBody == bodyA ? bodyB : bodyA;
+                const sword = this.player1.sword && this.player1.sword.physics.body == swordBody ? this.player1.sword : this.player2.sword;
+                this.createSplatterPool(deadEnemy as Splatter, sword);
+            } else {
+                deadEnemy.die();
+            }
+
             this.score += 100;
         } else if (this.enemyTypes.includes(typeA) && this.enemyTypes.includes(typeB)) {
             // enemy / enemy collision
@@ -167,16 +185,23 @@ export class CoopScene extends Phaser.Scene {
             }
         } else if ((typeA === 'player' || typeB === 'player') && (this.enemyTypes.includes(typeA) || this.enemyTypes.includes(typeB))) {
             // player / enemy collision
-            const player = typeA === 'player' ? bodyA : bodyB;
-            const enemy = typeB === 'player' ? bodyA : bodyB;
+            const playerBody = typeA === 'player' ? bodyA : bodyB;
+            const enemyBody = typeB === 'player' ? bodyA : bodyB;
 
-            if (enemy.unit.type !== 'biter' || enemy.unit.isDead || !enemy.unit.isAttacking) {
-                player.unit.stun();
-                if (!enemy.unit.isDead) {
-                    enemy.unit.stun();
+            if (enemyBody.unit.type !== 'biter' || enemyBody.unit.isDead || !enemyBody.unit.isAttacking) {
+                if (enemyBody.unit.type === 'splatter') {
+                    const index = this.enemies.findIndex((b: Enemy) => b.physics.body === enemyBody);
+                    if (index === -1) return;
+                    const deadSplatter = this.enemies.splice(index, 1)[0] as Splatter;
+                    this.createSplatterPool(deadSplatter);
+                } else {
+                    playerBody.unit.stun();
+                    if (!enemyBody.unit.isDead) {
+                        enemyBody.unit.stun();
+                    }
                 }
             } else {
-                player.unit.die();
+                playerBody.unit.die();
                 if (this.players.every(p => p.isDead)) {
                     this.gameOver = true;
                     const t = this.add.text(-200, -200,
@@ -193,7 +218,6 @@ export class CoopScene extends Phaser.Scene {
 
     private createEnemy(x: number, y: number) {
         const newEnemy = this.spawnPossibilities[Math.floor(Math.random() * this.spawnPossibilities.length)];
-
         // could also pack refs into single object so signature for all enemies is the same
         if (newEnemy === 'gople') {
             return new Gople(this, x, y);
@@ -201,6 +225,26 @@ export class CoopScene extends Phaser.Scene {
             return new Biter(this, x, y, this.players);
         } else if (newEnemy === 'spitter') {
             return new Spitter(this, x, y, this.players, this.enemies);
+        } else if (newEnemy === 'splatter') {
+            return new Splatter(this, x, y);
         }
+    }
+
+    private createSplatterPool(deadSplatter: Splatter, sword?: Sword) {
+        const [x, y, moveVector] = [deadSplatter.physics.x, deadSplatter.physics.y, deadSplatter.moveVector.clone()];
+        deadSplatter.destroy();
+        
+        const splatterPool = new SplatterPool(this, x, y, this.enemies);
+        const splatterDirVector = (sword ? sword.getPerpendicularVector() : moveVector).normalize().scale(splatterPool.OFFSET);
+
+        // rotate in splatter move direction
+        const splatterDirAngleRad = Phaser.Math.Angle.Between(x, y, x + splatterDirVector.x, y + splatterDirVector.y);
+        const splatterDirAngleDeg = (splatterDirAngleRad / (Math.PI * 2)) * 360;
+        splatterPool.physics.setAngle(splatterDirAngleDeg);
+
+        // move by offset
+        splatterPool.physics.setPosition(x + splatterDirVector.x, y + splatterDirVector.y);
+
+        this.enemies.push(splatterPool);
     }
 }

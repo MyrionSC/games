@@ -4,7 +4,7 @@ export class Player implements UnitType {
     physics: Phaser.Physics.Matter.Image;
     scene: Phaser.Scene;
     type = 'player';
-    sword: Sword;
+    public sword: Sword;
     private cursors: Phaser.Input.Keyboard.CursorKeys;
 
     public INITIAL_MOVE_SPEED = 5;
@@ -45,7 +45,7 @@ export class Player implements UnitType {
                 {up: Phaser.Input.Keyboard.KeyCodes[config.COOP_CONTROLS_P2_UP],
                     down: Phaser.Input.Keyboard.KeyCodes[config.COOP_CONTROLS_P2_DOWN],
                     left: Phaser.Input.Keyboard.KeyCodes[config.COOP_CONTROLS_P2_LEFT],
-                    right: Phaser.Input.Keyboard.KeyCodes[config.COOP_CONTROLS_P2_RIGHT]
+                    right: Phaser.Input.Keyboard.KeyCodes[config.COOP_CONTROLS_P2_RIGHT],
                 });
         } else {
             this.cursors = scene.input.keyboard.addKeys(
@@ -61,9 +61,7 @@ export class Player implements UnitType {
     update(): void {
         if (this.slow_left > 0) {
             this.slow_left--;
-            console.log(this.slow_left);
             if (this.slow_left <= 0) {
-                console.log("player slow ended");
                 this.endSlow();
             }
         }

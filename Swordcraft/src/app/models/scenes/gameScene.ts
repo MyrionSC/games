@@ -92,7 +92,6 @@ export class GameScene extends Phaser.Scene {
 
     update(): void {
         if (!this.gameOver) {
-            // updates
             this.player.update();
             for (const enemy of this.enemies) {
                 if (!enemy.isDead) {
@@ -145,32 +144,16 @@ export class GameScene extends Phaser.Scene {
 
     private handleCollisions(event: Phaser.Physics.Matter.Events.CollisionStartEvent,
                              bodyA: Phaser.Physics.Matter.Body, bodyB: Phaser.Physics.Matter.Body) {
-
-        // console.log(bodyA);
-        // console.log(bodyB);
-
-
-        if (bodyA.gameObject == null || bodyB.gameObject == null) {
-            // one is a sensor
-            // return;
-        }
-
-        if (bodyA.isSensor) {
-
-        }
-
-
         const typeA = bodyA.unit.type;
         const typeB = bodyB.unit.type;
         const types = [bodyA.unit.type, bodyB.unit.type];
-        console.log(types);
 
+        // Slow unit if it walks into splatterpool
         if (types.includes('splatter-pool')) {
             if (types.includes('sword')) {
                 return;
             }
             const slowedObject = typeA == 'splatter-pool' ? bodyB : bodyA;
-            console.log("slowed: " + slowedObject.unit.type);
             slowedObject.unit.slow();
         } else if (types.includes('sword') && (this.enemyTypes.includes(typeA) || this.enemyTypes.includes(typeB))) {
             // sword / enemy collision
@@ -182,8 +165,7 @@ export class GameScene extends Phaser.Scene {
             if (enemyBody.unit.type === 'splatter') {
                 this.createSplatterPool(deadEnemy as Splatter, this.player.sword);
             } else {
-                deadEnemy.isDead = true;
-                enemyBody.gameObject.setTint(0x888888);
+                deadEnemy.die();
             }
 
             this.score += 100;
@@ -201,13 +183,10 @@ export class GameScene extends Phaser.Scene {
             const enemyBody = bodyB === this.player.physics.body ? bodyA : bodyB;
 
             if (enemyBody.unit.type !== 'biter' || enemyBody.unit.isDead || !enemyBody.unit.isAttacking) {
-
                 if (enemyBody.unit.type === 'splatter') {
-                    const index = this.enemies.findIndex((b: Biter) => b.physics.body === enemyBody);
+                    const index = this.enemies.findIndex((b: Enemy) => b.physics.body === enemyBody);
                     if (index === -1) return;
                     const deadSplatter = this.enemies.splice(index, 1)[0] as Splatter;
-
-                    // splat all over player
                     this.createSplatterPool(deadSplatter);
                 } else {
                     playerBody.unit.stun();
@@ -228,8 +207,6 @@ export class GameScene extends Phaser.Scene {
 
     private createEnemy(x: number, y: number) {
         const newEnemy = this.spawnPossibilities[Math.floor(Math.random() * this.spawnPossibilities.length)];
-        console.log(newEnemy);
-
         if (newEnemy === 'gople') {
             return new Gople(this, x, y);
         } else if (newEnemy === 'biter') {
