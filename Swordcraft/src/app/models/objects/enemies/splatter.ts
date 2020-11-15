@@ -1,8 +1,10 @@
 import {Enemy} from "./enemy";
+import {Global} from "../../../globals";
 
 export class Splatter extends Enemy {
-    public INITIAL_MOVE_SPEED = 2;
-    public move_speed = this.INITIAL_MOVE_SPEED;
+    public INITIAL_MOVE_SPEED = 2 * Global.SPEED_MODIFIER;
+
+    public moveSpeed = this.INITIAL_MOVE_SPEED;
     public moveVector: Phaser.Math.Vector2;
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
@@ -22,8 +24,8 @@ export class Splatter extends Enemy {
 
     update() {
         super.update(() => {
-            this.physics.setVelocity(this.moveVector.x * this.move_speed, 
-                this.moveVector.y * this.move_speed);
+            this.physics.setVelocity(this.moveVector.x * this.moveSpeed,
+                this.moveVector.y * this.moveSpeed);
         });
     }
 }

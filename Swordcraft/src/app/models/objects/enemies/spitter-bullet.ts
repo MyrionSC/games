@@ -1,10 +1,11 @@
 import {Enemy} from "./enemy";
+import {Global} from "../../../globals";
 
 export class SpitterBullet extends Enemy {
-    public INITIAL_MOVE_SPEED = 7;
-    private LIVE_TIME = 150;
-    
-    public move_speed = this.INITIAL_MOVE_SPEED;
+    public INITIAL_MOVE_SPEED = 7 * Global.SPEED_MODIFIER;
+    private LIVE_TIME = 400 * Global.SPEED_MODIFIER;
+
+    public moveSpeed = this.INITIAL_MOVE_SPEED;
     private enemies: Enemy[];
 
     constructor(scene: Phaser.Scene, x: number, y: number, enemies: Enemy[], directionVector: Phaser.Math.Vector2) {
@@ -18,14 +19,14 @@ export class SpitterBullet extends Enemy {
 
         this.physics.setFriction(0, 0);
 
-        directionVector = directionVector.scale(this.move_speed);
+        directionVector = directionVector.scale(this.moveSpeed);
         this.physics.setVelocity(directionVector.x, directionVector.y);
 
         this.enemies = enemies;
     }
 
-    stun(){}
-    stunEnd(){}
+    stun() {}
+    stunEnd() {}
 
     update() {
         super.update(() => {

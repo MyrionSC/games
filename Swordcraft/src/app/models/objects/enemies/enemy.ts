@@ -1,13 +1,15 @@
+import {Global} from "../../../globals";
+
 export abstract class Enemy implements UnitType {
     public physics: Phaser.Physics.Matter.Image;
     public scene: Phaser.Scene;
 
-    public INITIAL_MOVE_SPEED = 10;
-    public INITIAL_SLOW_TIME = 360;
-    public STUNNED_TIME = 90;
-    
-    public move_speed = this.INITIAL_MOVE_SPEED;
-    public slow_left = 0;
+    public INITIAL_MOVE_SPEED = 10 * Global.SPEED_MODIFIER;
+    public INITIAL_SLOW_TIME = 7500 * Global.SPEED_MODIFIER;
+    public STUNNED_TIME = 500 * Global.SPEED_MODIFIER;
+
+    public moveSpeed = this.INITIAL_MOVE_SPEED;
+    public slowLeft = 0;
     public isAttacking = false;
     public isStunned = false;
     public stunnedCounter = 0;
@@ -24,9 +26,9 @@ export abstract class Enemy implements UnitType {
     update(callback?: () => void): void {
         this.liveCounter++;
 
-        if (this.slow_left > 0) {
-            this.slow_left--;
-            if (this.slow_left <= 0) {
+        if (this.slowLeft > 0) {
+            this.slowLeft--;
+            if (this.slowLeft <= 0) {
                 this.endSlow();
             }
         }
@@ -43,11 +45,11 @@ export abstract class Enemy implements UnitType {
 
     slow() {
         this.physics.setTint(0xffff00);
-        this.slow_left = this.INITIAL_SLOW_TIME;
-        this.move_speed = this.INITIAL_MOVE_SPEED / 2;
+        this.slowLeft = this.INITIAL_SLOW_TIME;
+        this.moveSpeed = this.INITIAL_MOVE_SPEED / 2;
     }
     endSlow() {
-        this.move_speed = this.INITIAL_MOVE_SPEED;
+        this.moveSpeed = this.INITIAL_MOVE_SPEED;
         this.physics.setTint(0xffffff);
     }
     stun() {

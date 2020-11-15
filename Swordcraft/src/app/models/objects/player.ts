@@ -1,4 +1,5 @@
 import {Sword} from "./sword";
+import {Global} from "../../globals";
 
 export class Player implements UnitType {
     physics: Phaser.Physics.Matter.Image;
@@ -7,15 +8,15 @@ export class Player implements UnitType {
     public sword: Sword;
     private cursors: Phaser.Input.Keyboard.CursorKeys;
 
-    public INITIAL_MOVE_SPEED = 5;
-    public INITIAL_SLOW_TIME = 240;
-    public STUNNED_TIME = 90;
-    private SWING_FORCE = 0.03;
-    private SWING_TIME = 49;
-    private ATTACK_TIME = 50;
-    
-    public move_speed = this.INITIAL_MOVE_SPEED;
-    public slow_left = 0;
+    public INITIAL_MOVE_SPEED = 5 * Global.SPEED_MODIFIER;
+    public INITIAL_SLOW_TIME = 3000 * Global.SPEED_MODIFIER;
+    public STUNNED_TIME = 400 * Global.SPEED_MODIFIER;
+    private SWING_FORCE = 0.03 * Global.SPEED_MODIFIER;
+    private SWING_TIME = 1490 * Global.SPEED_MODIFIER;
+    private ATTACK_TIME = 1520 * Global.SPEED_MODIFIER;
+
+    public moveSpeed = this.INITIAL_MOVE_SPEED;
+    public slowLeft = 0;
     public isStunned = false;
     public isAttacking = false;
     public isDead = false;
@@ -59,9 +60,9 @@ export class Player implements UnitType {
     }
 
     update(): void {
-        if (this.slow_left > 0) {
-            this.slow_left--;
-            if (this.slow_left <= 0) {
+        if (this.slowLeft > 0) {
+            this.slowLeft--;
+            if (this.slowLeft <= 0) {
                 this.endSlow();
             }
         }
@@ -72,7 +73,7 @@ export class Player implements UnitType {
             }
             this.stunnedCounter++;
             if (this.stunnedCounter >= this.STUNNED_TIME) {
-                this.endStun()
+                this.endStun();
             }
         } else if (this.isAttacking) {
             this.attackCounter++;
@@ -105,11 +106,11 @@ export class Player implements UnitType {
     }
     slow() {
         this.physics.setTint(0xffff00);
-        this.slow_left = this.INITIAL_SLOW_TIME;
-        this.move_speed = this.INITIAL_MOVE_SPEED / 2;
+        this.slowLeft = this.INITIAL_SLOW_TIME;
+        this.moveSpeed = this.INITIAL_MOVE_SPEED / 2;
     }
     endSlow() {
-        this.move_speed = this.INITIAL_MOVE_SPEED;
+        this.moveSpeed = this.INITIAL_MOVE_SPEED;
         this.physics.setTint(0xffffff);
     }
     die() {
@@ -166,17 +167,17 @@ export class Player implements UnitType {
 
         if (this.anyCursorsDown()) {
             if (this.cursors.right.isDown) {
-                this.physics.setVelocityX(this.move_speed);
+                this.physics.setVelocityX(this.moveSpeed);
             } else if (this.cursors.left.isDown) {
-                this.physics.setVelocityX(-this.move_speed);
+                this.physics.setVelocityX(-this.moveSpeed);
             } else {
                 this.physics.setVelocityX(0);
             }
 
             if (this.cursors.up.isDown) {
-                this.physics.setVelocityY(-this.move_speed);
+                this.physics.setVelocityY(-this.moveSpeed);
             } else if (this.cursors.down.isDown) {
-                this.physics.setVelocityY(this.move_speed);
+                this.physics.setVelocityY(this.moveSpeed);
             } else {
                 this.physics.setVelocityY(0);
             }

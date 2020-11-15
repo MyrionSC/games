@@ -2,19 +2,20 @@ import {Player} from "../player";
 import {Enemy} from "./enemy";
 import {SpitterBullet} from "./spitter-bullet";
 import * as helper from "../../helpers";
+import {Global} from "../../../globals";
 
 export class Spitter extends Enemy {
     private players: Player[];
     private enemies: Enemy[];
 
     // tweakable
-    public INITIAL_MOVE_SPEED = 2.7;
-    public move_speed = this.INITIAL_MOVE_SPEED;
+    public INITIAL_MOVE_SPEED = 2.7 * Global.SPEED_MODIFIER;
     private SHOOTING_DIST = 300;
     private RETREAT_DIST = 150;
-    private ATTACK_TIME = 100;
-    private COOL_DOWN_TIME = 90;
+    private ATTACK_TIME = 300 * Global.SPEED_MODIFIER;
+    private COOL_DOWN_TIME = 900 * Global.SPEED_MODIFIER;
 
+    public moveSpeed = this.INITIAL_MOVE_SPEED;
     private attackCounter = 0;
     private lastAttack = -1000;
 
@@ -51,7 +52,7 @@ export class Spitter extends Enemy {
                     closestPlayer.physics.x - this.physics.x,
                     closestPlayer.physics.y - this.physics.y
                 );
-                moveVector = moveVector.normalize().scale(this.move_speed);
+                moveVector = moveVector.normalize().scale(this.moveSpeed);
 
                 // advance to shooting range
                 if (closestDist > this.SHOOTING_DIST) {

@@ -11,19 +11,16 @@ export class GameScene extends Phaser.Scene {
     private background: Phaser.GameObjects.TileSprite;
     private gameBounds: Phaser.Geom.Rectangle;
     private config: CustomConfig;
-
-    // objects
     private player: Player;
     private players: Player[];
     private enemies: Enemy[];
 
-    // tweakable vars
-    private spawnTimer = 90;
-    private spawnDecreaseMultiplier = 0.97;
-    private spawnPossibilities = ['gople', 'gople', 'splatter', 'biter', 'spitter'];
-    private enemyTypes = ['gople', 'biter', 'spitter', 'spitter-bullet', 'splatter'];
+    private INITIAL_SPAWN_TIMER = 150;
+    private SPAWN_DECREASE_MULTIPLIER = 0.98;
 
-    // non tweakable
+    private spawnTimer = this.INITIAL_SPAWN_TIMER;
+    private spawnPossibilities = ['gople', 'gople', 'biter', 'splatter', 'spitter'];
+    private enemyTypes = ['gople', 'biter', 'spitter', 'spitter-bullet', 'splatter'];
     private counter = 1;
     private lastSpawn = 0;
     private score = 0;
@@ -64,14 +61,6 @@ export class GameScene extends Phaser.Scene {
         this.players = [this.player];
         this.enemies = [];
 
-        // const pool = new SplatterPool(this, 200, 200);
-
-        // this.enemies.push(new Splatter(this, 500, 200));
-        // this.enemies.push(new Splatter(this, 300, 200));
-        // this.enemies.push(new Splatter(this, 700, 200));
-        // this.enemies.push(new Splatter(this, 400, 300));
-        // this.enemies.push(new Splatter(this, 600, 300));
-
         this.input.keyboard.on('keydown', (event) => {
             if (!this.gameOver) {
                 if (event.key === this.config.SINGLE_CONTROLS_ATTACK) {
@@ -101,7 +90,7 @@ export class GameScene extends Phaser.Scene {
 
             // Spawn new enemy
             if (this.counter > this.lastSpawn + this.spawnTimer) {
-                let pos = [0, 0];
+                let pos;
                 const spawnDirection = Math.random();
                 if (spawnDirection < 0.25) { // top
                     pos = [Math.random() * this.game.config.width, -50];
@@ -116,7 +105,7 @@ export class GameScene extends Phaser.Scene {
                 const newEnemy = this.createEnemy(pos[0], pos[1]);
                 this.enemies.push(newEnemy);
 
-                this.spawnTimer = this.spawnTimer * this.spawnDecreaseMultiplier;
+                this.spawnTimer = this.spawnTimer * this.SPAWN_DECREASE_MULTIPLIER;
                 if (this.spawnTimer < 30) {
                     this.spawnTimer = 30;
                 }
@@ -150,10 +139,8 @@ export class GameScene extends Phaser.Scene {
 
         // Slow unit if it walks into splatterpool
         if (types.includes('splatter-pool')) {
-            if (types.includes('sword')) {
-                return;
-            }
-            const slowedObject = typeA == 'splatter-pool' ? bodyB : bodyA;
+            if (types.includes('sword')) return;
+            const slowedObject = typeA === 'splatter-pool' ? bodyB : bodyA;
             slowedObject.unit.slow();
         } else if (types.includes('sword') && (this.enemyTypes.includes(typeA) || this.enemyTypes.includes(typeB))) {
             // sword / enemy collision
@@ -168,7 +155,7 @@ export class GameScene extends Phaser.Scene {
                 deadEnemy.die();
             }
 
-            this.score += 100;
+            this.score += 1000;
         } else if (this.enemyTypes.includes(typeA) && this.enemyTypes.includes(typeB)) {
             // enemy / enemy collision
             if (!bodyA.unit.isDead) {
@@ -221,7 +208,7 @@ export class GameScene extends Phaser.Scene {
     private createSplatterPool(deadSplatter: Splatter, sword?: Sword) {
         const [x, y, moveVector] = [deadSplatter.physics.x, deadSplatter.physics.y, deadSplatter.moveVector.clone()];
         deadSplatter.destroy();
-        
+
         const splatterPool = new SplatterPool(this, x, y, this.enemies);
         const splatterDirVector = (sword ? sword.getPerpendicularVector() : moveVector).normalize().scale(splatterPool.OFFSET);
 

@@ -1,18 +1,19 @@
 import {Player} from "../player";
 import {Enemy} from "./enemy";
 import * as helper from "../../helpers";
+import {Global} from "../../../globals";
 
 export class Biter extends Enemy {
     private players: Player[];
 
-    private MAX_TURN_RAD = 0.03;
-    public INITIAL_MOVE_SPEED = 3;
-    public move_speed = this.INITIAL_MOVE_SPEED;
-    private lunge_speed_multiplier = 2;
-    private ATTACK_TIME = 60;
+    public INITIAL_MOVE_SPEED = 3 * Global.SPEED_MODIFIER;
+    private MAX_TURN_RAD = 0.03 * Global.SPEED_MODIFIER;
+    private ATTACK_TIME = 200 * Global.SPEED_MODIFIER;
     private ATTACK_DISTANCE = 250;
     private ATTACK_ANGLE_RAD = 0.1;
 
+    public moveSpeed = this.INITIAL_MOVE_SPEED;
+    private lungeSpeedMultiplier = 2;
     private attackCounter = 0;
     private lungeDirection: Phaser.Math.Vector2;
 
@@ -67,7 +68,7 @@ export class Biter extends Enemy {
                 const moveVector = new Phaser.Math.Vector2(
                     Math.cos(rotatedAngleRad),
                     Math.sin(rotatedAngleRad)
-                ).scale(this.move_speed);
+                ).scale(this.moveSpeed);
                 this.physics.setVelocity(moveVector.x, moveVector.y);
 
                 const absAngleDiff = Math.abs(Phaser.Math.Angle.Normalize(playerDirAngleRad) - Phaser.Math.Angle.Normalize(facingAngleRad));
@@ -80,7 +81,7 @@ export class Biter extends Enemy {
 
     startAttack(moveVector: Phaser.Math.Vector2) {
         this.isAttacking = true;
-        this.lungeDirection = new Phaser.Math.Vector2(moveVector).normalize().scale(this.move_speed * this.lunge_speed_multiplier);
+        this.lungeDirection = new Phaser.Math.Vector2(moveVector).normalize().scale(this.moveSpeed * this.lungeSpeedMultiplier);
         this.physics.setTexture('biter-attacking');
     }
 

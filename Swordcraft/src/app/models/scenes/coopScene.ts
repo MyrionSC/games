@@ -19,8 +19,10 @@ export class CoopScene extends Phaser.Scene {
     private enemies: Enemy[];
 
     // tweakable vars
-    private spawnTimer = 90;
-    private spawnDecreaseMultiplier = 0.97;
+    private INITIAL_SPAWN_TIMER = 150;
+    private SPAWN_DECREASE_MULTIPLIER = 0.98;
+
+    private spawnTimer = this.INITIAL_SPAWN_TIMER;
     private spawnPossibilities = ['gople', 'gople', 'splatter', 'biter', 'spitter'];
     private enemyTypes = ['gople', 'biter', 'spitter', 'spitter-bullet', 'splatter'];
 
@@ -120,7 +122,7 @@ export class CoopScene extends Phaser.Scene {
                 const newEnemy = this.createEnemy(pos[0], pos[1]);
                 this.enemies.push(newEnemy);
 
-                this.spawnTimer = this.spawnTimer * this.spawnDecreaseMultiplier;
+                this.spawnTimer = this.spawnTimer * this.SPAWN_DECREASE_MULTIPLIER;
                 if (this.spawnTimer < 30) {
                     this.spawnTimer = 30;
                 }
@@ -157,7 +159,7 @@ export class CoopScene extends Phaser.Scene {
             if (types.includes('sword')) {
                 return;
             }
-            const slowedObject = typeA == 'splatter-pool' ? bodyB : bodyA;
+            const slowedObject = typeA === 'splatter-pool' ? bodyB : bodyA;
             slowedObject.unit.slow();
         // sword / enemy collision
         } else if (types.includes('sword')) {
@@ -167,8 +169,8 @@ export class CoopScene extends Phaser.Scene {
             const deadEnemy = this.enemies.splice(index, 1)[0];
 
             if (enemyBody.unit.type === 'splatter') {
-                const swordBody = enemyBody == bodyA ? bodyB : bodyA;
-                const sword = this.player1.sword && this.player1.sword.physics.body == swordBody ? this.player1.sword : this.player2.sword;
+                const swordBody = enemyBody === bodyA ? bodyB : bodyA;
+                const sword = this.player1.sword && this.player1.sword.physics.body === swordBody ? this.player1.sword : this.player2.sword;
                 this.createSplatterPool(deadEnemy as Splatter, sword);
             } else {
                 deadEnemy.die();
@@ -233,7 +235,7 @@ export class CoopScene extends Phaser.Scene {
     private createSplatterPool(deadSplatter: Splatter, sword?: Sword) {
         const [x, y, moveVector] = [deadSplatter.physics.x, deadSplatter.physics.y, deadSplatter.moveVector.clone()];
         deadSplatter.destroy();
-        
+
         const splatterPool = new SplatterPool(this, x, y, this.enemies);
         const splatterDirVector = (sword ? sword.getPerpendicularVector() : moveVector).normalize().scale(splatterPool.OFFSET);
 
