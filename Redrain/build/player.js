@@ -1,7 +1,10 @@
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -11,6 +14,7 @@ var __extends = (this && this.__extends) || (function () {
 define(["require", "exports", "./AnimatedObject"], function (require, exports, AnimatedObject_1) {
     "use strict";
     exports.__esModule = true;
+    exports.Player = void 0;
     var Player = /** @class */ (function (_super) {
         __extends(Player, _super);
         function Player(Canvas, Ctx, Keys, G) {
@@ -19,22 +23,22 @@ define(["require", "exports", "./AnimatedObject"], function (require, exports, A
             return _this;
         }
         Player.prototype.move = function () {
-            if (this.keys[38] === true || this.keys[87] === true) {
+            if (this.keys[38] === true || this.keys[87] === true) { // up | w
                 if (this.posY > this.width) {
                     this.posY += -this.moveSpeed;
                 }
             }
-            if (this.keys[39] === true || this.keys[68] === true) {
+            if (this.keys[39] === true || this.keys[68] === true) { // right | d
                 if (this.posX < this.game.width - this.width) {
                     this.posX += this.moveSpeed;
                 }
             }
-            if (this.keys[40] === true || this.keys[83] === true) {
+            if (this.keys[40] === true || this.keys[83] === true) { // down | s
                 if (this.posY < this.game.height - this.width) {
                     this.posY += this.moveSpeed;
                 }
             }
-            if (this.keys[37] === true || this.keys[65] === true) {
+            if (this.keys[37] === true || this.keys[65] === true) { // left | a
                 if (this.posX > this.width) {
                     this.posX += -this.moveSpeed;
                 }

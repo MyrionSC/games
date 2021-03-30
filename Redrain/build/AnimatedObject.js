@@ -1,6 +1,7 @@
 define(["require", "exports"], function (require, exports) {
     "use strict";
     exports.__esModule = true;
+    exports.AnimatedObject = void 0;
     var AnimatedObject = /** @class */ (function () {
         function AnimatedObject(Canvas, Ctx, G, FillStyle, PosX, PosY, Width, MoveSpeed) {
             this.canvas = Canvas;

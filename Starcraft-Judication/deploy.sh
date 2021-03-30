@@ -1,1 +1,1 @@
-rsync -r * marand@marand.dk:/var/www/html/games/starcraft-judication
+rsync -r src/* marand@marand.dk:/var/www/marand/games/starcraft-judication

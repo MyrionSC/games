@@ -1,7 +1,10 @@
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -11,6 +14,7 @@ var __extends = (this && this.__extends) || (function () {
 define(["require", "exports", "./AnimatedObject"], function (require, exports, AnimatedObject_1) {
     "use strict";
     exports.__esModule = true;
+    exports.Projectile = void 0;
     var Projectile = /** @class */ (function (_super) {
         __extends(Projectile, _super);
         function Projectile(Canvas, Ctx, G, PosX, PosY) {

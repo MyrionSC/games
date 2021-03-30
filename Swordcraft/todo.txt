@@ -1,4 +1,7 @@
 
+is very slow in some browsers
+
 animation or tint change when stunned
 restrict player leaving area
 biters only kill when lunging
+

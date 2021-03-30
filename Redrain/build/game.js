@@ -1,6 +1,7 @@
 define(["require", "exports"], function (require, exports) {
     "use strict";
     exports.__esModule = true;
+    exports.Game = void 0;
     var Game = /** @class */ (function () {
         function Game(Canvas, Ctx) {
             this.width = 500;
